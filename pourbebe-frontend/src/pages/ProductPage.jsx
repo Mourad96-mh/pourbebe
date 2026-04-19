@@ -38,7 +38,7 @@ export default function ProductPage() {
 
         <div className={styles.details}>
           <div className={styles.badges}>
-            {product.isNew && <Badge variant="new">Nouveau</Badge>}
+            {product.isNewArrival && <Badge variant="new">Nouveau</Badge>}
             {discount && <Badge variant="sale">-{discount}%</Badge>}
           </div>
 

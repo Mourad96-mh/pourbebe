@@ -46,7 +46,7 @@ export default function ProductCard({ product }) {
         )}
 
         <div className={styles.badges}>
-          {product.isNew && <Badge variant="new">Nouveau</Badge>}
+          {product.isNewArrival && <Badge variant="new">Nouveau</Badge>}
           {discount && <Badge variant="sale">-{discount}%</Badge>}
           {!product.inStock && <Badge variant="outOfStock">Épuisé</Badge>}
         </div>

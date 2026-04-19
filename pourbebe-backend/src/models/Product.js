@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema({
   tags:        [{ type: String }],
   variants:    [variantSchema],
   inStock:     { type: Boolean, default: true },
-  isNew:       { type: Boolean, default: false },
+  isNewArrival: { type: Boolean, default: false },
 }, { timestamps: true })
 
 productSchema.index({ name: 'text', brand: 'text', description: 'text' })

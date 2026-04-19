@@ -17,7 +17,7 @@ function sortProducts(products, sort) {
   if (sort === 'price-asc')  return list.sort((a, b) => a.price - b.price)
   if (sort === 'price-desc') return list.sort((a, b) => b.price - a.price)
   if (sort === 'bestsellers') return list
-  return list.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0))
+  return list.sort((a, b) => (b.isNewArrival ? 1 : 0) - (a.isNewArrival ? 1 : 0))
 }
 
 /* ── useProducts ── */
