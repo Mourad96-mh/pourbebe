@@ -86,17 +86,17 @@ export default function Navbar() {
               </svg>
             </Link>
           )}
-
-          {/* Mobile hamburger */}
-          <button
-            className={styles.hamburger}
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Menu"
-            aria-expanded={menuOpen}
-          >
-            <span /><span /><span />
-          </button>
         </div>
+
+        {/* Mobile hamburger — separate so it sits on the far right */}
+        <button
+          className={`${styles.hamburger}${menuOpen ? ` ${styles.hamburgerOpen}` : ''}`}
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label="Menu"
+          aria-expanded={menuOpen}
+        >
+          <span /><span /><span />
+        </button>
       </div>
 
       {/* Mobile menu */}
@@ -112,7 +112,7 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
-          <div className={styles.mobileDivider} />
+
           {user ? (
             <>
               <Link to="/mon-compte" className={styles.mobileAuthLink} onClick={() => setMenuOpen(false)}>
