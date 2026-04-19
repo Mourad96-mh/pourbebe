@@ -27,14 +27,14 @@
   --color-warning:  #D4A84A;
 
   /* ── Type scale ── */
-  --text-xs:   10px;
-  --text-sm:   11px;
-  --text-base: 13px;
-  --text-md:   15px;
-  --text-lg:   18px;
-  --text-xl:   24px;
-  --text-2xl:  34px;
-  --text-3xl:  48px;
+  --text-xs:   12px;
+  --text-sm:   13px;
+  --text-base: 15px;
+  --text-md:   17px;
+  --text-lg:   20px;
+  --text-xl:   26px;
+  --text-2xl:  36px;
+  --text-3xl:  52px;
 
   /* ── Spacing ── */
   --space-1:   4px;
