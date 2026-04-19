@@ -3,308 +3,72 @@ import mongoose from 'mongoose'
 import Category from './models/Category.js'
 import Product from './models/Product.js'
 
-const MONGODB_URI = process.env.MONGODB_URI
-
-const categories = [
-  { name: 'Puériculture',  slug: 'puericulture' },
-  { name: 'Vêtements',     slug: 'vetements' },
-  { name: 'Chambre',       slug: 'chambre' },
-  { name: 'Hygiène',       slug: 'hygiene' },
-  { name: 'Éveil & Jeux',  slug: 'eveil' },
-  { name: 'Pour Maman',    slug: 'maman' },
-  { name: 'Accessoires',   slug: 'accessoires' },
+const CATEGORIES = [
+  { slug: 'chambre',     name: 'Chambre bébé' },
+  { slug: 'accessoires', name: 'Accessoires'  },
+  { slug: 'vetements',   name: 'Vêtements'    },
 ]
 
-const products = [
-  {
-    slug: 'poussette-trio-cybex-balios-s',
-    name: 'Poussette Trio Cybex Balios S',
-    brand: 'Cybex',
-    description: 'Poussette trio complète avec siège auto et nacelle. Système de pliage compact, suspension 4 roues, adaptée dès la naissance.',
-    price: 4200,
-    compareAt: 5100,
-    images: ['https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600'],
-    categorySlug: 'puericulture',
-    tags: ['poussette', 'trio', 'naissance'],
-    inStock: true,
-    isNewArrival: false,
-  },
-  {
-    slug: 'transat-bebe-babybjorn-balance-soft',
-    name: 'Transat Bébé BabyBjörn Balance Soft',
-    brand: 'BabyBjörn',
-    description: 'Transat ergonomique avec bascule douce. Tissu respirant, réglable en 3 positions. De la naissance à 2 ans.',
-    price: 1850,
-    compareAt: 2200,
-    images: ['https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600'],
-    categorySlug: 'puericulture',
-    tags: ['transat', 'confort'],
-    inStock: true,
-    isNewArrival: true,
-  },
-  {
-    slug: 'porte-bebe-ergobaby-omni-360',
-    name: 'Porte-Bébé Ergobaby Omni 360',
-    brand: 'Ergobaby',
-    description: 'Porte-bébé ergonomique 4 positions de portage. Position physiologique, dès la naissance sans réducteur.',
-    price: 1650,
-    compareAt: null,
-    images: ['https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600'],
-    categorySlug: 'puericulture',
-    tags: ['porte-bebe', 'ergonomique'],
-    inStock: true,
-    isNewArrival: false,
-  },
-  {
-    slug: 'body-manches-courtes-coton-blanc',
-    name: 'Body Manches Courtes Coton Bio',
-    brand: 'Petit Bateau',
-    description: 'Body bébé en coton biologique doux. Fermeture pression entre les jambes pour faciliter le change. 0–24 mois.',
-    price: 120,
-    compareAt: 160,
-    images: ['https://images.unsplash.com/photo-1522771930-78848d9293e8?w=600'],
-    categorySlug: 'vetements',
-    tags: ['body', 'coton', 'naissance'],
-    inStock: true,
-    isNewArrival: false,
-  },
-  {
-    slug: 'pyjama-velours-bebe-bleu',
-    name: 'Pyjama Velours Bébé',
-    brand: 'Absorba',
-    description: 'Pyjama bébé en velours doux et chaud. Fermeture zip pour les changes nocturnes. Du 1 au 18 mois.',
-    price: 195,
-    compareAt: 240,
-    images: ['https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600'],
-    categorySlug: 'vetements',
-    tags: ['pyjama', 'hiver', 'velours'],
-    inStock: true,
-    isNewArrival: true,
-  },
-  {
-    slug: 'ensemble-naissance-cadeau',
-    name: 'Coffret Naissance 5 Pièces',
-    brand: 'Noukie\'s',
-    description: 'Coffret cadeau naissance : body, pyjama, chaussons, bonnet et bavette. Coton doux certifié OEKO-TEX.',
-    price: 450,
-    compareAt: 580,
-    images: ['https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600'],
-    categorySlug: 'vetements',
-    tags: ['coffret', 'naissance', 'cadeau'],
-    inStock: true,
-    isNewArrival: false,
-  },
-  {
-    slug: 'lit-bebe-evolutif-wood',
-    name: 'Lit Bébé Évolutif en Bois',
-    brand: 'Sauthon',
-    description: 'Lit bébé évolutif en bois massif, convertible en lit junior. Fond de lit réglable en hauteur. 60×120 cm.',
-    price: 2800,
-    compareAt: 3400,
-    images: ['https://images.unsplash.com/photo-1586105251261-72a756497a11?w=600'],
-    categorySlug: 'chambre',
-    tags: ['lit', 'evolutif', 'bois'],
-    inStock: true,
-    isNewArrival: false,
-  },
-  {
-    slug: 'commode-a-langer-blanche',
-    name: 'Commode à Langer Blanche',
-    brand: 'Sauthon',
-    description: 'Commode avec plan à langer amovible et 3 tiroirs spacieux. Design épuré, blanc mat. Hauteur ergonomique.',
-    price: 2200,
-    compareAt: null,
-    images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600'],
-    categorySlug: 'chambre',
-    tags: ['commode', 'langer', 'chambre'],
-    inStock: true,
-    isNewArrival: true,
-  },
-  {
-    slug: 'veilleuse-musicale-nuage',
-    name: 'Veilleuse Musicale Nuage',
-    brand: 'Pabobo',
-    description: 'Veilleuse projector avec 8 mélodies et minuterie. Lumière douce, rechargeable USB. Idéale pour l\'endormissement.',
-    price: 380,
-    compareAt: 450,
-    images: ['https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=600'],
-    categorySlug: 'chambre',
-    tags: ['veilleuse', 'musical', 'sommeil'],
-    inStock: true,
-    isNewArrival: false,
-  },
-  {
-    slug: 'thermometre-bain-digital',
-    name: 'Thermomètre de Bain Digital',
-    brand: 'Béaba',
-    description: 'Thermomètre digital pour le bain, affichage instantané. Alerte sonore si température hors zone de sécurité.',
-    price: 180,
-    compareAt: 220,
-    images: ['https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600'],
-    categorySlug: 'hygiene',
-    tags: ['thermometre', 'bain', 'securite'],
-    inStock: true,
-    isNewArrival: false,
-  },
-  {
-    slug: 'baignoire-bebe-ergonomique',
-    name: 'Baignoire Bébé Ergonomique',
-    brand: 'Stokke',
-    description: 'Baignoire ergonomique avec support antidérapant et bouchon de vidange. Utilisable dès la naissance.',
-    price: 650,
-    compareAt: 800,
-    images: ['https://images.unsplash.com/photo-1520013173647-e8b8c64a9e9c?w=600'],
-    categorySlug: 'hygiene',
-    tags: ['baignoire', 'bain', 'naissance'],
-    inStock: true,
-    isNewArrival: false,
-  },
-  {
-    slug: 'coffret-soin-bebe-bio',
-    name: 'Coffret Soin Bébé Bio',
-    brand: 'Mustela',
-    description: 'Coffret complet : gel lavant, crème change, lotion hydratante. Formule certifiée bio, sans parfum.',
-    price: 320,
-    compareAt: 390,
-    images: ['https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=600'],
-    categorySlug: 'hygiene',
-    tags: ['soin', 'bio', 'coffret'],
-    inStock: true,
-    isNewArrival: true,
-  },
-  {
-    slug: 'tapis-eveil-arche-activites',
-    name: 'Tapis d\'Éveil avec Arche d\'Activités',
-    brand: 'Tiny Love',
-    description: 'Tapis d\'éveil avec arche et 15 activités sensorielles. Musiques, lumières et jouets amovibles. Dès la naissance.',
-    price: 750,
-    compareAt: 920,
-    images: ['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600'],
-    categorySlug: 'eveil',
-    tags: ['tapis', 'eveil', 'activites'],
-    inStock: true,
-    isNewArrival: false,
-  },
-  {
-    slug: 'hochet-bois-naturel',
-    name: 'Hochet en Bois Naturel',
-    brand: 'Hape',
-    description: 'Hochet en bois certifié FSC, peinture non toxique. Forme facile à saisir pour les petites mains. Dès 3 mois.',
-    price: 95,
-    compareAt: null,
-    images: ['https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600'],
-    categorySlug: 'eveil',
-    tags: ['hochet', 'bois', 'naturel'],
-    inStock: true,
-    isNewArrival: false,
-  },
-  {
-    slug: 'cube-eveil-musical-bebe',
-    name: 'Cube d\'Éveil Musical',
-    brand: 'VTech',
-    description: 'Cube d\'activités 5 faces avec sons, lumières et mélodies. Développe la motricité fine. Dès 6 mois.',
-    price: 420,
-    compareAt: 500,
-    images: ['https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=600'],
-    categorySlug: 'eveil',
-    tags: ['cube', 'musical', 'eveil'],
-    inStock: true,
-    isNewArrival: true,
-  },
-  {
-    slug: 'coussin-allaitement-multipositions',
-    name: 'Coussin d\'Allaitement Multipositions',
-    brand: 'Béaba',
-    description: 'Coussin d\'allaitement ergonomique en coton bio. Housse lavable en machine, rembourrage anti-allergique.',
-    price: 580,
-    compareAt: 720,
-    images: ['https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600'],
-    categorySlug: 'maman',
-    tags: ['allaitement', 'coussin', 'maternite'],
-    inStock: true,
-    isNewArrival: false,
-  },
-  {
-    slug: 'sac-maternite-grande-capacite',
-    name: 'Sac Maternité Grande Capacité',
-    brand: 'Storksak',
-    description: 'Sac à langer élégant avec tapis à langer inclus. 12 poches organisées, bandoulière et crochets poussette.',
-    price: 890,
-    compareAt: 1100,
-    images: ['https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600'],
-    categorySlug: 'maman',
-    tags: ['sac', 'maternite', 'langer'],
-    inStock: true,
-    isNewArrival: true,
-  },
-  {
-    slug: 'sucette-orthodontique-natural',
-    name: 'Sucette Orthodontique Naturelle',
-    brand: 'Philips Avent',
-    description: 'Sucette en caoutchouc naturel, forme orthodontique respectant le développement buccal. Lot de 2. 0–6 mois.',
-    price: 85,
-    compareAt: 110,
-    images: ['https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600'],
-    categorySlug: 'accessoires',
-    tags: ['sucette', 'orthodontique', 'naissance'],
-    inStock: true,
-    isNewArrival: false,
-  },
-  {
-    slug: 'bavoirs-coton-lot-5',
-    name: 'Bavoirs en Coton — Lot de 5',
-    brand: 'Minisoft',
-    description: 'Lot de 5 bavoirs en coton doux avec fermeture velcro réglable. Lavable à 60°C. Motifs variés.',
-    price: 150,
-    compareAt: 200,
-    images: ['https://images.unsplash.com/photo-1522771930-78848d9293e8?w=600'],
-    categorySlug: 'accessoires',
-    tags: ['bavoir', 'coton', 'lot'],
-    inStock: true,
-    isNewArrival: false,
-  },
-  {
-    slug: 'couverture-polaire-bebe-etoiles',
-    name: 'Couverture Polaire Bébé Étoiles',
-    brand: 'Noukie\'s',
-    description: 'Couverture polaire ultra-douce avec motif étoiles. 100×75 cm, lavable en machine. Idéale poussette et landau.',
-    price: 220,
-    compareAt: 280,
-    images: ['https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600'],
-    categorySlug: 'accessoires',
-    tags: ['couverture', 'polaire', 'confort'],
-    inStock: true,
-    isNewArrival: false,
-  },
+const PRODUCTS = [
+  { slug: 'lit-bebe-evolutif-60x120-blanc', name: 'Lit Bébé Évolutif 60×120 cm — Blanc', brand: 'Bébé 9', description: 'Lit bébé évolutif en bois massif certifié FSC. Se transforme en lit junior 90×190 cm. 3 hauteurs de sommier, côté abaissable. Livré avec matelas inclus. De la naissance à 7 ans.', price: 1999, compareAt: 2499, images: ['https://gobebe.ma/wp-content/uploads/2026/01/profil-lit-cododo-evolutif-et-pratique-neusy-60-x-120-cm-ikid-210x210.webp', 'https://gobebe.ma/wp-content/uploads/2025/12/profil-lit-bebe-star-nature-avec-fonction-cododo-interbaby-315x315-1-210x210.webp'], categorySlug: 'chambre', tags: ['lit', 'evolutif', 'bois'], inStock: true, isNewArrival: false },
+  { slug: 'lit-bebe-barreaux-pin-naturel', name: 'Lit à Barreaux en Pin Naturel 60×120', brand: 'Combelle', description: 'Lit bébé classique en pin massif naturel. 3 hauteurs de sommier réglables. Côté abaissable pour les nuits. Traitement laqué non toxique certifié. De la naissance à 3 ans.', price: 1499, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2025/12/profil-lit-bebe-star-nature-avec-fonction-cododo-interbaby-315x315-1-210x210.webp'], categorySlug: 'chambre', tags: ['lit', 'bois', 'pin'], inStock: true, isNewArrival: false },
+  { slug: 'berceau-cododo-amara-2en1-bebe-confort', name: 'Berceau Cododo Amara 2en1 — Gris', brand: 'Bébé Confort', description: "Berceau cododo convertible 2en1 : lit d'appoint accolé au lit parental + berceau autonome sur roulettes. Matelas inclus. Hauteur réglable sur 8 positions. De la naissance à 6 mois.", price: 1990, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2026/01/berceau-cododo-2en1-gris-pratique-et-confortable-bebe-confort-maroc-210x210.webp'], categorySlug: 'chambre', tags: ['berceau', 'cododo'], inStock: false, isNewArrival: false },
+  { slug: 'berceau-cododo-iora-air-maxi-cosi', name: 'Berceau Cododo Iora Air — Graphite', brand: 'Maxi-Cosi', description: 'Berceau cododo premium avec paroi escamotable brevetée. Structure 3D Airflow pour une ventilation optimale. Roulettes avec blocage. 3 hauteurs réglables. De la naissance à 6 mois.', price: 3400, compareAt: 4990, images: ['https://gobebe.ma/wp-content/uploads/2025/12/profil-berceau-cododo-iora-air-beyond-graphite-dorel-210x210.webp'], categorySlug: 'chambre', tags: ['berceau', 'cododo', 'premium'], inStock: true, isNewArrival: false },
+  { slug: 'couffin-osier-naturel-avec-matelas', name: 'Couffin en Osier Naturel avec Matelas', brand: 'Théophile & Patachou', description: 'Couffin traditionnel en osier naturel tressé à la main. Matelas ferme certifié Oeko-Tex inclus. Habillage en coton lavable amovible. Anses de transport. De la naissance à 3 mois.', price: 750, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2026/02/couffin-tresse-avec-oreiller-confortable-bebekevi-maroc-210x210.webp'], categorySlug: 'chambre', tags: ['couffin', 'osier', 'naissance'], inStock: true, isNewArrival: false },
+  { slug: 'couffin-moise-blanc-dentelle', name: 'Couffin Moïse Blanc Dentelle', brand: 'Babycalin', description: 'Moïse élégant en coton brodé avec habillage blanc et dentelle fine. Structure légère en bois. Matelas ferme inclus. Balancement doux intégré. De la naissance à 4 mois.', price: 890, compareAt: 1050, images: ['https://gobebe.ma/wp-content/uploads/2026/03/couffin-bebe-avec-oreiller-confortable-et-douillets-bebekevi-maroc-210x210.webp'], categorySlug: 'chambre', tags: ['couffin', 'moise', 'naissance'], inStock: true, isNewArrival: true },
+  { slug: 'baby-nest-reducteur-lit-meyco', name: 'Baby Nest Réducteur de Lit — Gris', brand: 'Meyco', description: 'Baby nest réducteur de lit en coton doux. Crée un environnement rassurant et contenu pour le nouveau-né. Housse amovible lavable à 60°C. Certifié Oeko-Tex. 0–4 mois.', price: 590, compareAt: 890, images: ['https://gobebe.ma/wp-content/uploads/2024/11/couffin-nest-210x210.jpeg'], categorySlug: 'chambre', tags: ['baby-nest', 'reducteur', 'naissance'], inStock: true, isNewArrival: false },
+  { slug: 'baby-nest-premium-nattou', name: 'Baby Nest Premium — Beige & Étoiles', brand: 'Nattou', description: 'Baby nest premium rembourré avec côtés surélevés pour un cocooning optimal. Tissu velours ultra-doux. Fond ferme pour la sécurité. Lavable en machine. 0–6 mois.', price: 749, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2026/03/couffin-bebe-avec-oreiller-confortable-et-douillets-bebekevi-maroc-210x210.webp'], categorySlug: 'chambre', tags: ['baby-nest', 'premium', 'naissance'], inStock: true, isNewArrival: true },
+  { slug: 'commode-langer-4-tiroirs-blanche', name: 'Commode à Langer 4 Tiroirs — Blanche', brand: 'CAM', description: 'Commode à langer en bois laqué blanc. 4 grands tiroirs avec fermeture douce anti-pincement. Plan à langer amovible avec rebords de sécurité. Fixation murale incluse.', price: 2890, compareAt: 3400, images: ['https://gobebe.ma/wp-content/uploads/2024/03/Asia-C-260-CAM-1-210x210.jpg'], categorySlug: 'chambre', tags: ['commode', 'langer', 'rangement'], inStock: true, isNewArrival: false },
+  { slug: 'commode-langer-3-tiroirs-bois-naturel', name: 'Commode à Langer 3 Tiroirs — Bois Naturel', brand: 'Combelle', description: 'Commode à langer en pin massif naturel. 3 tiroirs spacieux avec guides en bois. Plan à langer sécurisé avec rebords hauts. Traitement non toxique. Hauteur ergonomique 90 cm.', price: 2299, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2024/01/48-min-2-210x210.jpg'], categorySlug: 'chambre', tags: ['commode', 'langer', 'rangement'], inStock: true, isNewArrival: false },
+  { slug: 'matelas-ferme-respirant-60x120-babycalin', name: 'Matelas Ferme Respirant 60×120 cm', brand: 'BabyCalin', description: 'Matelas ferme pour lit bébé 60×120 cm. Déhoussable lavable à 60°C. Tissu respirant certifié Oeko-Tex, imperméable. Indice de fermeté optimal pour la sécurité du nourrisson.', price: 649, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2025/11/matelas-bebe-confortable-60-x-120-cm-epaisseur-12cm-dwirty-maroc-210x210.webp'], categorySlug: 'chambre', tags: ['matelas', 'literie'], inStock: true, isNewArrival: false },
+  { slug: 'gigoteuse-chaude-tog25-nattou', name: 'Gigoteuse Chaude TOG 2,5 — Étoiles', brand: 'Nattou', description: 'Gigoteuse hiver TOG 2,5 en coton certifié Oeko-Tex. Motif étoiles doux. Ouverture zip réversible pour les changes nocturnes. Épaules protégées. Du 0 au 6 mois.', price: 749, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2025/05/gigoteuse-douillette-et-confortable-pour-bebe-1-210x210.webp'], categorySlug: 'chambre', tags: ['gigoteuse', 'literie', 'hiver'], inStock: true, isNewArrival: false },
+  { slug: 'gigoteuse-legere-tog1-babycalin', name: 'Gigoteuse Légère TOG 1 — Étoiles Pastel', brand: 'BabyCalin', description: 'Gigoteuse légère été/mi-saison TOG 1 en coton doux. Fermeture zip double sens. Certifiée Oeko-Tex. Motif étoiles pastel délicat. Du 0 au 6 mois et 6 au 24 mois.', price: 349, compareAt: 420, images: ['https://gobebe.ma/wp-content/uploads/2024/12/gigoteuse--210x210.jpeg'], categorySlug: 'chambre', tags: ['gigoteuse', 'literie', 'ete'], inStock: true, isNewArrival: false },
+  { slug: 'parure-lit-4-pieces-naf-naf', name: 'Parure de Lit Bébé 3 Pièces — Motif Girafe', brand: 'Naf Naf', description: 'Parure de lit bébé 3 pièces : housse de couette 100×135 cm, taie et drap housse 60×120 cm. 100% coton doux. Motif girafe tendance. Lavable à 60°C.', price: 1290, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2026/03/parure-lit-bebe-3-pieces-60-x-120-cm-motif-lapin-naf-naf-maroc-210x210.webp'], categorySlug: 'chambre', tags: ['parure', 'literie'], inStock: true, isNewArrival: false },
+  { slug: 'lange-emmaillotage-interbaby', name: "Pack 3 Langes d'Emmaillotage — Panda", brand: 'Interbaby', description: "Pack de 3 langes en gaze de coton double épaisseur 80×80 cm. Ultra-doux et respirants. Multi-usage : emmaillotage, bavoirs, couverture de poussette, tapis de jeu. Naissance.", price: 320, compareAt: 490, images: ['https://gobebe.ma/wp-content/uploads/2026/01/pack-3-langes-panda-80-x-80-en-gaze-de-coton-gris-inter-baby-210x210.webp'], categorySlug: 'chambre', tags: ['lange', 'emmaillotage'], inStock: true, isNewArrival: false },
+  { slug: 'veilleuse-musicale-projecteur-kids-melody', name: 'Veilleuse Musicale Projecteur 3en1', brand: 'Kids Melody', description: "Veilleuse musicale avec projecteur d'étoiles au plafond. 10 berceuses et sons de la nature. 3 couleurs de lumière douce. Minuterie automatique. Télécommande incluse.", price: 449, compareAt: 519, images: ['https://gobebe.ma/wp-content/uploads/2024/11/Mobile-musical-projecteur-et-veilleuse-210x210.jpeg'], categorySlug: 'chambre', tags: ['veilleuse', 'decoration', 'musical'], inStock: true, isNewArrival: false },
+  { slug: 'mobile-musical-3en1-tiny-love', name: 'Mobile Musical de Voyage 3en1', brand: 'Tiny Love', description: 'Mobile musical évolutif 3en1 : mobile de lit, jouet de poussette et jouet de tapis. 18 mélodies et sons. Fixation universelle sur tous les lits à barreaux. Dès la naissance.', price: 650, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2024/01/90-min-1-210x210.jpg'], categorySlug: 'chambre', tags: ['mobile', 'musical', 'decoration'], inStock: true, isNewArrival: true },
+  { slug: 'sac-langer-bowling-badabulle', name: 'Sac à Langer Bowling — Gris', brand: 'Badabulle', description: 'Sac à langer spacieux avec tapis à langer intégré, poche isotherme pour biberons, 8 poches organisées. Matière imperméable. Attaches poussette universelles incluses.', price: 849, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2026/03/sac-a-langer-bowling-gris-epacieux-badabulle-maroc-210x210.webp'], categorySlug: 'accessoires', tags: ['sac-langer', 'accessoire'], inStock: true, isNewArrival: false },
+  { slug: 'sac-langer-3en1-premium-mommy-bag', name: 'Sac à Langer Révolutionnaire 3en1 Premium', brand: 'Mommy Bag', description: 'Sac à langer 3en1 : sac à dos, sac à main et sac de voyage. Tapis à langer, compartiment isotherme, 12 poches. Matière imperméable et résistante. Compatible poussette.', price: 699, compareAt: 850, images: ['https://gobebe.ma/wp-content/uploads/2025/10/sac-a-langer-revolutionnaire-3en1-mommy-bag-1-210x210.webp'], categorySlug: 'accessoires', tags: ['sac-langer', 'accessoire'], inStock: true, isNewArrival: true },
+  { slug: 'coussin-allaitement-multifonction', name: "Coussin d'Allaitement Multifonctions", brand: 'Candide', description: "Coussin d'allaitement multipositions en coton bio certifié GOTS. Ferme et confortable. Housse amovible lavable à 30°C. 185 cm de tour. Idéal grossesse et allaitement.", price: 549, compareAt: 649, images: ['https://gobebe.ma/wp-content/uploads/2026/03/coussin-dallaitement-–-confort-superieur-pour-maman-et-bebe-maroc-1-210x210.webp'], categorySlug: 'accessoires', tags: ['coussin', 'allaitement'], inStock: true, isNewArrival: false },
+  { slug: 'coussin-grossesse-cale-bebekevi', name: 'Coussin Cale de Grossesse', brand: 'Bebekevi', description: 'Grand coussin de positionnement pour femmes enceintes. Soutien lombaire, abdominal et dorsal. Housse déhoussable lavable. Adaptable en coussin allaitement post-partum.', price: 89, compareAt: 120, images: ['https://gobebe.ma/wp-content/uploads/2026/03/coussin-cale-de-grossesse-confortable-rose-bebekevi-maroc-210x210.webp'], categorySlug: 'accessoires', tags: ['coussin', 'grossesse'], inStock: false, isNewArrival: false },
+  { slug: 'tour-de-lit-decoratif-gris', name: 'Tour de Lit Décoratif — Gris', brand: 'Baby Monsy', description: 'Tour de lit tressé décoratif pour décorer le lit de bébé. 100% coton hypoallergénique. Fixation facile. Lavable en machine à 30°C. Compatible avec tous les lits 60×120 cm.', price: 180, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2025/04/tour-de-lit-baby-monsy-gris-1-630x630-1-210x210.webp'], categorySlug: 'accessoires', tags: ['tour-de-lit', 'decoration'], inStock: true, isNewArrival: false },
+  { slug: 'coussin-anti-tete-plate-kikkaboo', name: 'Coussin Anti-tête Plate — Memory Foam', brand: 'Kikkaboo', description: 'Coussin anti-tête plate en memory foam à mémoire de forme. Maintien parfait de la tête du nourrisson. Taie amovible lavable. Certifié sans substances nocives. 0–6 mois.', price: 110, compareAt: 170, images: ['https://gobebe.ma/wp-content/uploads/2024/03/Ergonomic-Pillow_Heart_Grey_2_31106010057_WEB-600x750-1-210x210.jpg'], categorySlug: 'accessoires', tags: ['coussin', 'anti-tete-plate'], inStock: true, isNewArrival: false },
+  { slug: 'pack-naissance-5pcs-cayzen-fille', name: 'Pack Naissance 5 pcs avec Broderie — Fille', brand: 'Cayzen', description: 'Pack naissance complet 5 pièces brodé pour fille : body, grenouillère, bonnet, chaussettes et bavoir. Coton doux certifié. Idéal cadeau de naissance. Du 0 au 3 mois.', price: 199, compareAt: 240, images: ['https://gobebe.ma/wp-content/uploads/2025/09/pack-de-naissance-5-pieces-avec-broderie-pour-fille-cayzen-210x210.webp'], categorySlug: 'vetements', tags: ['pack', 'naissance', 'fille'], inStock: true, isNewArrival: false },
+  { slug: 'coffret-naissance-5pcs-cayzen', name: 'Coffret de Naissance 5 Pièces', brand: 'Cayzen', description: 'Coffret naissance élégant 5 pièces en coton doux : body, pyjama, bavoir, bonnet et chaussons. Présenté dans une jolie boîte cadeau. Du 0 au 3 mois.', price: 199, compareAt: 240, images: ['https://gobebe.ma/wp-content/uploads/2025/09/profil-coffret-de-naissance-5-pieces-cayzen--210x210.webp'], categorySlug: 'vetements', tags: ['coffret', 'naissance', 'cadeau'], inStock: true, isNewArrival: false },
+  { slug: 'pack-3-langes-interbaby', name: 'Pack 3 Langes Gaze de Coton — Panda Gris', brand: 'Interbaby', description: 'Pack de 3 langes en gaze de coton double épaisseur 80×80 cm. Multi-usage : emmaillotage, bavoir géant, couverture légère. Certifié Oeko-Tex. Lavable à 60°C. Naissance.', price: 279, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2026/01/pack-3-langes-panda-80-x-80-en-gaze-de-coton-gris-inter-baby-210x210.webp'], categorySlug: 'vetements', tags: ['lange', 'naissance'], inStock: true, isNewArrival: true },
+  { slug: 'grenouillere-bonnet-unisexe-aybus', name: 'Grenouillère + Bonnet Unisexe — Motif Animal', brand: 'Aybus Baby', description: 'Grenouillère en coton doux avec bonnet assorti. Motif animaux adorable. Pressions-pression pour faciliter les changes. Coutures plates non irritantes. Unisexe. 0–9 mois.', price: 159, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2026/02/ensemble-unisexe-grenouillere-et-bonnet-bebe-blanc-aybus-baby-maroc-210x210.webp'], categorySlug: 'vetements', tags: ['grenouillere', 'naissance'], inStock: true, isNewArrival: false },
+  { slug: 'grenouillere-coton-bio-midirik-fille', name: 'Grenouillère Coton Bio — Fille', brand: 'Midirik', description: 'Grenouillère en coton 100% biologique certifié GOTS. Motif floral délicat pour fille. Fermeture zip intégrale pour les changes nocturnes. Coutures plates. Du 0 au 9 mois.', price: 179, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2025/09/profil-lot-3-grenouilleres-fille-en-coton-biologique-midirik--210x210.webp'], categorySlug: 'vetements', tags: ['grenouillere', 'fille'], inStock: true, isNewArrival: true },
+  { slug: 'body-encolure-croisee-minisoft', name: 'Body à Encolure Croisée — Minisoft', brand: 'Minisoft', description: "Body en coton doux à encolure croisée pour faciliter l'habillage. Pressions-pression sur les jambes pour changer facilement. 0–18 mois.", price: 45, compareAt: 70, images: ['https://gobebe.ma/wp-content/uploads/2025/02/body-a-encolure-croisee-minisoft-BLEU-210x210.webp'], categorySlug: 'vetements', tags: ['body', 'naissance'], inStock: false, isNewArrival: false },
+  { slug: 'coffret-bain-3pcs-lapin-eke-baby', name: 'Coffret de Bain 3 Pièces — Lapin', brand: 'Eke Baby', description: 'Coffret bain 3 pièces : cape de bain 100×100 cm + gant de toilette + débarbouillette. Motif lapin adorable. 100% coton doux certifié. Idéal en cadeau de naissance.', price: 320, compareAt: 400, images: ['https://gobebe.ma/wp-content/uploads/2026/02/coffret-de-bain-gris-3-pieces-motif-lapin-eke-baby-maroc-210x210.webp'], categorySlug: 'vetements', tags: ['coffret', 'bain', 'cadeau'], inStock: true, isNewArrival: false },
+  { slug: 'cape-bain-premium-cygne-naf-naf', name: 'Cape de Bain Premium — Motif Cygne', brand: 'Naf Naf', description: "Cape de bain bébé en coton premium 100×100 cm. Capuche avec oreilles de cygne brodées. Douceur et absorbance optimales. Certifié Oeko-Tex. Lavable à 40°C.", price: 210, compareAt: 240, images: ['https://gobebe.ma/wp-content/uploads/2026/03/sortie-de-bain-beige-naf-naf-motif-cygne-gobebe.ma_-1-210x210.webp'], categorySlug: 'vetements', tags: ['cape-bain', 'premium'], inStock: true, isNewArrival: false },
+  { slug: 'ensemble-garcon-3-pieces-pakel', name: 'Ensemble Garçon 3 Pièces — Fashion', brand: 'Pakel', description: 'Ensemble garçon 3 pièces à manches longues : veste, pantalon et body. Tissu doux et confortable. Coutures plates non irritantes. Idéal pour les sorties. 3–18 mois.', price: 249, compareAt: 320, images: ['https://gobebe.ma/wp-content/uploads/2026/03/ensemble-garcon-3-pieces-fashion-pakel-gobebe.ma_-210x210.webp'], categorySlug: 'vetements', tags: ['ensemble', 'garcon'], inStock: true, isNewArrival: true },
+  { slug: 'coffret-naissance-garcon-5pcs-mini-zeyn', name: 'Coffret Naissance Garçon 5 Pièces', brand: 'Mini Zeyn', description: 'Coffret naissance garçon 5 pièces : body, pyjama, bonnet, chaussons et bavoir. Coton doux certifié Oeko-Tex. Présenté en boîte cadeau. Du 0 au 3 mois.', price: 219, compareAt: 270, images: ['https://gobebe.ma/wp-content/uploads/2026/02/ensemble-naissance-5pieces-garcon-gobebe.ma_-210x210.webp'], categorySlug: 'vetements', tags: ['coffret', 'naissance', 'garcon'], inStock: true, isNewArrival: false },
+  { slug: 'ensemble-garcon-2-pieces-bleu-aybus', name: 'Ensemble Garçon 2 Pièces — Bleu', brand: 'Aybus Baby', description: "Ensemble confortable 2 pièces pour garçon : haut à capuche et pantalon. Molleton doux et chaud. Pressions rapides. Lavable à 30°C. 3–24 mois.", price: 169, compareAt: null, images: ['https://gobebe.ma/wp-content/uploads/2026/02/ensemble-bleu-2-pieces-aybus-baby-gobebe.ma_-210x210.webp'], categorySlug: 'vetements', tags: ['ensemble', 'garcon'], inStock: true, isNewArrival: false },
+  { slug: 'ensemble-garcon-2-pieces-nikuby', name: 'Ensemble Bébé Garçon 2 Pièces — Nikuby', brand: 'Nikuby', description: 'Ensemble bébé garçon 2 pièces tendance : sweat imprimé et jogger assorti. Coton mélangé doux et respirant. Lavable en machine. 6–18 mois.', price: 189, compareAt: 230, images: ['https://gobebe.ma/wp-content/uploads/2025/12/profil-ensemble-bebe-garcon-2-pieces-nikuby-1-210x210.webp'], categorySlug: 'vetements', tags: ['ensemble', 'garcon'], inStock: true, isNewArrival: false },
 ]
 
 async function seed() {
-  await mongoose.connect(MONGODB_URI)
+  await mongoose.connect(process.env.MONGODB_URI)
   console.log('Connected to MongoDB')
 
   await Category.deleteMany({})
   await Product.deleteMany({})
   console.log('Cleared existing data')
 
-  const createdCategories = await Category.insertMany(categories)
-  console.log(`Created ${createdCategories.length} categories`)
+  const categories = await Category.insertMany(CATEGORIES)
+  const categoryMap = Object.fromEntries(categories.map((c) => [c.slug, c._id]))
+  console.log(`Inserted ${categories.length} categories`)
 
-  const categoryMap = {}
-  createdCategories.forEach((c) => { categoryMap[c.slug] = c._id })
-
-  const productsToInsert = products.map(({ categorySlug, ...p }) => ({
+  const products = PRODUCTS.map(({ categorySlug, ...p }) => ({
     ...p,
     categoryId: categoryMap[categorySlug],
   }))
 
-  const createdProducts = await Product.insertMany(productsToInsert)
-  console.log(`Created ${createdProducts.length} products`)
+  await Product.insertMany(products)
+  console.log(`Inserted ${products.length} products`)
 
   await mongoose.disconnect()
-  console.log('Done!')
+  console.log('Done.')
 }
 
-seed().catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+seed().catch((err) => { console.error(err); process.exit(1) })
