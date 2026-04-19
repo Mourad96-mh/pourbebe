@@ -1,0 +1,67 @@
+.summary {
+  background-color: var(--sky-pale);
+  border: 1px solid var(--sky-light);
+  border-radius: 2px;
+  padding: var(--space-6);
+  position: sticky;
+  top: 80px;
+}
+
+.title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: var(--text-lg);
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: var(--space-5);
+}
+
+.items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--sky-light);
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--text-base);
+  color: var(--text-mid);
+}
+
+.itemName {
+  flex: 1;
+  min-width: 0;
+}
+
+.qty {
+  color: var(--text-light);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-base);
+  color: var(--text-mid);
+  padding: var(--space-2) 0;
+}
+
+.free {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--text-dark);
+  padding-top: var(--space-4);
+  margin-top: var(--space-2);
+  border-top: 1px solid var(--sky-light);
+}

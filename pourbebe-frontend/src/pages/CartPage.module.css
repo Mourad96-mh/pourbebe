@@ -1,0 +1,81 @@
+.page {
+  min-height: 60vh;
+}
+
+.inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-6);
+}
+
+.title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: var(--text-2xl);
+  font-weight: 300;
+  color: var(--text-dark);
+  margin-bottom: var(--space-8);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--space-10);
+  align-items: flex-start;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary {
+  background-color: var(--sky-pale);
+  border: 1px solid var(--sky-light);
+  border-radius: 2px;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  position: sticky;
+  top: 80px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.shippingNote {
+  font-size: var(--text-xs);
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-14);
+  text-align: center;
+}
+
+.emptyTitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: var(--text-2xl);
+  font-weight: 300;
+  color: var(--text-dark);
+}
+
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .summary {
+    position: static;
+  }
+}

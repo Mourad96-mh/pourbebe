@@ -1,0 +1,56 @@
+:root {
+  /* ── Brand blues ── */
+  --sky:            #7DD8E8;
+  --sky-dark:       #4BBDD4;
+  --sky-deep:       #1A7A8F;
+  --sky-light:      #C8EFF6;
+  --sky-pale:       #EAF8FC;
+
+  /* ── Star yellow ── */
+  --star:           #F5E6A3;
+  --star-dark:      #D4B84A;
+  --star-text:      #7A5C10;
+
+  /* ── Neutrals ── */
+  --white:          #FFFFFF;
+  --off-white:      #F7FCFE;
+
+  /* ── Text ── */
+  --text-dark:      #133A45;
+  --text-mid:       #3A7080;
+  --text-light:     #6BAAB8;
+  --text-faint:     #A8CDD6;
+
+  /* ── Semantic ── */
+  --color-success:  #3B9E6A;
+  --color-error:    #D95B5B;
+  --color-warning:  #D4A84A;
+
+  /* ── Type scale ── */
+  --text-xs:   10px;
+  --text-sm:   11px;
+  --text-base: 13px;
+  --text-md:   15px;
+  --text-lg:   18px;
+  --text-xl:   24px;
+  --text-2xl:  34px;
+  --text-3xl:  48px;
+
+  /* ── Spacing ── */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-14:  56px;
+
+  /* ── Breakpoints (use in @media) ── */
+  --bp-sm:  480px;
+  --bp-md:  768px;
+  --bp-lg:  1024px;
+  --bp-xl:  1280px;
+}

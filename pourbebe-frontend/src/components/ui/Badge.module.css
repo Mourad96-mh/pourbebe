@@ -1,0 +1,29 @@
+.badge {
+  display: inline-block;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+
+.new {
+  background-color: var(--star-dark);
+  color: var(--star-text);
+}
+
+.sale {
+  background-color: var(--color-error);
+  color: var(--white);
+}
+
+.promo {
+  background-color: var(--sky-dark);
+  color: var(--white);
+}
+
+.outOfStock {
+  background-color: var(--text-faint);
+  color: var(--white);
+}

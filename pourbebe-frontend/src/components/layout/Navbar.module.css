@@ -1,0 +1,252 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--white);
+  border-bottom: 1px solid var(--sky-light);
+}
+
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+  height: 90px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+/* ── Logo ── */
+.logo {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.logoImg {
+  height: 80px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* ── Desktop nav ── */
+.nav {
+  display: flex;
+  gap: var(--space-5);
+  flex: 1;
+  justify-content: center;
+}
+
+.navLink {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-mid);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: var(--space-1) 0;
+  border-bottom: 1.5px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.navLink:hover {
+  color: var(--sky-deep);
+}
+
+.navLinkActive {
+  color: var(--sky-deep);
+  border-bottom-color: var(--sky-dark);
+}
+
+/* ── Actions ── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+.actionLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--text-mid);
+  padding: 0;
+  transition: color 0.15s ease;
+  cursor: pointer;
+}
+
+.actionLink:hover {
+  color: var(--sky-deep);
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background-color: var(--sky-dark);
+  color: var(--white);
+  font-size: 9px;
+  font-weight: 600;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.accountMenu {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.logoutBtn {
+  background: none;
+  border: none;
+  font-size: var(--text-xs);
+  color: var(--text-light);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.logoutBtn:hover {
+  color: var(--color-error);
+}
+
+/* ── Hamburger ── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: var(--space-1);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background-color: var(--text-dark);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* ── Mobile nav ── */
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--white);
+  border-top: 1px solid var(--sky-light);
+  padding: var(--space-3) var(--space-6) var(--space-5);
+  gap: 0;
+  box-shadow: 0 8px 24px rgba(77, 189, 212, 0.08);
+}
+
+.mobileNavLink {
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--text-mid);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--sky-pale);
+  letter-spacing: 0.04em;
+  transition: color 0.15s ease, padding-left 0.15s ease;
+}
+
+.mobileNavLink:hover {
+  color: var(--sky-deep);
+  padding-left: var(--space-2);
+}
+
+.mobileNavLink:last-child {
+  border-bottom: none;
+}
+
+.mobileDivider {
+  height: 1px;
+  background: var(--sky-light);
+  margin: var(--space-2) 0;
+}
+
+.mobileAuthLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--text-mid);
+  padding: var(--space-3) 0;
+  letter-spacing: 0.04em;
+  transition: color 0.15s ease;
+}
+
+.mobileAuthLink:hover {
+  color: var(--sky-deep);
+}
+
+.mobileLogoutBtn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: 'Nunito', sans-serif;
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-error);
+  padding: var(--space-3) 0;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .inner {
+    height: 70px;
+    gap: var(--space-4);
+  }
+
+  .logoImg {
+    height: 60px;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .logoutBtn {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+}
+
+@media (max-width: 480px) {
+  .inner {
+    padding: 0 var(--space-4);
+    height: 64px;
+  }
+
+  .logoImg {
+    height: 52px;
+  }
+
+  .actions {
+    gap: var(--space-3);
+  }
+}

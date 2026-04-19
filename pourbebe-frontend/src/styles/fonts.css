@@ -1,0 +1,10 @@
+/* Self-hosted fallback — place font files in public/fonts/ if needed */
+/* Google Fonts are loaded via <link> in index.html */
+
+body {
+  font-family: 'Nunito', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cormorant Garamond', serif;
+}

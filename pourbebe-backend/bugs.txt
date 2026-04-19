@@ -1,0 +1,4 @@
+Bug 1 — auth.middleware.js: jwt.verify throws on invalid tokens, goes to error handler as 500 (not 401), so the interceptor never clears the session.
+  Bug 2 — app.js error handler: ZodError and Mongoose CastError both return 500 instead of 400.
+  Bug 3 — useMyBirthList: addProduct mutation fails silently (no onError).
+  Bug 4 — Product page shows "Créer une liste" if the birth list query errored, hiding the real issue.
