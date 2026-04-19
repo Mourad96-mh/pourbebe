@@ -1,0 +1,310 @@
+import 'dotenv/config'
+import mongoose from 'mongoose'
+import Category from './models/Category.js'
+import Product from './models/Product.js'
+
+const MONGODB_URI = process.env.MONGODB_URI
+
+const categories = [
+  { name: 'Puériculture',  slug: 'puericulture' },
+  { name: 'Vêtements',     slug: 'vetements' },
+  { name: 'Chambre',       slug: 'chambre' },
+  { name: 'Hygiène',       slug: 'hygiene' },
+  { name: 'Éveil & Jeux',  slug: 'eveil' },
+  { name: 'Pour Maman',    slug: 'maman' },
+  { name: 'Accessoires',   slug: 'accessoires' },
+]
+
+const products = [
+  {
+    slug: 'poussette-trio-cybex-balios-s',
+    name: 'Poussette Trio Cybex Balios S',
+    brand: 'Cybex',
+    description: 'Poussette trio complète avec siège auto et nacelle. Système de pliage compact, suspension 4 roues, adaptée dès la naissance.',
+    price: 4200,
+    compareAt: 5100,
+    images: ['https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600'],
+    categorySlug: 'puericulture',
+    tags: ['poussette', 'trio', 'naissance'],
+    inStock: true,
+    isNewArrival: false,
+  },
+  {
+    slug: 'transat-bebe-babybjorn-balance-soft',
+    name: 'Transat Bébé BabyBjörn Balance Soft',
+    brand: 'BabyBjörn',
+    description: 'Transat ergonomique avec bascule douce. Tissu respirant, réglable en 3 positions. De la naissance à 2 ans.',
+    price: 1850,
+    compareAt: 2200,
+    images: ['https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600'],
+    categorySlug: 'puericulture',
+    tags: ['transat', 'confort'],
+    inStock: true,
+    isNewArrival: true,
+  },
+  {
+    slug: 'porte-bebe-ergobaby-omni-360',
+    name: 'Porte-Bébé Ergobaby Omni 360',
+    brand: 'Ergobaby',
+    description: 'Porte-bébé ergonomique 4 positions de portage. Position physiologique, dès la naissance sans réducteur.',
+    price: 1650,
+    compareAt: null,
+    images: ['https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600'],
+    categorySlug: 'puericulture',
+    tags: ['porte-bebe', 'ergonomique'],
+    inStock: true,
+    isNewArrival: false,
+  },
+  {
+    slug: 'body-manches-courtes-coton-blanc',
+    name: 'Body Manches Courtes Coton Bio',
+    brand: 'Petit Bateau',
+    description: 'Body bébé en coton biologique doux. Fermeture pression entre les jambes pour faciliter le change. 0–24 mois.',
+    price: 120,
+    compareAt: 160,
+    images: ['https://images.unsplash.com/photo-1522771930-78848d9293e8?w=600'],
+    categorySlug: 'vetements',
+    tags: ['body', 'coton', 'naissance'],
+    inStock: true,
+    isNewArrival: false,
+  },
+  {
+    slug: 'pyjama-velours-bebe-bleu',
+    name: 'Pyjama Velours Bébé',
+    brand: 'Absorba',
+    description: 'Pyjama bébé en velours doux et chaud. Fermeture zip pour les changes nocturnes. Du 1 au 18 mois.',
+    price: 195,
+    compareAt: 240,
+    images: ['https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600'],
+    categorySlug: 'vetements',
+    tags: ['pyjama', 'hiver', 'velours'],
+    inStock: true,
+    isNewArrival: true,
+  },
+  {
+    slug: 'ensemble-naissance-cadeau',
+    name: 'Coffret Naissance 5 Pièces',
+    brand: 'Noukie\'s',
+    description: 'Coffret cadeau naissance : body, pyjama, chaussons, bonnet et bavette. Coton doux certifié OEKO-TEX.',
+    price: 450,
+    compareAt: 580,
+    images: ['https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600'],
+    categorySlug: 'vetements',
+    tags: ['coffret', 'naissance', 'cadeau'],
+    inStock: true,
+    isNewArrival: false,
+  },
+  {
+    slug: 'lit-bebe-evolutif-wood',
+    name: 'Lit Bébé Évolutif en Bois',
+    brand: 'Sauthon',
+    description: 'Lit bébé évolutif en bois massif, convertible en lit junior. Fond de lit réglable en hauteur. 60×120 cm.',
+    price: 2800,
+    compareAt: 3400,
+    images: ['https://images.unsplash.com/photo-1586105251261-72a756497a11?w=600'],
+    categorySlug: 'chambre',
+    tags: ['lit', 'evolutif', 'bois'],
+    inStock: true,
+    isNewArrival: false,
+  },
+  {
+    slug: 'commode-a-langer-blanche',
+    name: 'Commode à Langer Blanche',
+    brand: 'Sauthon',
+    description: 'Commode avec plan à langer amovible et 3 tiroirs spacieux. Design épuré, blanc mat. Hauteur ergonomique.',
+    price: 2200,
+    compareAt: null,
+    images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600'],
+    categorySlug: 'chambre',
+    tags: ['commode', 'langer', 'chambre'],
+    inStock: true,
+    isNewArrival: true,
+  },
+  {
+    slug: 'veilleuse-musicale-nuage',
+    name: 'Veilleuse Musicale Nuage',
+    brand: 'Pabobo',
+    description: 'Veilleuse projector avec 8 mélodies et minuterie. Lumière douce, rechargeable USB. Idéale pour l\'endormissement.',
+    price: 380,
+    compareAt: 450,
+    images: ['https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=600'],
+    categorySlug: 'chambre',
+    tags: ['veilleuse', 'musical', 'sommeil'],
+    inStock: true,
+    isNewArrival: false,
+  },
+  {
+    slug: 'thermometre-bain-digital',
+    name: 'Thermomètre de Bain Digital',
+    brand: 'Béaba',
+    description: 'Thermomètre digital pour le bain, affichage instantané. Alerte sonore si température hors zone de sécurité.',
+    price: 180,
+    compareAt: 220,
+    images: ['https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600'],
+    categorySlug: 'hygiene',
+    tags: ['thermometre', 'bain', 'securite'],
+    inStock: true,
+    isNewArrival: false,
+  },
+  {
+    slug: 'baignoire-bebe-ergonomique',
+    name: 'Baignoire Bébé Ergonomique',
+    brand: 'Stokke',
+    description: 'Baignoire ergonomique avec support antidérapant et bouchon de vidange. Utilisable dès la naissance.',
+    price: 650,
+    compareAt: 800,
+    images: ['https://images.unsplash.com/photo-1520013173647-e8b8c64a9e9c?w=600'],
+    categorySlug: 'hygiene',
+    tags: ['baignoire', 'bain', 'naissance'],
+    inStock: true,
+    isNewArrival: false,
+  },
+  {
+    slug: 'coffret-soin-bebe-bio',
+    name: 'Coffret Soin Bébé Bio',
+    brand: 'Mustela',
+    description: 'Coffret complet : gel lavant, crème change, lotion hydratante. Formule certifiée bio, sans parfum.',
+    price: 320,
+    compareAt: 390,
+    images: ['https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=600'],
+    categorySlug: 'hygiene',
+    tags: ['soin', 'bio', 'coffret'],
+    inStock: true,
+    isNewArrival: true,
+  },
+  {
+    slug: 'tapis-eveil-arche-activites',
+    name: 'Tapis d\'Éveil avec Arche d\'Activités',
+    brand: 'Tiny Love',
+    description: 'Tapis d\'éveil avec arche et 15 activités sensorielles. Musiques, lumières et jouets amovibles. Dès la naissance.',
+    price: 750,
+    compareAt: 920,
+    images: ['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600'],
+    categorySlug: 'eveil',
+    tags: ['tapis', 'eveil', 'activites'],
+    inStock: true,
+    isNewArrival: false,
+  },
+  {
+    slug: 'hochet-bois-naturel',
+    name: 'Hochet en Bois Naturel',
+    brand: 'Hape',
+    description: 'Hochet en bois certifié FSC, peinture non toxique. Forme facile à saisir pour les petites mains. Dès 3 mois.',
+    price: 95,
+    compareAt: null,
+    images: ['https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600'],
+    categorySlug: 'eveil',
+    tags: ['hochet', 'bois', 'naturel'],
+    inStock: true,
+    isNewArrival: false,
+  },
+  {
+    slug: 'cube-eveil-musical-bebe',
+    name: 'Cube d\'Éveil Musical',
+    brand: 'VTech',
+    description: 'Cube d\'activités 5 faces avec sons, lumières et mélodies. Développe la motricité fine. Dès 6 mois.',
+    price: 420,
+    compareAt: 500,
+    images: ['https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=600'],
+    categorySlug: 'eveil',
+    tags: ['cube', 'musical', 'eveil'],
+    inStock: true,
+    isNewArrival: true,
+  },
+  {
+    slug: 'coussin-allaitement-multipositions',
+    name: 'Coussin d\'Allaitement Multipositions',
+    brand: 'Béaba',
+    description: 'Coussin d\'allaitement ergonomique en coton bio. Housse lavable en machine, rembourrage anti-allergique.',
+    price: 580,
+    compareAt: 720,
+    images: ['https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600'],
+    categorySlug: 'maman',
+    tags: ['allaitement', 'coussin', 'maternite'],
+    inStock: true,
+    isNewArrival: false,
+  },
+  {
+    slug: 'sac-maternite-grande-capacite',
+    name: 'Sac Maternité Grande Capacité',
+    brand: 'Storksak',
+    description: 'Sac à langer élégant avec tapis à langer inclus. 12 poches organisées, bandoulière et crochets poussette.',
+    price: 890,
+    compareAt: 1100,
+    images: ['https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600'],
+    categorySlug: 'maman',
+    tags: ['sac', 'maternite', 'langer'],
+    inStock: true,
+    isNewArrival: true,
+  },
+  {
+    slug: 'sucette-orthodontique-natural',
+    name: 'Sucette Orthodontique Naturelle',
+    brand: 'Philips Avent',
+    description: 'Sucette en caoutchouc naturel, forme orthodontique respectant le développement buccal. Lot de 2. 0–6 mois.',
+    price: 85,
+    compareAt: 110,
+    images: ['https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600'],
+    categorySlug: 'accessoires',
+    tags: ['sucette', 'orthodontique', 'naissance'],
+    inStock: true,
+    isNewArrival: false,
+  },
+  {
+    slug: 'bavoirs-coton-lot-5',
+    name: 'Bavoirs en Coton — Lot de 5',
+    brand: 'Minisoft',
+    description: 'Lot de 5 bavoirs en coton doux avec fermeture velcro réglable. Lavable à 60°C. Motifs variés.',
+    price: 150,
+    compareAt: 200,
+    images: ['https://images.unsplash.com/photo-1522771930-78848d9293e8?w=600'],
+    categorySlug: 'accessoires',
+    tags: ['bavoir', 'coton', 'lot'],
+    inStock: true,
+    isNewArrival: false,
+  },
+  {
+    slug: 'couverture-polaire-bebe-etoiles',
+    name: 'Couverture Polaire Bébé Étoiles',
+    brand: 'Noukie\'s',
+    description: 'Couverture polaire ultra-douce avec motif étoiles. 100×75 cm, lavable en machine. Idéale poussette et landau.',
+    price: 220,
+    compareAt: 280,
+    images: ['https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600'],
+    categorySlug: 'accessoires',
+    tags: ['couverture', 'polaire', 'confort'],
+    inStock: true,
+    isNewArrival: false,
+  },
+]
+
+async function seed() {
+  await mongoose.connect(MONGODB_URI)
+  console.log('Connected to MongoDB')
+
+  await Category.deleteMany({})
+  await Product.deleteMany({})
+  console.log('Cleared existing data')
+
+  const createdCategories = await Category.insertMany(categories)
+  console.log(`Created ${createdCategories.length} categories`)
+
+  const categoryMap = {}
+  createdCategories.forEach((c) => { categoryMap[c.slug] = c._id })
+
+  const productsToInsert = products.map(({ categorySlug, ...p }) => ({
+    ...p,
+    categoryId: categoryMap[categorySlug],
+  }))
+
+  const createdProducts = await Product.insertMany(productsToInsert)
+  console.log(`Created ${createdProducts.length} products`)
+
+  await mongoose.disconnect()
+  console.log('Done!')
+}
+
+seed().catch((err) => {
+  console.error(err)
+  process.exit(1)
+})
