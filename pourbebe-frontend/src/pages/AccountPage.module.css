@@ -48,7 +48,7 @@
 }
 
 .cardTitle {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Source Sans 3', sans-serif;
   font-size: var(--text-sm);
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -91,7 +91,7 @@
 }
 
 .sectionTitle {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Source Sans 3', sans-serif;
   font-size: var(--text-sm);
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -165,8 +165,8 @@
 }
 
 .status.cancelled {
-  background-color: #fde8e8;
-  color: var(--color-error);
+  background-color: var(--red-pale);
+  color: var(--red-deep);
 }
 
 .orderTotal {

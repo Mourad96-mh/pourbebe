@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- ── Static pages ── -->
+  <url>
+    <loc>https://pourbebes.ma/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://pourbebes.ma/liste-naissance</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pourbebes.ma/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ── Blog articles ── -->
+  <url><loc>https://pourbebes.ma/blog/quel-lit-bebe-choisir-maroc</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pourbebes.ma/blog/taille-gigoteuse-bebe-guide</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pourbebes.ma/blog/meilleurs-cadeaux-naissance-maroc-2025</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pourbebes.ma/blog/poussette-ou-porte-bebe</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- ── Top-level categories ── -->
+  <url>
+    <loc>https://pourbebes.ma/categorie/chambre</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pourbebes.ma/categorie/sorties</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pourbebes.ma/categorie/hygiene</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pourbebes.ma/categorie/vetements</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pourbebes.ma/categorie/accessoires</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pourbebes.ma/categorie/cadeaux</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pourbebes.ma/categorie/maman</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ── Sub-categories ── -->
+  <url><loc>https://pourbebes.ma/categorie/lits-berceaux</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/matelas-bebe</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/literie</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/baby-nest</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/meubles-bebe</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/veilleuses</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/poussettes</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/sieges-auto</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/porte-bebe</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/sacs-langer</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/bain-bebe</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/soins-bebe</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/change-couches</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/bodies-pyjamas</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/ensembles</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/packs-naissance</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/coussins</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/jouets-eveil</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/bavoirs</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/coffrets</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/liste-naissance</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/allaitement</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pourbebes.ma/categorie/grossesse</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+
+</urlset>

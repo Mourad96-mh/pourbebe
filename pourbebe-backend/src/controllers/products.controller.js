@@ -2,18 +2,27 @@ import Product from '../models/Product.js'
 import Category from '../models/Category.js'
 
 export async function getProducts(req, res) {
-  const { category, brand, min, max, sort, page = 1, limit = 20, q } = req.query
+  const { category, brand, min, max, sort, page = 1, limit = 20, q, type, gender, age, isNew } = req.query
   const filter = {}
 
   if (category) {
     const cat = await Category.findOne({ slug: category })
-    if (cat) filter.categoryId = cat._id
+    if (cat) {
+      const children = await Category.find({ parentId: cat._id })
+      filter.categoryId = children.length
+        ? { $in: [cat._id, ...children.map((c) => c._id)] }
+        : cat._id
+    }
   }
-  if (brand)    filter.brand = new RegExp(brand, 'i')
+  if (brand)      filter.brand = new RegExp(brand, 'i')
   if (min || max) filter.price = {}
-  if (min) filter.price.$gte = Number(min)
-  if (max) filter.price.$lte = Number(max)
-  if (q)   filter.$text = { $search: q }
+  if (min)        filter.price.$gte = Number(min)
+  if (max)        filter.price.$lte = Number(max)
+  if (q)          filter.$text = { $search: q }
+  if (type)          filter.productType = type
+  if (gender)        filter.gender = gender
+  if (age)           filter.ageRange = age
+  if (isNew === 'true') filter.isNewArrival = true
 
   const sortMap = {
     newest:    { createdAt: -1 },

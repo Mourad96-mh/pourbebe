@@ -1,10 +1,10 @@
 :root {
-  /* ── Brand blues ── */
-  --sky:            #7DD8E8;
-  --sky-dark:       #4BBDD4;
-  --sky-deep:       #1A7A8F;
-  --sky-light:      #C8EFF6;
-  --sky-pale:       #EAF8FC;
+  /* ── Vert eau — couleur du logo ── */
+  --sky:            #7ECECE;   /* teal logo, surfaces légères, accents      */
+  --sky-dark:       #aad6e2;   /* CTAs, bordures actives, hover             */
+  --sky-deep:       #0E6B6B;   /* titres, liens forts, accents majeurs      */
+  --sky-light:      #B8E5E5;   /* séparateurs, bordures de cartes           */
+  --sky-pale:       #EAF8F8;   /* fond de sections, arrière-plan cartes     */
 
   /* ── Star yellow ── */
   --star:           #F5E6A3;
@@ -13,17 +13,45 @@
 
   /* ── Neutrals ── */
   --white:          #FFFFFF;
-  --off-white:      #F7FCFE;
+  --off-white:      #F5FBFB;
 
   /* ── Text ── */
-  --text-dark:      #133A45;
-  --text-mid:       #3A7080;
-  --text-light:     #6BAAB8;
-  --text-faint:     #A8CDD6;
+  --text-dark:      #0F3535;
+  --text-mid:       #2E6A6A;
+  --text-light:     #5FA5A5;
+  --text-faint:     #9EC8C8;
+
+  /* ── Rose/Pink (hero) ── */
+  --pink-pale:      #FEF3F6;   /* hero background — lightest end              */
+  --pink:           #FDDDE6;   /* hero background — main                      */
+  --pink-mid:       #F9C8D6;   /* hero background — deeper end, dot accent    */
+  --pink-deep:      #E8A0B8;   /* decorative accents on pink backgrounds      */
+  --pink-text:      #B82E5A;   /* headline text on pink hero                  */
+  --pink-dark:      #8F1F43;   /* hover state on pink-text buttons            */
+
+  /* ── Rose CTA ── */
+  --rose:           #D44F72;   /* add-to-cart button bg — vibrant warm rose   */
+  --rose-dark:      #B83558;   /* hover state on rose CTA                     */
+
+  /* ── Red palette ── */
+  --red-pale:       #FDF0F0;   /* fond de section, arrière-plan doux          */
+  --red-light:      #F5C0C0;   /* bordures, séparateurs                       */
+  --red:            #E05555;   /* couleur principale rouge                    */
+  --red-dark:       #C23B3B;   /* hover, accents forts                        */
+  --red-deep:       #8B1F1F;   /* titres, liens sur fond rouge                */
+  --red-text:       #5A1010;   /* texte sur fond rouge clair                  */
 
   /* ── Semantic ── */
   --color-success:  #3B9E6A;
-  --color-error:    #D95B5B;
+  --color-error:    var(--red);
+
+  /* ── Order status colors (admin) ── */
+  --status-pending-bg:  #FEF9E7;
+  --status-pending-fg:  #9E7110;
+  --status-info-bg:     #EBF5FF;
+  --status-info-fg:     #1A5FA8;
+  --status-success-bg:  #EAFAF3;
+  --status-neutral-bg:  #F2F2F2;
   --color-warning:  #D4A84A;
 
   /* ── Type scale ── */
@@ -48,7 +76,7 @@
   --space-12:  48px;
   --space-14:  56px;
 
-  /* ── Breakpoints (use in @media) ── */
+  /* ── Breakpoints ── */
   --bp-sm:  480px;
   --bp-md:  768px;
   --bp-lg:  1024px;

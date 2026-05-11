@@ -1,11 +1,22 @@
 .banner {
-  background-color: var(--sky-deep);
+  background-image: url('https://images.unsplash.com/photo-1542387960-f8197d82db42?crop=entropy&cs=srgb&fm=jpg&q=85&w=1400');
+  background-size: cover;
+  background-position: center;
   padding: var(--space-14) 0;
   position: relative;
   overflow: hidden;
 }
 
+.banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 30, 30, 0.55);
+}
+
 .inner {
+  position: relative;
+  z-index: 1;
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 var(--space-6);
@@ -27,7 +38,7 @@
 }
 
 .title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Nunito', sans-serif;
   font-size: var(--text-2xl);
   font-weight: 300;
   color: var(--white);

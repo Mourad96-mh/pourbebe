@@ -7,18 +7,22 @@ import styles from './Navbar.module.css'
 
 const NAV_LINKS = [
   { label: 'Accueil',           href: '/' },
-  { label: 'Chambre bébé',      href: '/categorie/chambre' },
-  { label: 'Accessoires',       href: '/categorie/accessoires' },
+  { label: 'Chambre & Sommeil', href: '/categorie/chambre' },
+  { label: 'Sorties',           href: '/categorie/sorties' },
+  { label: 'Hygiène',           href: '/categorie/hygiene' },
   { label: 'Vêtements',         href: '/categorie/vetements' },
-  { label: 'Liste de naissance', href: '/liste-naissance' },
+  { label: 'Accessoires',       href: '/categorie/accessoires' },
+  { label: 'Idées Cadeaux',     href: '/categorie/cadeaux' },
+  { label: 'Blog',              href: '/blog' },
 ]
 
 export default function Navbar() {
-  const { user, logout }   = useAuth()
-  const cartCount          = useCart(cartCountSelector)
-  const openCart           = useCart((s) => s.openCart)
-  const wishlistCount      = useWishlist((s) => s.items.length)
+  const { user, logout }  = useAuth()
+  const cartCount         = useCart(cartCountSelector)
+  const openCart          = useCart((s) => s.openCart)
+  const wishlistCount     = useWishlist((s) => s.items.length)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [search, setSearch]     = useState('')
   const navigate = useNavigate()
 
   function handleLogout() {
@@ -26,33 +30,70 @@ export default function Navbar() {
     navigate('/')
   }
 
+  function handleSearch(e) {
+    e.preventDefault()
+    const q = search.trim()
+    if (q) {
+      navigate(`/categorie/chambre?q=${encodeURIComponent(q)}`)
+      setSearch('')
+    }
+  }
+
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        {/* Logo */}
-        <Link to="/" className={styles.logo}>
-          <img src="/logo.jpeg" alt="Pour Bébé" className={styles.logoImg} />
-        </Link>
 
-        {/* Desktop nav */}
-        <nav className={styles.nav} aria-label="Navigation principale">
-          {NAV_LINKS.map((link) => (
-            <NavLink
-              key={link.href}
-              to={link.href}
-              end={link.href === '/'}
-              className={({ isActive }) =>
-                isActive ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink
-              }
-            >
-              {link.label}
-            </NavLink>
-          ))}
-        </nav>
+        {/* ── 1. Logo ── */}
+        <div className={styles.left}>
+          <Link to="/" className={styles.logo}>
+            <img src="/logo.png" alt="Pour Bébé" className={styles.logoImg} />
+          </Link>
+        </div>
 
-        {/* Actions */}
+        {/* ── 2. Search + Nav ── */}
+        <div className={styles.center}>
+          <form className={styles.searchForm} onSubmit={handleSearch} role="search">
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Rechercher des produits..."
+              className={styles.searchInput}
+              aria-label="Rechercher"
+            />
+            <button type="submit" className={styles.searchBtn} aria-label="Lancer la recherche">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+            </button>
+          </form>
+
+          <nav className={styles.navLinks} aria-label="Navigation principale">
+            {NAV_LINKS.map((link) => (
+              <NavLink
+                key={link.href}
+                to={link.href}
+                end={link.href === '/'}
+                className={({ isActive }) =>
+                  isActive ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink
+                }
+              >
+                {link.label}
+              </NavLink>
+            ))}
+            <Link to="/liste-naissance" className={styles.navBtn}>
+              Liste de naissance
+            </Link>
+            <Link to="/categorie/promotions" className={styles.navBtnPromo}>
+              Promotions
+            </Link>
+          </nav>
+        </div>
+
+        {/* ── 3. Actions ── */}
         <div className={styles.actions}>
-          <Link to="/liste-naissance" className={styles.actionLink} title="Liste de naissance">
+          <Link to="/favoris" className={styles.actionLink} title="Favoris">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
@@ -88,7 +129,6 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile hamburger — separate so it sits on the far right */}
         <button
           className={`${styles.hamburger}${menuOpen ? ` ${styles.hamburgerOpen}` : ''}`}
           onClick={() => setMenuOpen((v) => !v)}
@@ -97,9 +137,10 @@ export default function Navbar() {
         >
           <span /><span /><span />
         </button>
+
       </div>
 
-      {/* Mobile menu */}
+      {/* ── Mobile menu ── */}
       {menuOpen && (
         <nav className={styles.mobileNav} aria-label="Menu mobile">
           {NAV_LINKS.map((link) => (
@@ -112,13 +153,18 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
-
+          <Link to="/liste-naissance" className={styles.mobileNavLink} onClick={() => setMenuOpen(false)}>
+            Liste de naissance
+          </Link>
           {user ? (
             <>
               <Link to="/mon-compte" className={styles.mobileAuthLink} onClick={() => setMenuOpen(false)}>
                 Mon compte
               </Link>
-              <button className={styles.mobileLogoutBtn} onClick={() => { handleLogout(); setMenuOpen(false) }}>
+              <button
+                className={styles.mobileLogoutBtn}
+                onClick={() => { handleLogout(); setMenuOpen(false) }}
+              >
                 Déconnexion
               </button>
             </>

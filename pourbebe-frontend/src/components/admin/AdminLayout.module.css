@@ -1,0 +1,27 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+  background: var(--off-white);
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-8);
+  overflow-y: auto;
+}
+
+@media (max-width: 1024px) {
+  .main { padding: var(--space-6) var(--space-5); }
+}
+
+@media (max-width: 768px) {
+  .layout { flex-direction: column; }
+  .main { padding: var(--space-4); }
+}
+
+@media (max-width: 480px) {
+  .main { padding: var(--space-3); }
+}

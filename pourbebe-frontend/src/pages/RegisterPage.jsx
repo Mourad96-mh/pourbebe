@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import Button from '../components/ui/Button'
+import SEO from '../components/ui/SEO'
 import styles from './LoginPage.module.css'
 
 export default function RegisterPage() {
@@ -20,6 +21,7 @@ export default function RegisterPage() {
 
   return (
     <div className={styles.page}>
+      <SEO title="Créer un compte" noindex />
       <div className={styles.card}>
         <h1 className={styles.title}>Créer un compte</h1>
         <p className={styles.sub}>Rejoignez la communauté Pour Bébé.</p>

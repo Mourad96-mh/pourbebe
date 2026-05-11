@@ -7,18 +7,22 @@ const variantSchema = new mongoose.Schema({
 })
 
 const productSchema = new mongoose.Schema({
-  name:        { type: String, required: true, trim: true },
-  slug:        { type: String, required: true, unique: true, lowercase: true },
-  brand:       { type: String, required: true, trim: true },
-  description: { type: String, default: '' },
-  price:       { type: Number, required: true },
-  compareAt:   { type: Number, default: null },
-  images:      [{ type: String }],
-  categoryId:  { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
-  tags:        [{ type: String }],
-  variants:    [variantSchema],
-  inStock:     { type: Boolean, default: true },
+  name:         { type: String, required: true, trim: true },
+  slug:         { type: String, required: true, unique: true, lowercase: true },
+  brand:        { type: String, required: true, trim: true },
+  description:  { type: String, default: '' },
+  usageTips:    { type: String, default: '' },
+  price:        { type: Number, required: true },
+  compareAt:    { type: Number, default: null },
+  images:       [{ type: String }],
+  categoryId:   { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+  tags:         [{ type: String }],
+  variants:     [variantSchema],
+  inStock:      { type: Boolean, default: true },
   isNewArrival: { type: Boolean, default: false },
+  productType:  { type: String, default: null },
+  gender:       { type: String, enum: ['fille', 'garcon', 'unisexe', null], default: null },
+  ageRange:     { type: String, default: null },
 }, { timestamps: true })
 
 productSchema.index({ name: 'text', brand: 'text', description: 'text' })

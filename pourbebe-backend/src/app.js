@@ -8,6 +8,10 @@ import categoryRoutes   from './routes/categories.routes.js'
 import orderRoutes      from './routes/orders.routes.js'
 import birthlistRoutes  from './routes/birthlist.routes.js'
 import adminRoutes      from './routes/admin.routes.js'
+import postRoutes       from './routes/posts.routes.js'
+import Product          from './models/Product.js'
+import Category         from './models/Category.js'
+import Post             from './models/Post.js'
 
 const app = express()
 
@@ -20,6 +24,49 @@ app.use('/api/categories', categoryRoutes)
 app.use('/api/orders',     orderRoutes)
 app.use('/api/birthlist',  birthlistRoutes)
 app.use('/api/admin',      adminRoutes)
+app.use('/api/posts',      postRoutes)
+
+const SITE = 'https://pourbebes.ma'
+
+app.get('/api/sitemap.xml', async (req, res) => {
+  const [products, categories, posts] = await Promise.all([
+    Product.find({ inStock: true }).select('slug updatedAt').lean(),
+    Category.find().select('slug').lean(),
+    Post.find({ published: true }).select('slug updatedAt').lean(),
+  ])
+
+  const staticUrls = [
+    `<url><loc>${SITE}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>`,
+    `<url><loc>${SITE}/liste-naissance</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>`,
+  ]
+
+  const categoryUrls = categories.map(c =>
+    `<url><loc>${SITE}/categorie/${c.slug}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`
+  )
+
+  const productUrls = products.map(p => {
+    const lastmod = new Date(p.updatedAt).toISOString().slice(0, 10)
+    return `<url><loc>${SITE}/produit/${p.slug}</loc><lastmod>${lastmod}</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>`
+  })
+
+  const postUrls = posts.map(p => {
+    const lastmod = new Date(p.updatedAt).toISOString().slice(0, 10)
+    return `<url><loc>${SITE}/blog/${p.slug}</loc><lastmod>${lastmod}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>`
+  })
+
+  const xml = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...staticUrls,
+    ...categoryUrls,
+    ...productUrls,
+    ...postUrls,
+    '</urlset>',
+  ].join('\n')
+
+  res.setHeader('Content-Type', 'application/xml')
+  res.send(xml)
+})
 
 app.use((err, req, res, next) => {
   console.error(err)

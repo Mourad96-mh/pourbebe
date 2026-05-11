@@ -1,3 +1,4 @@
+import SEO from '../components/ui/SEO'
 import { Link } from 'react-router-dom'
 import useCart, { cartTotal as cartTotalSelector } from '../hooks/useCart'
 import CartItem from '../components/cart/CartItem'
@@ -22,6 +23,7 @@ export default function CartPage() {
 
   return (
     <div className={styles.page}>
+      <SEO title="Mon Panier" noindex />
       <div className={styles.inner}>
         <h1 className={styles.title}>Mon panier</h1>
 

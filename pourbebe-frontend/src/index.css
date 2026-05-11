@@ -7,10 +7,10 @@
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Source Sans 3', sans-serif;
   font-size: var(--text-base);
   color: var(--text-mid);
-  background-color: var(--off-white);
+  background-color: var(--white);
   -webkit-font-smoothing: antialiased;
 }
 

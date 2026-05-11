@@ -37,7 +37,7 @@
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--sky-light);
   border-radius: 2px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Source Sans 3', sans-serif;
   font-size: var(--text-base);
   color: var(--text-dark);
   background-color: var(--white);
@@ -55,12 +55,12 @@
 }
 
 .inputError {
-  border-color: var(--color-error);
+  border-color: var(--red);
 }
 
 .error {
   font-size: var(--text-xs);
-  color: var(--color-error);
+  color: var(--red-dark);
 }
 
 .paymentOptions {

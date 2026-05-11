@@ -1,22 +1,38 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '../lib/api'
 
-function sortProducts(products, sort) {
-  const list = [...products]
-  if (sort === 'price-asc')  return list.sort((a, b) => a.price - b.price)
-  if (sort === 'price-desc') return list.sort((a, b) => b.price - a.price)
-  if (sort === 'bestsellers') return list
-  return list.sort((a, b) => (b.isNewArrival ? 1 : 0) - (a.isNewArrival ? 1 : 0))
+function normalizeProduct(p) {
+  if (!p) return p
+  return {
+    ...p,
+    id: p._id ?? p.id,
+    categorySlug: p.categoryId?.slug ?? p.categorySlug ?? null,
+    categoryName: p.categoryId?.name ?? null,
+  }
 }
 
 export function useProducts(params = {}) {
   return useQuery({
     queryKey: ['products', params],
     queryFn: async () => {
-      const res = await api.get('/products', { params })
-      const products = res.data.data.map((p) => ({ ...p, id: p._id }))
-      return { products: sortProducts(products, params.sort), total: res.data.meta?.total ?? products.length }
+      const { category, brand, min, max, sort, q, type, gender, age, isNew } = params
+      const query = { limit: 200 }
+      if (category) query.category = category
+      if (brand)    query.brand = brand
+      if (min)      query.min = min
+      if (max)      query.max = max
+      if (sort)     query.sort = sort
+      if (q)        query.q = q
+      if (type)     query.type = type
+      if (gender)   query.gender = gender
+      if (age)      query.age = age
+      if (isNew)    query.isNew = 'true'
+
+      const res = await api.get('/products', { params: query })
+      const products = (res.data.data ?? []).map(normalizeProduct)
+      return { products, total: products.length }
     },
+    staleTime: 60_000,
   })
 }
 
@@ -25,10 +41,10 @@ export function useProduct(slug) {
     queryKey: ['product', slug],
     queryFn: async () => {
       const res = await api.get(`/products/${slug}`)
-      const p = res.data.data
-      return { ...p, id: p._id }
+      return normalizeProduct(res.data.data)
     },
     enabled: !!slug,
+    staleTime: 60_000,
   })
 }
 
@@ -37,9 +53,9 @@ export function useCategories() {
     queryKey: ['categories'],
     queryFn: async () => {
       const res = await api.get('/categories')
-      return res.data.data
+      return res.data.data ?? []
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: Infinity,
   })
 }
 
@@ -51,6 +67,7 @@ export function useCategory(slug) {
       return { category: res.data.data }
     },
     enabled: !!slug,
+    staleTime: Infinity,
   })
 }
 

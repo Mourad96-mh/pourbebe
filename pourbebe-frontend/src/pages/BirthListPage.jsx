@@ -1,3 +1,4 @@
+import SEO from '../components/ui/SEO'
 import { useParams, Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
@@ -127,6 +128,11 @@ export default function BirthListPage() {
 
   return (
     <div className={styles.page}>
+      <SEO
+        title="Liste de Naissance"
+        description="Créez votre liste de naissance et partagez-la avec vos proches. Choisissez parmi notre sélection de produits bébé premium au Maroc."
+        canonical="/liste-naissance"
+      />
       <div className={styles.inner}>
 
         {/* ── Header ── */}

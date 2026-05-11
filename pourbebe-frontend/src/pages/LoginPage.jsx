@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import Button from '../components/ui/Button'
+import SEO from '../components/ui/SEO'
 import styles from './LoginPage.module.css'
 
 export default function LoginPage() {
@@ -20,6 +21,7 @@ export default function LoginPage() {
 
   return (
     <div className={styles.page}>
+      <SEO title="Connexion" noindex />
       <div className={styles.card}>
         <h1 className={styles.title}>Connexion</h1>
         <p className={styles.sub}>Bienvenue ! Connectez-vous pour accéder à votre compte.</p>

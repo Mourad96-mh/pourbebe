@@ -78,7 +78,7 @@
 }
 
 .remove:hover {
-  color: var(--color-error);
+  color: var(--red);
 }
 
 .bottom {

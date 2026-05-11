@@ -7,7 +7,7 @@ import { useMyBirthList } from '../../hooks/useMyBirthList'
 import { useAuth } from '../../hooks/useAuth'
 import styles from './ProductCard.module.css'
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, badge }) {
   const toggle       = useWishlist((s) => s.toggle)
   const isWishlisted = useWishlist((s) => s.has(product.id))
   const addItem      = useCart((s) => s.addItem)
@@ -46,9 +46,9 @@ export default function ProductCard({ product }) {
         )}
 
         <div className={styles.badges}>
-          {product.isNewArrival && <Badge variant="new">Nouveau</Badge>}
-          {discount && <Badge variant="sale">-{discount}%</Badge>}
-          {!product.inStock && <Badge variant="outOfStock">Épuisé</Badge>}
+          {badge === 'outOfStock' && <Badge variant="outOfStock">Épuisé</Badge>}
+          {badge === 'sale'       && discount && <Badge variant="sale">-{discount}%</Badge>}
+          {badge === 'new'        && <Badge variant="new">Nouveau</Badge>}
         </div>
 
         <button
@@ -61,18 +61,6 @@ export default function ProductCard({ product }) {
           </svg>
         </button>
 
-        {product.inStock ? (
-          <button className={styles.addToCartBtn} onClick={handleAddToCart}>
-            Ajouter au panier
-          </button>
-        ) : (
-          <button
-            className={`${styles.addToCartBtn} ${styles.whatsappBtn}`}
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(whatsappUrl, '_blank') }}
-          >
-            Commander sur WhatsApp
-          </button>
-        )}
       </Link>
 
       <div className={styles.info}>
@@ -86,6 +74,10 @@ export default function ProductCard({ product }) {
             <span className={styles.compareAt}>{formatPrice(product.compareAt)}</span>
           )}
         </div>
+
+        <Link to={`/produit/${product.slug}`} className={styles.discoverBtn}>
+          Découvrir
+        </Link>
 
         {user && list && (
           <div className={styles.listRow}>

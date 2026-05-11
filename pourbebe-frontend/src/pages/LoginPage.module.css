@@ -57,7 +57,7 @@
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--sky-light);
   border-radius: 2px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Source Sans 3', sans-serif;
   font-size: var(--text-base);
   color: var(--text-dark);
   background-color: var(--white);
@@ -74,17 +74,17 @@
 }
 
 .inputError {
-  border-color: var(--color-error);
+  border-color: var(--red);
 }
 
 .error {
   font-size: var(--text-xs);
-  color: var(--color-error);
+  color: var(--red-dark);
 }
 
 .rootError {
   font-size: var(--text-sm);
-  color: var(--color-error);
+  color: var(--red-dark);
   text-align: center;
 }
 
@@ -102,4 +102,19 @@
 
 .link:hover {
   color: var(--sky-dark);
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: var(--space-6) var(--space-3);
+    align-items: flex-start;
+  }
+
+  .card {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .title {
+    font-size: var(--text-xl);
+  }
 }

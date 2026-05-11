@@ -1,5 +1,6 @@
 .page {
   min-height: 60vh;
+  background: var(--white);
 }
 
 .inner {
@@ -93,7 +94,7 @@
   font-size: var(--text-xs);
   color: var(--text-mid);
   background-color: var(--sky-pale);
-  width: 280px;
+  width: min(280px, 100%);
   font-family: monospace;
   outline: none;
 }
@@ -214,7 +215,7 @@
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--sky-light);
   border-radius: 2px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Source Sans 3', sans-serif;
   font-size: var(--text-base);
   color: var(--text-dark);
   background-color: var(--white);
@@ -250,5 +251,17 @@
 @media (max-width: 480px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .inner {
+    padding: var(--space-6) var(--space-3);
+  }
+
+  .share {
+    width: 100%;
+  }
+
+  .shareRow {
+    flex-direction: column;
   }
 }

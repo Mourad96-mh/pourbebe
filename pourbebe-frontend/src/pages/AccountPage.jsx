@@ -6,6 +6,7 @@ import Spinner from '../components/ui/Spinner'
 import Button from '../components/ui/Button'
 import { formatPrice } from '../lib/utils'
 import api from '../lib/api'
+import SEO from '../components/ui/SEO'
 import styles from './AccountPage.module.css'
 
 const STATUS_LABELS = {
@@ -39,6 +40,7 @@ export default function AccountPage() {
 
   return (
     <div className={styles.page}>
+      <SEO title="Mon Compte" noindex />
       <div className={styles.inner}>
 
         {/* ── Header ── */}

@@ -3,15 +3,94 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/jpeg" href="/logo-bebs.jpeg" />
-    <title>Pour Bébé — Vêtements et Accessoires</title>
-    <meta name="description" content="Boutique en ligne de vêtements et accessoires bébé au Maroc. Livraison gratuite dès 400 DH." />
+
+    <!-- ── Favicon ── -->
+    <link rel="icon" type="image/png" href="/logo.png" />
+
+    <!-- ── Primary meta ── -->
+    <title>Pour Bébé — Vêtements et Accessoires Bébé au Maroc</title>
+    <meta name="description" content="Boutique en ligne de vêtements et accessoires bébé au Maroc. Lits, poussettes, vêtements, cadeaux de naissance. Livraison gratuite dès 400 DH partout au Maroc." />
+    <meta name="keywords" content="bébé, vêtements bébé, accessoires bébé, puériculture, lit bébé, poussette, liste de naissance, cadeaux naissance, Maroc, Casablanca" />
+    <link rel="canonical" href="https://pourbebes.ma/" />
+
+    <!-- ── Geo (Morocco / Casablanca) ── -->
+    <meta name="geo.region" content="MA-05" />
+    <meta name="geo.placename" content="Casablanca, Maroc" />
+    <meta name="geo.position" content="33.5731;-7.5898" />
+    <meta name="ICBM" content="33.5731, -7.5898" />
+
+    <!-- ── Open Graph ── -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Pour Bébé" />
+    <meta property="og:locale" content="fr_MA" />
+    <meta property="og:url" content="https://pourbebes.ma/" />
+    <meta property="og:title" content="Pour Bébé — Vêtements et Accessoires Bébé au Maroc" />
+    <meta property="og:description" content="Boutique en ligne de vêtements et accessoires bébé au Maroc. Lits, poussettes, vêtements, cadeaux de naissance. Livraison gratuite dès 400 DH." />
+    <meta property="og:image" content="https://pourbebes.ma/hero-img.jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- ── Twitter Card ── -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pour Bébé — Vêtements et Accessoires Bébé au Maroc" />
+    <meta name="twitter:description" content="Boutique en ligne de vêtements et accessoires bébé au Maroc. Livraison gratuite dès 400 DH." />
+    <meta name="twitter:image" content="https://pourbebes.ma/hero-img.jpeg" />
+
+    <!-- ── Fonts ── -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Poppins:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap"
       rel="stylesheet"
     />
+
+    <!-- ── JSON-LD: Organization + LocalBusiness + WebSite ── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": ["Organization", "LocalBusiness"],
+          "@id": "https://pourbebes.ma/#organization",
+          "name": "Pour Bébé",
+          "url": "https://pourbebes.ma",
+          "logo": "https://pourbebes.ma/logo.png",
+          "image": "https://pourbebes.ma/hero-img.jpeg",
+          "description": "Boutique en ligne de vêtements et accessoires bébé au Maroc. Livraison gratuite dès 400 DH partout au Maroc.",
+          "telephone": "+212696716187",
+          "email": "commandes@pourbebes.ma",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Rue Abou Abdellah Nafi, 1er étage Benomar Center, Maarif",
+            "addressLocality": "Casablanca",
+            "addressCountry": "MA"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 33.5731,
+            "longitude": -7.5898
+          },
+          "sameAs": [
+            "https://www.facebook.com/pourbebes.ma",
+            "https://www.instagram.com/pourbebes.ma"
+          ],
+          "priceRange": "DH"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://pourbebes.ma/#website",
+          "url": "https://pourbebes.ma",
+          "name": "Pour Bébé",
+          "publisher": { "@id": "https://pourbebes.ma/#organization" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://pourbebes.ma/categorie/chambre?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -73,9 +73,28 @@
 @media (max-width: 768px) {
   .layout {
     grid-template-columns: 1fr;
+    gap: var(--space-6);
   }
 
   .summary {
     position: static;
+  }
+
+  .inner {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .title {
+    font-size: var(--text-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .inner {
+    padding: var(--space-5) var(--space-3);
+  }
+
+  .empty {
+    padding: var(--space-10) var(--space-4);
   }
 }
