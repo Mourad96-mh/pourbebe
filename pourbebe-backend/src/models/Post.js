@@ -12,7 +12,6 @@ const postSchema = new mongoose.Schema({
   publishedAt: { type: Date, default: Date.now },
 }, { timestamps: true })
 
-postSchema.index({ slug: 1 })
 postSchema.index({ published: 1, publishedAt: -1 })
 
 export default mongoose.model('Post', postSchema)
