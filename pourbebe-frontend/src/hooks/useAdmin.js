@@ -160,6 +160,24 @@ export function useDeletePost() {
   })
 }
 
+export function useAdminBirthLists() {
+  return useQuery({
+    queryKey: ['admin', 'birthlists'],
+    queryFn: async () => {
+      const res = await api.get('/admin/birthlists')
+      return res.data.data ?? []
+    },
+  })
+}
+
+export function useDeleteBirthList() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id) => api.delete(`/admin/birthlists/${id}`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'birthlists'] }),
+  })
+}
+
 export function useUploadImage() {
   return useMutation({
     mutationFn: async (file) => {

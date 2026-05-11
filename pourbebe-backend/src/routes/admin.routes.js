@@ -11,6 +11,7 @@ import User from '../models/User.js'
 import Category from '../models/Category.js'
 import Product from '../models/Product.js'
 import Post from '../models/Post.js'
+import BirthList from '../models/BirthList.js'
 
 const router = Router()
 
@@ -100,6 +101,21 @@ router.patch('/posts/:id', async (req, res) => {
 
 router.delete('/posts/:id', async (req, res) => {
   await Post.findByIdAndDelete(req.params.id)
+  res.json({ success: true, data: null })
+})
+
+/* ── Birth lists ── */
+router.get('/birthlists', async (req, res) => {
+  const lists = await BirthList.find()
+    .populate('userId', 'name email')
+    .populate('items.productId', 'name images price')
+    .sort({ createdAt: -1 })
+    .lean()
+  res.json({ success: true, data: lists })
+})
+
+router.delete('/birthlists/:id', async (req, res) => {
+  await BirthList.findByIdAndDelete(req.params.id)
   res.json({ success: true, data: null })
 })
 

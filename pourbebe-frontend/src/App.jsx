@@ -23,7 +23,8 @@ const AdminProducts   = lazy(() => import('./pages/admin/AdminProducts'))
 const AdminOrders     = lazy(() => import('./pages/admin/AdminOrders'))
 const AdminCustomers  = lazy(() => import('./pages/admin/AdminCustomers'))
 const AdminCategories = lazy(() => import('./pages/admin/AdminCategories'))
-const AdminBlog       = lazy(() => import('./pages/admin/AdminBlog'))
+const AdminBlog        = lazy(() => import('./pages/admin/AdminBlog'))
+const AdminBirthLists  = lazy(() => import('./pages/admin/AdminBirthLists'))
 
 export default function App() {
   return (
@@ -53,6 +54,7 @@ export default function App() {
           <Route path="clients"         element={<AdminCustomers />} />
           <Route path="categories"      element={<AdminCategories />} />
           <Route path="blog"            element={<AdminBlog />} />
+          <Route path="listes-naissance" element={<AdminBirthLists />} />
         </Route>
       </Routes>
     </Suspense>
