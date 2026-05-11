@@ -13,5 +13,7 @@
   product pages.
   - Google My Business — Create/claim a GMB listing for the Casablanca showroom — critical for local "bébé Casablanca" searches.
   - Arabic language version — Even a partial Arabic translation (product names, categories) would capture a large uncontested keyword pool.
-  - Review/rating schema — Once you have customer orders, collect reviews and add AggregateRating to the Product schema for star ratings in Google results.
+  - Review/rating schema — Once you have customer orders, collect reviews and add AggregateR
+  
+  ating to the Product schema for star ratings in Google results.
   - FAQ schema on the homepage or a dedicated FAQ page — answers "livraison Maroc", "retour produit", "paiement à la livraison" questions that AI overviews cite.
