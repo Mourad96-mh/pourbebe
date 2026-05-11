@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useAdminBirthLists, useDeleteBirthList } from '../../hooks/useAdmin'
+import { useAdminBirthLists, useDeleteBirthList } from '../hooks/useAdmin'
 import { formatPrice } from '../../lib/utils'
 import styles from './AdminBirthLists.module.css'
 

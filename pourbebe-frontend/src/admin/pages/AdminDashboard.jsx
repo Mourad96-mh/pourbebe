@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useAdminProducts, useAdminOrders } from '../../hooks/useAdmin'
+import { useAdminProducts, useAdminOrders } from '../hooks/useAdmin'
 import { formatPrice } from '../../lib/utils'
 import styles from './AdminDashboard.module.css'
 

@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import PublicLayout from './components/layout/PublicLayout'
-import AdminRoute from './components/admin/AdminRoute'
+import AdminRoute from './admin/components/AdminRoute'
 import Spinner from './components/ui/Spinner'
 
 // ── Public pages ──
@@ -18,13 +18,13 @@ const BlogPage      = lazy(() => import('./pages/BlogPage'))
 const BlogPostPage  = lazy(() => import('./pages/BlogPostPage'))
 
 // ── Admin pages ──
-const AdminDashboard  = lazy(() => import('./pages/admin/AdminDashboard'))
-const AdminProducts   = lazy(() => import('./pages/admin/AdminProducts'))
-const AdminOrders     = lazy(() => import('./pages/admin/AdminOrders'))
-const AdminCustomers  = lazy(() => import('./pages/admin/AdminCustomers'))
-const AdminCategories = lazy(() => import('./pages/admin/AdminCategories'))
-const AdminBlog        = lazy(() => import('./pages/admin/AdminBlog'))
-const AdminBirthLists  = lazy(() => import('./pages/admin/AdminBirthLists'))
+const AdminDashboard  = lazy(() => import('./admin/pages/AdminDashboard'))
+const AdminProducts   = lazy(() => import('./admin/pages/AdminProducts'))
+const AdminOrders     = lazy(() => import('./admin/pages/AdminOrders'))
+const AdminCustomers  = lazy(() => import('./admin/pages/AdminCustomers'))
+const AdminCategories = lazy(() => import('./admin/pages/AdminCategories'))
+const AdminBlog        = lazy(() => import('./admin/pages/AdminBlog'))
+const AdminBirthLists  = lazy(() => import('./admin/pages/AdminBirthLists'))
 
 export default function App() {
   return (

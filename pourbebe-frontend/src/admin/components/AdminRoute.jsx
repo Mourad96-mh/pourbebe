@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import AdminNav from './AdminNav'
 import AdminLogin from './AdminLogin'
-import Spinner from '../ui/Spinner'
+import Spinner from '../../components/ui/Spinner'
 import styles from './AdminLayout.module.css'
 
 export default function AdminRoute() {

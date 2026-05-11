@@ -6,7 +6,7 @@ import {
   useUpdateProduct,
   useDeleteProduct,
   useUploadImage,
-} from '../../hooks/useAdmin'
+} from '../hooks/useAdmin'
 import { formatPrice } from '../../lib/utils'
 import styles from './AdminProducts.module.css'
 

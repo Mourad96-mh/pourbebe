@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useAdminCustomers } from '../../hooks/useAdmin'
+import { useAdminCustomers } from '../hooks/useAdmin'
 import styles from './AdminCustomers.module.css'
 
 function initials(name, email) {

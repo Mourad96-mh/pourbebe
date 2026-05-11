@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useAdminOrders, useUpdateOrderStatus } from '../../hooks/useAdmin'
+import { useAdminOrders, useUpdateOrderStatus } from '../hooks/useAdmin'
 import { formatPrice } from '../../lib/utils'
 import styles from './AdminOrders.module.css'
 

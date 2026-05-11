@@ -4,7 +4,7 @@ import {
   useCreateCategory,
   useUpdateCategory,
   useDeleteCategory,
-} from '../../hooks/useAdmin'
+} from '../hooks/useAdmin'
 import styles from './AdminCategories.module.css'
 
 const EMPTY_FORM = { name: '', parentId: '' }

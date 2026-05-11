@@ -4,7 +4,7 @@ import {
   useCreatePost,
   useUpdatePost,
   useDeletePost,
-} from '../../hooks/useAdmin'
+} from '../hooks/useAdmin'
 import styles from './AdminBlog.module.css'
 
 const CATEGORIES = [
