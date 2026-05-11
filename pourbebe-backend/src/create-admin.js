@@ -7,7 +7,7 @@ const PASSWORD = 'Admin@PourBebe2025!'
 const NAME     = 'Admin'
 
 async function createAdmin() {
-  await mongoose.connect(process.env.DATABASE_URL)
+  await mongoose.connect(process.env.MONGODB_URI ?? process.env.DATABASE_URL)
   console.log('Connected to DB')
 
   const existing = await User.findOne({ email: EMAIL })
