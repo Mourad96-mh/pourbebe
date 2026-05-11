@@ -25,6 +25,7 @@ export function AuthProvider({ children }) {
     const { token, user } = res.data.data
     localStorage.setItem(SESSION_KEY, JSON.stringify({ token, user }))
     setUser(user)
+    return user
   }
 
   async function register(name, email, password) {

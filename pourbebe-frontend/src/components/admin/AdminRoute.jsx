@@ -7,9 +7,8 @@ import styles from './AdminLayout.module.css'
 export default function AdminRoute() {
   const { user, loading } = useAuth()
 
-  // TODO: restore auth check once backend is ready
-  // if (loading) return <Spinner />
-  // if (!user || user.role !== 'ADMIN') return <Navigate to="/connexion" replace />
+  if (loading) return <Spinner />
+  if (!user || user.role !== 'ADMIN') return <Navigate to="/connexion" replace />
 
   return (
     <div className={styles.layout}>
