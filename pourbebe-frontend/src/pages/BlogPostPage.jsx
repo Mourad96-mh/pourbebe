@@ -15,7 +15,7 @@ const CATEGORY_IMAGES = {
   conseils:  '/chambre-enfant.jpg',
   produits:  '/hero-img.jpeg',
   naissance: '/nouveautes.webp',
-  sante:     '/example-home.jpeg',
+  sante:     'https://plus.unsplash.com/premium_photo-1726866311369-95ad15251078?fm=jpg&q=80&w=800&auto=format&fit=crop',
 }
 
 function formatDate(iso) {
