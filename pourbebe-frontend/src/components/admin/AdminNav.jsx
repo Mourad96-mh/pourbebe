@@ -87,7 +87,7 @@ export default function AdminNav() {
 
   function handleLogout() {
     logout()
-    navigate('/connexion')
+    navigate('/')
   }
 
   return (

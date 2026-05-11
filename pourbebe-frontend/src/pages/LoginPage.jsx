@@ -1,19 +1,21 @@
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import Button from '../components/ui/Button'
 import SEO from '../components/ui/SEO'
 import styles from './LoginPage.module.css'
 
 export default function LoginPage() {
-  const { login } = useAuth()
-  const navigate  = useNavigate()
+  const { login }   = useAuth()
+  const navigate    = useNavigate()
+  const { search }  = useLocation()
+  const redirect    = new URLSearchParams(search).get('redirect') ?? '/mon-compte'
   const { register, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm()
 
   async function onSubmit({ email, password }) {
     try {
       const loggedUser = await login(email, password)
-      navigate(loggedUser?.role === 'ADMIN' ? '/admin' : '/mon-compte')
+      navigate(loggedUser?.role === 'ADMIN' ? '/admin' : redirect)
     } catch {
       setError('root', { message: 'Email ou mot de passe incorrect.' })
     }

@@ -66,7 +66,7 @@ export default function BirthListPage() {
       <div className={styles.gate}>
         <h1 className={styles.title}>Liste de naissance</h1>
         <p className={styles.desc}>Connectez-vous pour créer ou gérer votre liste de naissance.</p>
-        <a href="/connexion"><Button variant="primary">Se connecter</Button></a>
+        <a href="/connexion?redirect=/liste-naissance"><Button variant="primary">Se connecter</Button></a>
       </div>
     )
   }
