@@ -1,0 +1,118 @@
+====================================================
+  POUR BÉBÉ — Website Logic
+====================================================
+
+
+────────────────────────────────────────────────────
+  CLIENT (Customer)
+────────────────────────────────────────────────────
+
+NO LOGIN REQUIRED
+─────────────────
+- Browses the site freely: home, category pages, product pages, blog
+- Adds products to the cart (saved in browser memory via Zustand)
+- Proceeds to checkout:
+    · Fills in delivery address
+    · Chooses payment method (cash on delivery or card)
+    · Places the order
+- Reads blog articles
+
+LOGIN REQUIRED
+──────────────
+- Clicks "Connexion" in the header
+- Registers at /inscription or logs in at /connexion
+- After login → redirected to /mon-compte
+    · Views order history and tracking status
+    · Manages saved addresses
+    · Manages wishlist
+
+LISTE DE NAISSANCE
+──────────────────
+- Clicks "Liste de naissance" in the navbar → goes to /liste-naissance
+- If not logged in:
+    · Sees a gate with "Se connecter" button
+    · Goes to /connexion?redirect=/liste-naissance
+    · After login → comes back to /liste-naissance
+- Creates a list (name + expected due date)
+- Adds products from the catalog to the list
+- Shares the list via a unique public URL: /liste-naissance/:shareId
+- Friends and family open the shared link:
+    · Can reserve items
+    · Can mark items as purchased
+- The client sees which items are reserved and which are already offered
+
+
+────────────────────────────────────────────────────
+  ADMIN
+────────────────────────────────────────────────────
+
+ACCESS
+──────
+- Goes directly to /admin in the browser
+- Sees a login form at /admin — URL never changes
+- Enters admin credentials
+- Lands on the dashboard
+- On logout → session cleared → login form appears again at /admin
+
+DASHBOARD  /admin
+─────────────────
+- Overview stats: total products, pending orders, registered customers
+
+PRODUCTS  /admin/produits
+─────────────────────────
+- View the full product catalog
+- Add a new product:
+    · Name, brand, price, compare-at price
+    · Category and subcategory
+    · Images uploaded to Cloudinary
+    · Product type, gender, age range (for filters)
+    · In stock flag, new arrival flag
+- Edit any product
+- Toggle in stock / out of stock directly from the table
+- Delete a product
+
+ORDERS  /admin/commandes
+────────────────────────
+- View all customer orders
+- Update order status:
+    PENDING → CONFIRMED → SHIPPED → DELIVERED → CANCELLED → REFUNDED
+
+CUSTOMERS  /admin/clients
+──────────────────────────
+- View all registered customers
+- Name, email, registration date
+
+CATEGORIES  /admin/categories
+──────────────────────────────
+- View the full category tree (parent categories + subcategories)
+- Add, rename, or delete categories and subcategories
+- Cannot delete a category that still has products assigned to it
+- Cannot delete a category that still has subcategories
+
+BLOG  /admin/blog
+──────────────────
+- Create and publish articles targeting SEO keywords
+- Edit or delete existing articles
+- Set status: published or draft
+- Fields: title, slug, excerpt, cover image, HTML body, category
+
+LISTES DE NAISSANCE  /admin/listes-naissance
+─────────────────────────────────────────────
+- View all birth lists created by all customers
+- See owner name, email, creation date, expected due date
+- Per-list stats: total articles, reserved, offered
+- Expand any list to see each product with its reserved / offered status
+- Open the public shared list in a new tab
+- Delete a list
+
+
+====================================================
+  TECH STACK SUMMARY
+====================================================
+
+Frontend  →  React 18 (Vite), React Router v6, TanStack Query,
+             Zustand, CSS Modules, Axios
+Backend   →  Node.js, Express, MongoDB, Mongoose, JWT, Cloudinary,
+             Resend (email)
+Hosting   →  Frontend: Hostinger (Apache + .htaccess)
+             Backend:  Render
