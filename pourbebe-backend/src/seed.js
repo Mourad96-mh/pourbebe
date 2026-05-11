@@ -250,6 +250,48 @@ async function seed() {
 <p>Évitez les doublons en créant ou en consultant la <a href="/liste-naissance">liste de naissance</a> des futurs parents. Ce service gratuit de Pour Bébé permet aux proches de voir exactement ce dont bébé a besoin.</p>`,
     },
     {
+      title: 'Coliques du nourrisson : causes, signes et conseils pour soulager bébé',
+      slug: 'coliques-nourrisson-conseils',
+      excerpt: 'Bébé pleure beaucoup en fin de journée ? Ce sont peut-être des coliques. Découvrez les causes, comment les reconnaître et les gestes pour soulager votre enfant.',
+      category: 'sante',
+      publishedAt: new Date('2025-05-01'),
+      coverImage: '',
+      body: `<p>Les coliques du nourrisson touchent environ 20 % des bébés. Elles apparaissent généralement entre la 2e et la 4e semaine de vie, et disparaissent spontanément vers l'âge de 3 mois. Elles restent une source d'inquiétude importante pour les parents marocains.</p>
+
+<h2>Comment reconnaître les coliques ?</h2>
+<p>La règle des "3" est souvent utilisée par les pédiatres :</p>
+<ul>
+  <li>Bébé pleure plus de <strong>3 heures par jour</strong></li>
+  <li>Plus de <strong>3 jours par semaine</strong></li>
+  <li>Pendant plus de <strong>3 semaines consécutives</strong></li>
+</ul>
+<p>Les pleurs surviennent souvent en fin d'après-midi ou en soirée. Bébé ramène ses jambes sur le ventre, son visage rougit et son ventre est tendu.</p>
+
+<h2>Les causes probables</h2>
+<p>Les médecins ne s'accordent pas sur une cause unique. Plusieurs facteurs sont évoqués :</p>
+<ul>
+  <li>Immaturité du système digestif</li>
+  <li>Ingestion d'air pendant les tétées</li>
+  <li>Sensibilité aux protéines de lait de vache (en cas d'allaitement artificiel)</li>
+  <li>Hypersensibilité sensorielle</li>
+</ul>
+
+<h2>Les gestes qui soulagent</h2>
+<h3>Le portage</h3>
+<p>Tenir bébé contre soi en position verticale aide à évacuer les gaz et le rassure. Un <a href="/categorie/porte-bebe">porte-bébé physiologique</a> permet de le porter confortablement tout en gardant les mains libres.</p>
+
+<h3>Les massages du ventre</h3>
+<p>Massez doucement le ventre de bébé dans le sens des aiguilles d'une montre, avec une légère pression. Quelques minutes suffisent.</p>
+
+<h3>La chaleur douce</h3>
+<p>Une bouillotte tiède (pas chaude) enveloppée dans un linge, posée sur le ventre de bébé, peut aider à détendre les muscles abdominaux.</p>
+
+<h2>Quand consulter un médecin ?</h2>
+<p>Si bébé perd du poids, vomit, a de la fièvre ou si les pleurs semblent très intenses et inhabituels, consultez un pédiatre sans attendre. Les coliques ne doivent pas faire passer à côté d'une autre cause médicale.</p>
+
+<blockquote>Les coliques sont douloureuses pour bébé et épuisantes pour les parents. N'hésitez pas à vous relayer et à demander du soutien à votre entourage.</blockquote>`,
+    },
+    {
       title: 'Poussette ou porte-bébé : que choisir pour votre bébé ?',
       slug: 'poussette-ou-porte-bebe',
       excerpt: 'Poussette classique, combinée ou porte-bébé physiologique ? Comparatif complet pour vous aider à choisir le meilleur moyen de transport pour bébé au Maroc.',
