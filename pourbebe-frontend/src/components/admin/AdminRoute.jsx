@@ -8,7 +8,7 @@ export default function AdminRoute() {
   const { user, loading } = useAuth()
 
   if (loading) return <Spinner />
-  if (!user || user.role !== 'ADMIN') return <Navigate to="/connexion" replace />
+  if (!user || user.role !== 'ADMIN') return <Navigate to="/" replace />
 
   return (
     <div className={styles.layout}>
