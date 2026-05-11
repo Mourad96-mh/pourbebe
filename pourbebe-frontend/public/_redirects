@@ -1,8 +1,0 @@
-# ── www → non-www (301 canonical) ──
-https://www.pourbebes.ma/*  https://pourbebes.ma/:splat  301!
-
-# ── Dynamic sitemap from Render backend ──
-/sitemap.xml  https://pourbebe-backend.onrender.com/api/sitemap.xml  200
-
-# ── SPA catch-all (must be last) ──
-/*    /index.html   200
