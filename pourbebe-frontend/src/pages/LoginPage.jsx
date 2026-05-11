@@ -14,8 +14,8 @@ export default function LoginPage() {
 
   async function onSubmit({ email, password }) {
     try {
-      const loggedUser = await login(email, password)
-      navigate(loggedUser?.role === 'ADMIN' ? '/admin' : redirect)
+      await login(email, password)
+      navigate(redirect)
     } catch {
       setError('root', { message: 'Email ou mot de passe incorrect.' })
     }
