@@ -20,6 +20,13 @@ const CATEGORY_LABELS = {
   sante:     'Santé',
 }
 
+const CATEGORY_IMAGES = {
+  conseils:  '/chambre-enfant.jpg',
+  produits:  '/hero-img.jpeg',
+  naissance: '/nouveautes.webp',
+  sante:     '/example-home.jpeg',
+}
+
 function formatDate(iso) {
   return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
@@ -77,10 +84,12 @@ export default function BlogPage() {
             {posts.map(post => (
               <Link key={post._id} to={`/blog/${post.slug}`} className={styles.card}>
                 <div className={styles.cardImgWrap}>
-                  {post.coverImage
-                    ? <img src={post.coverImage} alt={post.title} className={styles.cardImg} loading="lazy" />
-                    : <div className={styles.cardImgPlaceholder} />
-                  }
+                  <img
+                    src={post.coverImage || CATEGORY_IMAGES[post.category] || '/hero-img.jpeg'}
+                    alt={post.title}
+                    className={styles.cardImg}
+                    loading="lazy"
+                  />
                   {post.category && (
                     <span className={styles.cardBadge}>{CATEGORY_LABELS[post.category] ?? post.category}</span>
                   )}

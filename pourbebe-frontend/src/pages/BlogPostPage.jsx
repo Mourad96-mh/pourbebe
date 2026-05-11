@@ -11,6 +11,13 @@ const CATEGORY_LABELS = {
   sante:     'Santé',
 }
 
+const CATEGORY_IMAGES = {
+  conseils:  '/chambre-enfant.jpg',
+  produits:  '/hero-img.jpeg',
+  naissance: '/nouveautes.webp',
+  sante:     '/example-home.jpeg',
+}
+
 function formatDate(iso) {
   return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
@@ -101,9 +108,12 @@ export default function BlogPostPage() {
             <div className={styles.relatedGrid}>
               {related.map(p => (
                 <Link key={p._id} to={`/blog/${p.slug}`} className={styles.relatedCard}>
-                  {p.coverImage && (
-                    <img src={p.coverImage} alt={p.title} className={styles.relatedImg} loading="lazy" />
-                  )}
+                  <img
+                    src={p.coverImage || CATEGORY_IMAGES[p.category] || '/hero-img.jpeg'}
+                    alt={p.title}
+                    className={styles.relatedImg}
+                    loading="lazy"
+                  />
                   <div className={styles.relatedCardBody}>
                     {p.category && (
                       <span className={styles.relatedBadge}>{CATEGORY_LABELS[p.category] ?? p.category}</span>
