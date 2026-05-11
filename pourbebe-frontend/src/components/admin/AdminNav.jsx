@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import styles from './AdminNav.module.css'
 
@@ -93,11 +93,9 @@ const NAV = [
 
 export default function AdminNav() {
   const { logout } = useAuth()
-  const navigate = useNavigate()
 
   function handleLogout() {
     logout()
-    navigate('/')
   }
 
   return (
