@@ -9,10 +9,6 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 RewriteCond %{HTTP_HOST} ^www\.pourbebes\.ma$ [NC]
 RewriteRule ^ https://pourbebes.ma%{REQUEST_URI} [L,R=301]
 
-# ── Sitemap proxy → Render backend ──
-RewriteCond %{REQUEST_URI} ^/sitemap\.xml$
-RewriteRule ^ https://pourbebe-backend.onrender.com/api/sitemap.xml [P,L]
-
 # ── SPA routing (React Router) ──
 RewriteBase /
 RewriteRule ^index\.html$ - [L]

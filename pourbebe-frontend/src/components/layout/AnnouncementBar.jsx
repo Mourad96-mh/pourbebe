@@ -8,7 +8,7 @@ export default function AnnouncementBar() {
         <div className={styles.social}>
           <span className={styles.socialLabel}>Suivez-nous sur :</span>
           <a
-            href="https://facebook.com"
+            href="https://www.facebook.com/pourbebes/"
             target="_blank"
             rel="noreferrer"
             className={styles.socialLink}
@@ -19,7 +19,7 @@ export default function AnnouncementBar() {
             </svg>
           </a>
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/pour.bebes"
             target="_blank"
             rel="noreferrer"
             className={styles.socialLink}
