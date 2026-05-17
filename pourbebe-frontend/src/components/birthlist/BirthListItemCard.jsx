@@ -3,8 +3,10 @@ import { formatPrice } from '../../lib/utils'
 import Button from '../ui/Button'
 import styles from './BirthListItemCard.module.css'
 
-export default function BirthListItemCard({ item, isGuestView, onOffer, isPending }) {
+export default function BirthListItemCard({ item, isGuestView, onOffer, onRemove, isPending }) {
   const { product, quantity = 1, reserved, purchased } = item
+
+  if (!product) return null
 
   return (
     <article className={styles.card}>
@@ -33,7 +35,7 @@ export default function BirthListItemCard({ item, isGuestView, onOffer, isPendin
       </Link>
 
       <div className={styles.info}>
-        <p className={styles.brand}>{product.brand}</p>
+        {product.brand && <p className={styles.brand}>{product.brand}</p>}
         <h3 className={styles.name}>
           <Link to={`/produit/${product.slug}`}>{product.name}</Link>
         </h3>
@@ -49,7 +51,16 @@ export default function BirthListItemCard({ item, isGuestView, onOffer, isPendin
               {isPending ? 'Réservation…' : 'Offrir ce cadeau'}
             </Button>
           ) : (
-            <span className={styles.statusAvailable}>Disponible</span>
+            <>
+              <span className={styles.statusAvailable}>Disponible</span>
+              <button
+                className={styles.removeBtn}
+                onClick={() => onRemove(item)}
+                title="Retirer de la liste"
+              >
+                Retirer
+              </button>
+            </>
           )}
         </div>
       </div>

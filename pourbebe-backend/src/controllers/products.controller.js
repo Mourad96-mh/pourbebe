@@ -2,7 +2,7 @@ import Product from '../models/Product.js'
 import Category from '../models/Category.js'
 
 export async function getProducts(req, res) {
-  const { category, brand, min, max, sort, page = 1, limit = 20, q, type, gender, age, isNew } = req.query
+  const { category, brand, min, max, sort, page = 1, limit = 20, q, type, gender, age, isNew, onSale, isGiftIdea } = req.query
   const filter = {}
 
   if (category) {
@@ -19,10 +19,16 @@ export async function getProducts(req, res) {
   if (min)        filter.price.$gte = Number(min)
   if (max)        filter.price.$lte = Number(max)
   if (q)          filter.$text = { $search: q }
-  if (type)          filter.productType = type
-  if (gender)        filter.gender = gender
-  if (age)           filter.ageRange = age
+  if (type)       filter.productType = type
+  if (gender) {
+    filter.gender = (gender === 'fille' || gender === 'garcon')
+      ? { $in: [gender, 'unisexe'] }
+      : gender
+  }
+  if (age)              filter.ageRange = age
   if (isNew === 'true') filter.isNewArrival = true
+  if (onSale === 'true') filter.$expr = { $and: [{ $ne: ['$compareAt', null] }, { $gt: ['$compareAt', '$price'] }] }
+  if (isGiftIdea === 'true') filter.isGiftIdea = true
 
   const sortMap = {
     newest:    { createdAt: -1 },

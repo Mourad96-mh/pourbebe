@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import api from '../lib/api'
 
 const FREE_SHIPPING_THRESHOLD = 400
 
@@ -31,6 +32,10 @@ const useCart = create(
       },
 
       removeItem(key) {
+        const item = get().items.find((i) => i.key === key)
+        if (item?.meta?.giftListItemId && item?.meta?.shareId) {
+          api.patch(`/birthlist/${item.meta.shareId}/items/${item.meta.giftListItemId}/unreserve`).catch(() => {})
+        }
         set((s) => ({ items: s.items.filter((i) => i.key !== key) }))
       },
 

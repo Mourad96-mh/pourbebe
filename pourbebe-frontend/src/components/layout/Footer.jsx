@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import api from '../../lib/api'
 import styles from './Footer.module.css'
 
 const INFO_LINKS = [
@@ -9,14 +11,19 @@ const INFO_LINKS = [
   { label: 'Contactez-nous',                href: '/contact' },
 ]
 
-const BLOG_LINKS = [
-  { label: 'Quel lit bébé choisir au Maroc ?',     href: '/blog/quel-lit-bebe-choisir-maroc' },
-  { label: 'Guide des tailles de gigoteuse',        href: '/blog/taille-gigoteuse-bebe-guide' },
-  { label: 'Les meilleurs cadeaux de naissance',   href: '/blog/meilleurs-cadeaux-naissance-maroc-2025' },
-  { label: 'Poussette ou porte-bébé ?',            href: '/blog/poussette-ou-porte-bebe' },
-]
+function useBlogPosts() {
+  return useQuery({
+    queryKey: ['posts', 'footer'],
+    queryFn: async () => {
+      const res = await api.get('/posts', { params: { limit: 4 } })
+      return res.data.data ?? []
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+}
 
 export default function Footer() {
+  const { data: posts = [] } = useBlogPosts()
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
@@ -93,9 +100,9 @@ export default function Footer() {
             <h3 className={styles.colTitle}>Blog</h3>
           </div>
           <ul className={styles.links}>
-            {BLOG_LINKS.map((l) => (
-              <li key={l.href}>
-                <Link to={l.href} className={styles.link}>{l.label}</Link>
+            {posts.map((p) => (
+              <li key={p._id ?? p.slug}>
+                <Link to={`/blog/${p.slug}`} className={styles.link}>{p.title}</Link>
               </li>
             ))}
             <li>

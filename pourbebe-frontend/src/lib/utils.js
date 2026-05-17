@@ -22,3 +22,14 @@ export function truncate(str, maxLength = 80) {
   if (!str) return ''
   return str.length > maxLength ? str.slice(0, maxLength).trimEnd() + '…' : str
 }
+
+export function stripHtml(html) {
+  if (!html) return ''
+  return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim()
+}
+
+export function renderDescription(desc) {
+  if (!desc) return ''
+  if (/<[a-z][\s\S]*>/i.test(desc)) return desc
+  return desc.replace(/\n/g, '<br>')
+}

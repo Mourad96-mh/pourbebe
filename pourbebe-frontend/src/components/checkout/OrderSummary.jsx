@@ -1,16 +1,13 @@
 import useCart, { cartTotal as cartTotalSelector } from '../../hooks/useCart'
 import { formatPrice } from '../../lib/utils'
+import { getShipping } from './CheckoutForm'
 import styles from './OrderSummary.module.css'
 
-const SHIPPING_COST = 40
-const FREE_SHIPPING = 400
-
-export default function OrderSummary() {
-  const items   = useCart((s) => s.items)
-  const total   = useCart(cartTotalSelector)
-  const isFree  = total >= FREE_SHIPPING
-  const shipping = isFree ? 0 : SHIPPING_COST
-  const grandTotal = total + shipping
+export default function OrderSummary({ city }) {
+  const items    = useCart((s) => s.items)
+  const subtotal = useCart(cartTotalSelector)
+  const shipping = getShipping(city)
+  const grandTotal = subtotal + shipping
 
   return (
     <aside className={styles.summary}>
@@ -30,17 +27,27 @@ export default function OrderSummary() {
 
       <div className={styles.row}>
         <span>Sous-total</span>
-        <span>{formatPrice(total)}</span>
+        <span>{formatPrice(subtotal)}</span>
       </div>
       <div className={styles.row}>
         <span>Livraison</span>
-        <span className={isFree ? styles.free : ''}>{isFree ? 'Gratuite' : formatPrice(SHIPPING_COST)}</span>
+        <span>
+          {city
+            ? formatPrice(shipping)
+            : <span className={styles.pending}>À préciser</span>}
+        </span>
       </div>
 
       <div className={styles.total}>
         <span>Total</span>
         <span>{formatPrice(grandTotal)}</span>
       </div>
+
+      {!city && (
+        <p className={styles.shippingNote}>
+          Frais de livraison : 30 DH Casablanca · 50 DH reste du Maroc
+        </p>
+      )}
     </aside>
   )
 }

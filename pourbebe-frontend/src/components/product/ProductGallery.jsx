@@ -17,6 +17,8 @@ export default function ProductGallery({ images = [], name = '' }) {
           className={styles.mainImage}
           width={600}
           height={600}
+          draggable={false}
+          onContextMenu={(e) => e.preventDefault()}
           onError={(e) => { e.currentTarget.style.display = 'none' }}
         />
       </div>
@@ -30,7 +32,7 @@ export default function ProductGallery({ images = [], name = '' }) {
               onClick={() => setActive(i)}
               aria-label={`Image ${i + 1}`}
             >
-              <img src={src} alt={`${name} ${i + 1}`} width={80} height={80} />
+              <img src={src} alt={`${name} ${i + 1}`} width={80} height={80} draggable={false} onContextMenu={(e) => e.preventDefault()} />
             </button>
           ))}
         </div>

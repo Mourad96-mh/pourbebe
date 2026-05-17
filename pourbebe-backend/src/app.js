@@ -9,6 +9,8 @@ import orderRoutes      from './routes/orders.routes.js'
 import birthlistRoutes  from './routes/birthlist.routes.js'
 import adminRoutes      from './routes/admin.routes.js'
 import postRoutes       from './routes/posts.routes.js'
+import bannerRoutes     from './routes/banners.routes.js'
+import curationRoutes   from './routes/curations.routes.js'
 import Product          from './models/Product.js'
 import Category         from './models/Category.js'
 import Post             from './models/Post.js'
@@ -25,6 +27,8 @@ app.use('/api/orders',     orderRoutes)
 app.use('/api/birthlist',  birthlistRoutes)
 app.use('/api/admin',      adminRoutes)
 app.use('/api/posts',      postRoutes)
+app.use('/api/banners',    bannerRoutes)
+app.use('/api/curations',  curationRoutes)
 
 const SITE = 'https://pourbebes.ma'
 

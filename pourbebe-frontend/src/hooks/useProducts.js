@@ -15,18 +15,20 @@ export function useProducts(params = {}) {
   return useQuery({
     queryKey: ['products', params],
     queryFn: async () => {
-      const { category, brand, min, max, sort, q, type, gender, age, isNew } = params
+      const { category, brand, min, max, sort, q, type, gender, age, isNew, onSale, isGiftIdea } = params
       const query = { limit: 200 }
-      if (category) query.category = category
-      if (brand)    query.brand = brand
-      if (min)      query.min = min
-      if (max)      query.max = max
-      if (sort)     query.sort = sort
-      if (q)        query.q = q
-      if (type)     query.type = type
-      if (gender)   query.gender = gender
-      if (age)      query.age = age
-      if (isNew)    query.isNew = 'true'
+      if (category)    query.category = category
+      if (brand)       query.brand = brand
+      if (min)         query.min = min
+      if (max)         query.max = max
+      if (sort)        query.sort = sort
+      if (q)           query.q = q
+      if (type)        query.type = type
+      if (gender)      query.gender = gender
+      if (age)         query.age = age
+      if (isNew)       query.isNew = 'true'
+      if (onSale)      query.onSale = 'true'
+      if (isGiftIdea)  query.isGiftIdea = 'true'
 
       const res = await api.get('/products', { params: query })
       const products = (res.data.data ?? []).map(normalizeProduct)

@@ -65,3 +65,16 @@ export async function reserveItem(req, res) {
 
   res.json({ success: true, data: list })
 }
+
+export async function unreserveItem(req, res) {
+  const list = await BirthList.findOne({ shareId: req.params.shareId })
+  if (!list) return res.status(404).json({ success: false, error: 'Liste introuvable.' })
+
+  const item = list.items.id(req.params.itemId)
+  if (!item) return res.status(404).json({ success: false, error: 'Article introuvable.' })
+
+  item.reserved = false
+  await list.save()
+
+  res.json({ success: true, data: list })
+}

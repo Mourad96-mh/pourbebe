@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useParams, useSearchParams, Link } from 'react-router-dom'
-import { useCategory, useProducts } from '../hooks/useProducts'
+import { useCategory, useCategories, useProducts } from '../hooks/useProducts'
+import { useBanners } from '../hooks/useBanners'
 import SEO from '../components/ui/SEO'
 import ProductCard from '../components/product/ProductCard'
 import ProductFilters from '../components/product/ProductFilters'
@@ -16,30 +17,28 @@ const SORT_OPTIONS = [
 
 const PAGE_SIZE = 12
 
-const HERO_IMAGES = {
-  chambre:      '/chambre-enfant.jpg',
-  sorties:      '/hero-img.jpeg',
-  hygiene:      '/hero-img.jpeg',
-  vetements:    '/hero-img.jpeg',
-  accessoires:  '/hero-img.jpeg',
-  cadeaux:      '/hero-img.jpeg',
-  promotions:   '/hero-img.jpeg',
+const HERO_IMAGES_FALLBACK = {
+  chambre:     '/chambre-enfant.jpg',
+  sorties:     '/hero-img.jpeg',
+  hygiene:     '/hero-img.jpeg',
+  vetements:   '/hero-img.jpeg',
+  accessoires: '/hero-img.jpeg',
+  cadeaux:     '/hero-img.jpeg',
+  promotions:  '/hero-img.jpeg',
 }
 
-const RECOMMENDED_COLLECTIONS = [
-  { label: 'Bain Bébé',          count: 59, image: '/chambre-enfant.jpg', href: '/categorie/hygiene' },
-  { label: 'Bavoirs',             count: 20, image: '/nouveautes.webp',    href: '/categorie/accessoires' },
-  { label: 'CodePromo10',         count: 5,  image: '/example-home.jpeg', href: '/categorie/cadeaux' },
-  { label: 'Nouvelle Collection', count: null, image: '/hero-img.jpeg',   href: '/categorie/vetements' },
+const RECOMMENDED_FALLBACK = [
+  { _id: 'rc-1', title: 'Bain Bébé',          subtitle: '59 articles', image: '/chambre-enfant.jpg', ctaLink: '/categorie/hygiene' },
+  { _id: 'rc-2', title: 'Bavoirs',             subtitle: '20 articles', image: '/nouveautes.webp',    ctaLink: '/categorie/accessoires' },
+  { _id: 'rc-3', title: 'Nouvelle Collection', subtitle: null,          image: '/hero-img.jpeg',      ctaLink: '/categorie/vetements' },
 ]
+
+const SPECIAL_SLUGS = ['promotions', 'cadeaux']
 
 function buildPageNumbers(current, total) {
   if (total <= 6) return Array.from({ length: total }, (_, i) => i + 1)
   const pages = [1, 2, 3, 4]
-  if (!pages.includes(total)) {
-    pages.push('...')
-    pages.push(total)
-  }
+  if (!pages.includes(total)) { pages.push('...'); pages.push(total) }
   return pages
 }
 
@@ -51,36 +50,82 @@ export default function CategoryPage() {
   const [page, setPage]                = useState(1)
   const [filtersOpen, setFiltersOpen]  = useState(false)
 
-  const isNew = searchParams.get('isNew') === 'true'
+  const isNew       = searchParams.get('isNew') === 'true'
+  const isPromo     = slug === 'promotions'
+  const isGiftIdeas = slug === 'cadeaux'
+  const isSpecial   = SPECIAL_SLUGS.includes(slug)
 
-  const { data: categoryData } = useCategory(slug)
-  const { data, isLoading }    = useProducts({
-    category: slug,
-    isNew: isNew || undefined,
+  const { data: categoryData }        = useCategory(isSpecial ? null : slug)
+  const { data: allCategories = [] }  = useCategories()
+  const { data: categoryHeroBanners } = useBanners('category-hero')
+  const { data: collectionBanners }   = useBanners('recommended-collection')
+
+  // Build API params depending on page type
+  const { subCategory, ages, gender, min, max } = filters
+  const apiParams = {
     sort,
-    ...filters,
-  })
-  const { data: unfilteredData } = useProducts({ category: slug, isNew: isNew || undefined })
+    ...(min  ? { min }  : {}),
+    ...(max  ? { max }  : {}),
+    ...(gender ? { gender } : {}),
+    ...(ages?.length ? { age: ages[0] } : {}),
+    ...(isPromo     ? { onSale: true }      : {}),
+    ...(isGiftIdeas ? { isGiftIdea: true }  : {}),
+    ...(!isSpecial  ? { category: subCategory || slug } : {}),
+    ...(isNew && !isSpecial ? { isNew: true } : {}),
+  }
 
-  const allProducts  = unfilteredData?.products ?? []
-  const typeCounts   = {}
-  const genderCounts = {}
-  const ageCounts    = {}
+  const { data, isLoading } = useProducts(apiParams)
+
+  // Unfiltered for counts (no subCategory, no gender, no age, no price)
+  const unfilteredParams = {
+    ...(!isSpecial  ? { category: slug } : {}),
+    ...(isPromo     ? { onSale: true }     : {}),
+    ...(isGiftIdeas ? { isGiftIdea: true } : {}),
+    ...(isNew && !isSpecial ? { isNew: true } : {}),
+  }
+  const { data: unfilteredData } = useProducts(unfilteredParams)
+
+  const allProducts = unfilteredData?.products ?? []
+
+  // Subcategories: find from full tree for the current parent category
+  const parentCatInTree = allCategories.find(c => c.slug === slug)
+  const subcategories   = categoryData?.category?.children ?? parentCatInTree?.children ?? []
+
+  // Compute counts
+  const subCategoryCounts = {}
+  const genderCounts      = {}
+  const ageCounts         = {}
   allProducts.forEach(p => {
-    if (p.productType) typeCounts[p.productType]   = (typeCounts[p.productType]   || 0) + 1
-    if (p.gender)      genderCounts[p.gender]       = (genderCounts[p.gender]       || 0) + 1
-    if (p.ageRange)    ageCounts[p.ageRange]         = (ageCounts[p.ageRange]         || 0) + 1
+    if (p.categorySlug) subCategoryCounts[p.categorySlug] = (subCategoryCounts[p.categorySlug] || 0) + 1
+    if (p.gender) {
+      // unisexe counts for all genders
+      if (p.gender === 'unisexe') {
+        genderCounts['fille']   = (genderCounts['fille']   || 0) + 1
+        genderCounts['garcon']  = (genderCounts['garcon']  || 0) + 1
+        genderCounts['unisexe'] = (genderCounts['unisexe'] || 0) + 1
+      } else {
+        genderCounts[p.gender] = (genderCounts[p.gender] || 0) + 1
+      }
+    }
+    if (p.ageRange) ageCounts[p.ageRange] = (ageCounts[p.ageRange] || 0) + 1
   })
 
-  const products     = data?.products ?? []
-  const total        = data?.total ?? 0
-  const totalPages   = Math.max(1, Math.ceil(total / PAGE_SIZE))
+  const products    = data?.products ?? []
+  const total       = data?.total ?? 0
+  const totalPages  = Math.max(1, Math.ceil(total / PAGE_SIZE))
   const pageProducts = products.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-  const fromItem     = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1
-  const toItem       = Math.min(page * PAGE_SIZE, total)
 
-  const categoryName = isNew ? 'Nouveautés' : (categoryData?.category?.name ?? slug)
-  const heroImage    = HERO_IMAGES[slug] ?? '/hero-img.jpeg'
+  const categoryName = isPromo
+    ? 'Promotions'
+    : isGiftIdeas
+    ? 'Idées Cadeaux'
+    : isNew
+    ? 'Nouveautés'
+    : (categoryData?.category?.name ?? slug)
+
+  const heroBanner = (categoryHeroBanners ?? []).find((b) => b.categorySlug === slug)
+  const heroImage  = heroBanner?.image || HERO_IMAGES_FALLBACK[slug] || '/hero-img.jpeg'
+  const collections = (collectionBanners ?? []).length > 0 ? (collectionBanners ?? []) : RECOMMENDED_FALLBACK
 
   function handleFiltersChange(f) {
     setFilters(f)
@@ -138,7 +183,8 @@ export default function CategoryPage() {
             <ProductFilters
               filters={filters}
               onChange={handleFiltersChange}
-              typeCounts={typeCounts}
+              subcategories={subcategories}
+              subCategoryCounts={subCategoryCounts}
               genderCounts={genderCounts}
               ageCounts={ageCounts}
               onClose={() => setFiltersOpen(false)}
@@ -216,22 +262,24 @@ export default function CategoryPage() {
       </div>
 
       {/* ── Collections recommandées ── */}
-      <section className={styles.collectionsSection}>
-        <h2 className={styles.collectionsTitle}>Collections recommandées</h2>
-        <div className={styles.collectionsGrid}>
-          {RECOMMENDED_COLLECTIONS.map(col => (
-            <Link key={col.label} to={col.href} className={styles.collectionCard}>
-              <div className={styles.collectionImgWrap}>
-                <img src={col.image} alt={col.label} className={styles.collectionImg} />
-              </div>
-              <p className={styles.collectionName}>{col.label}</p>
-              {col.count && (
-                <p className={styles.collectionCount}>{col.count} articles</p>
-              )}
-            </Link>
-          ))}
-        </div>
-      </section>
+      {collections.length > 0 && (
+        <section className={styles.collectionsSection}>
+          <h2 className={styles.collectionsTitle}>Collections recommandées</h2>
+          <div className={styles.collectionsGrid}>
+            {collections.map((col) => (
+              <Link key={col._id} to={col.ctaLink ?? '/'} className={styles.collectionCard}>
+                <div className={styles.collectionImgWrap}>
+                  <img src={col.image} alt={col.title} className={styles.collectionImg} />
+                </div>
+                <p className={styles.collectionName}>{col.title}</p>
+                {col.subtitle && (
+                  <p className={styles.collectionCount}>{col.subtitle}</p>
+                )}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
     </div>
   )

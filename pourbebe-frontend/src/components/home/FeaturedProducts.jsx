@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useProducts } from '../../hooks/useProducts'
+import { useCuration } from '../../hooks/useCuration'
 import { getDiscountPercent } from '../../lib/utils'
 import ProductCard from '../product/ProductCard'
 import Spinner from '../ui/Spinner'
@@ -22,16 +23,18 @@ function assignBadges(products) {
 }
 
 export default function FeaturedProducts() {
-  const { data, isLoading } = useProducts({ sort: 'newest', page: 1 })
+  const { data: curated = [] }                  = useCuration('featured')
+  const { data: fallback, isLoading: fbLoading } = useProducts({ sort: 'newest', page: 1 })
   const [current, setCurrent] = useState(0)
 
-  const entries = assignBadges(data?.products ?? [])
+  const rawProducts = curated.length > 0 ? curated : (fallback?.products ?? [])
+  const isLoading   = curated.length === 0 && fbLoading
 
-  const slides = []
+  const entries = assignBadges(rawProducts)
+  const slides  = []
   for (let i = 0; i < entries.length; i += SLIDE_SIZE) {
     slides.push(entries.slice(i, i + SLIDE_SIZE))
   }
-
   const total = slides.length
 
   useEffect(() => {
@@ -62,7 +65,7 @@ export default function FeaturedProducts() {
               {slides.map((slide, i) => (
                 <div key={i} className={styles.slide}>
                   {slide.map(({ product, badge }) => (
-                    <ProductCard key={product.id} product={product} badge={badge} />
+                    <ProductCard key={product.id ?? product._id} product={product} badge={badge} />
                   ))}
                 </div>
               ))}

@@ -3,24 +3,6 @@ import styles from './ProductFilters.module.css'
 
 const MAX_PRICE = 2880
 
-const PRODUCT_TYPES = [
-  { value: 'lit-bebe',   label: 'Lit Bébé' },
-  { value: 'lit-enfant', label: 'Lit Enfant' },
-  { value: 'couffin',    label: 'Couffin' },
-  { value: 'baby-nest',  label: 'Baby Nest' },
-  { value: 'linge',      label: 'Linge de Lit' },
-  { value: 'tresses',    label: 'Tresses et Tours de Lit' },
-  { value: 'matelas',    label: 'Matelas' },
-  { value: 'baignoire',  label: 'Baignoire & Bain' },
-  { value: 'poussette',  label: 'Poussette' },
-  { value: 'siege-auto', label: 'Siège Auto' },
-  { value: 'porte-bebe', label: 'Porte-bébé' },
-  { value: 'body',       label: 'Bodies & Pyjamas' },
-  { value: 'jouet',      label: 'Jouet & Éveil' },
-  { value: 'soin',       label: 'Soin & Hygiène' },
-  { value: 'autres',     label: 'Autres' },
-]
-
 const GENDER_OPTIONS = [
   { value: 'fille',   label: 'Fille' },
   { value: 'garcon',  label: 'Garçon' },
@@ -37,30 +19,31 @@ const AGE_OPTIONS = [
   { value: '0-4ans',   label: '0 – 4 ans' },
 ]
 
-function ChevronIcon({ open }) {
+function SectionLabel({ label }) {
   return (
-    <svg
-      className={open ? styles.chevronOpen : styles.chevron}
-      width="14" height="14" viewBox="0 0 24 24"
-      fill="none" stroke="currentColor" strokeWidth="2"
-    >
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
+    <div className={styles.sectionBtn}>
+      <span className={styles.sectionTitle}>{label}</span>
+    </div>
   )
 }
 
-export default function ProductFilters({ filters, onChange, typeCounts = {}, genderCounts = {}, ageCounts = {}, onClose }) {
-  const [open, setOpen] = useState({ prix: true, type: true, sexe: true, age: true })
-
+export default function ProductFilters({
+  filters,
+  onChange,
+  subcategories = [],
+  subCategoryCounts = {},
+  genderCounts = {},
+  ageCounts = {},
+  onClose,
+}) {
   const minPrice = filters.min ?? 0
   const maxPrice = filters.max ?? MAX_PRICE
 
-  const hasPriceFilter = filters.min || filters.max
-  const hasFilters = hasPriceFilter || filters.gender || filters.types?.length || filters.ages?.length
-
-  function toggle(key) {
-    setOpen(prev => ({ ...prev, [key]: !prev[key] }))
-  }
+  const hasPriceFilter  = filters.min || filters.max
+  const hasSubCategory  = !!filters.subCategory
+  const hasGender       = !!filters.gender
+  const hasAges         = (filters.ages ?? []).length > 0
+  const hasFilters      = hasPriceFilter || hasSubCategory || hasGender || hasAges
 
   function update(key, value) {
     onChange({ ...filters, [key]: value || undefined })
@@ -83,15 +66,22 @@ export default function ProductFilters({ filters, onChange, typeCounts = {}, gen
     onChange(rest)
   }
 
-  function removeTypeFilter(val) {
-    const next = (filters.types || []).filter(v => v !== val)
-    onChange({ ...filters, types: next.length ? next : undefined })
-  }
-
   function removeAgeFilter(val) {
     const next = (filters.ages || []).filter(v => v !== val)
     onChange({ ...filters, ages: next.length ? next : undefined })
   }
+
+  const visibleSubcategories = subcategories.filter(
+    (s) => (subCategoryCounts[s.slug] ?? 0) > 0 || filters.subCategory === s.slug
+  )
+
+  const visibleGenders = GENDER_OPTIONS.filter(
+    (o) => (genderCounts[o.value] ?? 0) > 0 || filters.gender === o.value
+  )
+
+  const visibleAges = AGE_OPTIONS.filter(
+    (o) => (ageCounts[o.value] ?? 0) > 0 || (filters.ages ?? []).includes(o.value)
+  )
 
   return (
     <aside className={styles.sidebar}>
@@ -121,19 +111,22 @@ export default function ProductFilters({ filters, onChange, typeCounts = {}, gen
           <div className={styles.chips}>
             {hasPriceFilter && (
               <span className={styles.chip}>
-                {minPrice} DH – {maxPrice} DH
+                {minPrice} – {maxPrice} DH
                 <button onClick={removePriceFilter} aria-label="Retirer filtre prix">×</button>
               </span>
             )}
-            {(filters.types || []).map(val => {
-              const opt = PRODUCT_TYPES.find(o => o.value === val)
-              return (
-                <span key={val} className={styles.chip}>
-                  {opt?.label ?? val}
-                  <button onClick={() => removeTypeFilter(val)} aria-label={`Retirer ${opt?.label}`}>×</button>
-                </span>
-              )
-            })}
+            {hasSubCategory && (
+              <span className={styles.chip}>
+                {subcategories.find(s => s.slug === filters.subCategory)?.name ?? filters.subCategory}
+                <button onClick={() => update('subCategory', '')} aria-label="Retirer filtre sous-catégorie">×</button>
+              </span>
+            )}
+            {hasGender && (
+              <span className={styles.chip}>
+                {GENDER_OPTIONS.find(o => o.value === filters.gender)?.label ?? filters.gender}
+                <button onClick={() => update('gender', '')} aria-label="Retirer filtre sexe">×</button>
+              </span>
+            )}
             {(filters.ages || []).map(val => {
               const opt = AGE_OPTIONS.find(o => o.value === val)
               return (
@@ -150,111 +143,93 @@ export default function ProductFilters({ filters, onChange, typeCounts = {}, gen
 
       {/* ── PRIX ── */}
       <div className={styles.section}>
-        <button className={styles.sectionBtn} onClick={() => toggle('prix')}>
-          <span className={styles.sectionTitle}>PRIX</span>
-          <ChevronIcon open={open.prix} />
-        </button>
-        {open.prix && (
-          <div className={styles.sectionBody}>
-            <div className={styles.sliderWrap}>
-              <div className={styles.sliderBase} />
-              <div
-                className={styles.sliderFill}
-                style={{
-                  left:  `${(minPrice / MAX_PRICE) * 100}%`,
-                  right: `${100 - (maxPrice / MAX_PRICE) * 100}%`,
-                }}
-              />
-              <input
-                type="range"
-                className={styles.rangeInput}
-                min={0}
-                max={MAX_PRICE}
-                value={minPrice}
-                onChange={e => {
-                  const v = +e.target.value
-                  if (v < maxPrice) update('min', v || undefined)
-                }}
-              />
-              <input
-                type="range"
-                className={styles.rangeInput}
-                min={0}
-                max={MAX_PRICE}
-                value={maxPrice}
-                onChange={e => {
-                  const v = +e.target.value
-                  if (v > minPrice) update('max', v === MAX_PRICE ? undefined : v)
-                }}
-              />
-            </div>
-            <div className={styles.priceLabels}>
-              <span>{minPrice} Dh</span>
-              <span>{maxPrice.toLocaleString('fr-FR')} Dh</span>
-            </div>
+        <SectionLabel label="PRIX" />
+        <div className={styles.sectionBody}>
+          <div className={styles.sliderWrap}>
+            <div className={styles.sliderBase} />
+            <div
+              className={styles.sliderFill}
+              style={{
+                left:  `${(minPrice / MAX_PRICE) * 100}%`,
+                right: `${100 - (maxPrice / MAX_PRICE) * 100}%`,
+              }}
+            />
+            <input
+              type="range"
+              className={styles.rangeInput}
+              min={0} max={MAX_PRICE} value={minPrice}
+              onChange={e => {
+                const v = +e.target.value
+                if (v < maxPrice) update('min', v || undefined)
+              }}
+            />
+            <input
+              type="range"
+              className={styles.rangeInput}
+              min={0} max={MAX_PRICE} value={maxPrice}
+              onChange={e => {
+                const v = +e.target.value
+                if (v > minPrice) update('max', v === MAX_PRICE ? undefined : v)
+              }}
+            />
           </div>
-        )}
+          <div className={styles.priceLabels}>
+            <span>{minPrice} Dh</span>
+            <span>{maxPrice.toLocaleString('fr-FR')} Dh</span>
+          </div>
+        </div>
       </div>
 
-      {/* ── TYPE DE PRODUIT ── */}
-      <div className={styles.section}>
-        <button className={styles.sectionBtn} onClick={() => toggle('type')}>
-          <span className={styles.sectionTitle}>TYPE DE PRODUIT</span>
-          <ChevronIcon open={open.type} />
-        </button>
-        {open.type && (
+      {/* ── SOUS-CATÉGORIE (dynamic from backoffice) ── */}
+      {visibleSubcategories.length > 0 && (
+        <div className={styles.section}>
+          <SectionLabel label="SOUS-CATÉGORIE" />
           <div className={styles.sectionBody}>
-            {PRODUCT_TYPES.map(opt => (
-              <label key={opt.value} className={styles.checkLabel}>
+            {visibleSubcategories.map(sub => (
+              <label key={sub.slug} className={styles.checkLabel}>
                 <input
-                  type="checkbox"
+                  type="radio"
+                  name="subCategory"
                   className={styles.checkbox}
-                  checked={(filters.types || []).includes(opt.value)}
-                  onChange={() => toggleArrayFilter('types', opt.value)}
+                  checked={filters.subCategory === sub.slug}
+                  onChange={() => update('subCategory', filters.subCategory === sub.slug ? '' : sub.slug)}
                 />
-                <span className={styles.checkText}>{opt.label}</span>
-                <span className={styles.checkCount}>({typeCounts[opt.value] ?? 0})</span>
+                <span className={styles.checkText}>{sub.name}</span>
+                <span className={styles.checkCount}>({subCategoryCounts[sub.slug] ?? 0})</span>
               </label>
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* ── SEXE ── */}
-      <div className={styles.section}>
-        <button className={styles.sectionBtn} onClick={() => toggle('sexe')}>
-          <span className={styles.sectionTitle}>SEXE</span>
-          <ChevronIcon open={open.sexe} />
-        </button>
-        {open.sexe && (
+      {visibleGenders.length > 0 && (
+        <div className={styles.section}>
+          <SectionLabel label="SEXE" />
           <div className={styles.sectionBody}>
-            {GENDER_OPTIONS.map(opt => (
+            {visibleGenders.map(opt => (
               <label key={opt.value} className={styles.checkLabel}>
                 <input
-                  type="checkbox"
+                  type="radio"
+                  name="gender"
                   className={styles.checkbox}
                   checked={filters.gender === opt.value}
                   onChange={() => update('gender', filters.gender === opt.value ? '' : opt.value)}
                 />
                 <span className={styles.checkText}>{opt.label}</span>
-                {genderCounts[opt.value] > 0 && (
-                  <span className={styles.checkCount}>({genderCounts[opt.value]})</span>
-                )}
+                <span className={styles.checkCount}>({genderCounts[opt.value] ?? 0})</span>
               </label>
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* ── ÂGE ── */}
-      <div className={styles.section}>
-        <button className={styles.sectionBtn} onClick={() => toggle('age')}>
-          <span className={styles.sectionTitle}>ÂGE</span>
-          <ChevronIcon open={open.age} />
-        </button>
-        {open.age && (
+      {visibleAges.length > 0 && (
+        <div className={styles.section}>
+          <SectionLabel label="TRANCHE D'ÂGE" />
           <div className={styles.sectionBody}>
-            {AGE_OPTIONS.map(opt => (
+            {visibleAges.map(opt => (
               <label key={opt.value} className={styles.checkLabel}>
                 <input
                   type="checkbox"
@@ -267,8 +242,8 @@ export default function ProductFilters({ filters, onChange, typeCounts = {}, gen
               </label>
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
     </aside>
   )

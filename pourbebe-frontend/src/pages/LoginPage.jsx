@@ -59,6 +59,9 @@ export default function LoginPage() {
         </form>
 
         <p className={styles.switch}>
+          <Link to="/mot-de-passe-oublie" className={styles.link}>Mot de passe oublié ?</Link>
+        </p>
+        <p className={styles.switch}>
           Pas encore de compte ? <Link to="/inscription" className={styles.link}>Créer un compte</Link>
         </p>
       </div>

@@ -5,7 +5,7 @@ export function useAdminProducts() {
   return useQuery({
     queryKey: ['admin', 'products'],
     queryFn: async () => {
-      const res = await api.get('/admin/products')
+      const res = await api.get('/admin/products', { params: { limit: 500 } })
       return res.data.data ?? res.data
     },
   })
@@ -175,6 +175,72 @@ export function useDeleteBirthList() {
   return useMutation({
     mutationFn: (id) => api.delete(`/admin/birthlists/${id}`),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'birthlists'] }),
+  })
+}
+
+export function useAdminCuration(slot, contextId) {
+  return useQuery({
+    queryKey: ['admin', 'curations', slot, contextId ?? ''],
+    queryFn: async () => {
+      const params = { slot, contextId: contextId ?? '' }
+      const res = await api.get('/admin/curations', { params })
+      return res.data.data?.[0]?.productIds ?? []
+    },
+    enabled: !!slot,
+  })
+}
+
+export function useUpsertCuration() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ slot, contextId = '', productIds }) =>
+      api.put('/admin/curations', { slot, contextId, productIds }),
+    onSuccess: (_, { slot, contextId = '' }) => {
+      qc.invalidateQueries({ queryKey: ['admin', 'curations', slot] })
+      qc.invalidateQueries({ queryKey: ['curations', slot, contextId] })
+    },
+  })
+}
+
+export function useAdminBanners(type) {
+  return useQuery({
+    queryKey: ['admin', 'banners', type ?? 'all'],
+    queryFn: async () => {
+      const params = {}
+      if (type) params.type = type
+      const res = await api.get('/admin/banners', { params })
+      return res.data.data ?? []
+    },
+  })
+}
+
+export function useCreateBanner() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (data) => api.post('/admin/banners', data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'banners'] }),
+  })
+}
+
+export function useUpdateBanner() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, data }) => api.patch(`/admin/banners/${id}`, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'banners'] })
+      qc.invalidateQueries({ queryKey: ['banners'] })
+    },
+  })
+}
+
+export function useDeleteBanner() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id) => api.delete(`/admin/banners/${id}`),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'banners'] })
+      qc.invalidateQueries({ queryKey: ['banners'] })
+    },
   })
 }
 

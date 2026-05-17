@@ -1,21 +1,31 @@
 import { Link } from 'react-router-dom'
+import { useBanners } from '../../hooks/useBanners'
 import Button from '../ui/Button'
 import styles from './BirthListBanner.module.css'
 
+const FALLBACK = {
+  tag:      'Pour les futurs parents',
+  title:    'Créez votre liste de naissance',
+  subtitle: 'Partagez votre liste avec vos proches et laissez-les choisir le cadeau parfait. Simple, élégant et entièrement gratuit.',
+  ctaText:  'Créer ma liste',
+  ctaLink:  '/liste-naissance',
+}
+
 export default function BirthListBanner() {
+  const { data: banners = [] } = useBanners('birthlist')
+  const b = banners[0] ?? FALLBACK
+
   return (
     <section className={styles.banner}>
       <div className={styles.inner}>
         <div className={styles.content}>
-          <p className={styles.tag}>Pour les futurs parents</p>
+          {b.tag && <p className={styles.tag}>{b.tag}</p>}
           <h2 className={styles.title}>
-            Créez votre <em>liste de naissance</em>
+            {b.title}
           </h2>
-          <p className={styles.desc}>
-            Partagez votre liste avec vos proches et laissez-les choisir le cadeau parfait. Simple, élégant et entièrement gratuit.
-          </p>
-          <Link to="/liste-naissance">
-            <Button variant="dark" size="lg">Créer ma liste</Button>
+          {b.subtitle && <p className={styles.desc}>{b.subtitle}</p>}
+          <Link to={b.ctaLink ?? '/liste-naissance'}>
+            <Button variant="dark" size="lg">{b.ctaText || 'Créer ma liste'}</Button>
           </Link>
         </div>
       </div>

@@ -68,9 +68,8 @@
 /* ── Grid ── */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 220px));
+  grid-template-columns: repeat(5, 1fr);
   gap: var(--space-4);
-  justify-content: center;
 }
 
 .empty {
@@ -81,8 +80,12 @@
 }
 
 /* ── Responsive ── */
+@media (max-width: 1024px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}
+
 @media (max-width: 768px) {
-  .grid { gap: var(--space-3); }
+  .grid { grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
   .title { font-size: var(--text-xl); }
   .inner { padding: 0 var(--space-4); }
 }

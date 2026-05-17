@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   useAdminProducts,
   useAdminCategories,
@@ -11,24 +11,6 @@ import { formatPrice } from '../../lib/utils'
 import styles from './AdminProducts.module.css'
 
 const MAX_IMAGES = 5
-
-const PRODUCT_TYPES = [
-  { value: 'lit-bebe',    label: 'Lit Bébé' },
-  { value: 'lit-enfant',  label: 'Lit Enfant' },
-  { value: 'couffin',     label: 'Couffin' },
-  { value: 'baby-nest',   label: 'Baby Nest' },
-  { value: 'linge',       label: 'Linge de Lit' },
-  { value: 'tresses',     label: 'Tresses et Tours de Lit' },
-  { value: 'matelas',     label: 'Matelas' },
-  { value: 'baignoire',   label: 'Baignoire & Bain' },
-  { value: 'poussette',   label: 'Poussette' },
-  { value: 'siege-auto',  label: 'Siège Auto' },
-  { value: 'porte-bebe',  label: 'Porte-bébé' },
-  { value: 'body',        label: 'Bodies & Pyjamas' },
-  { value: 'jouet',       label: 'Jouet & Éveil' },
-  { value: 'soin',        label: 'Soin & Hygiène' },
-  { value: 'autres',      label: 'Autres' },
-]
 
 const GENDER_OPTIONS = [
   { value: 'fille',   label: 'Fille' },
@@ -52,14 +34,62 @@ const EMPTY_FORM = {
   price:            '',
   compareAt:        '',
   description:      '',
+  usageTips:        '',
+  sizes:            [],
   parentCategoryId: '',
   categoryId:       '',
   images:           [],
   inStock:          true,
   isNewArrival:     false,
-  productType:      '',
+  isGiftIdea:       false,
+  cartDisabled:     false,
   gender:           '',
   ageRange:         '',
+  onOrderNote:      '',
+  deliveryNote:     '',
+  returnNote:       '',
+}
+
+/* ── Inline rich-text editor ── */
+function RichEditor({ defaultValue, onChange }) {
+  const ref = useRef(null)
+
+  useEffect(() => {
+    if (ref.current) ref.current.innerHTML = defaultValue || ''
+  }, []) // intentionally runs once on mount only
+
+  function execCmd(cmd) {
+    ref.current?.focus()
+    document.execCommand(cmd, false, null)
+  }
+
+  return (
+    <div className={styles.editorWrap}>
+      <div className={styles.editorToolbar}>
+        <button type="button" onMouseDown={(e) => { e.preventDefault(); execCmd('bold') }} title="Gras" className={styles.editorBtn}>
+          <strong>G</strong>
+        </button>
+        <button type="button" onMouseDown={(e) => { e.preventDefault(); execCmd('italic') }} title="Italique" className={styles.editorBtn}>
+          <em>I</em>
+        </button>
+        <button type="button" onMouseDown={(e) => { e.preventDefault(); execCmd('insertUnorderedList') }} title="Liste à puces" className={styles.editorBtn}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <line x1="9" y1="6" x2="20" y2="6" /><line x1="9" y1="12" x2="20" y2="12" /><line x1="9" y1="18" x2="20" y2="18" />
+            <circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none" />
+            <circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none" />
+            <circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none" />
+          </svg>
+        </button>
+      </div>
+      <div
+        ref={ref}
+        contentEditable
+        suppressContentEditableWarning
+        className={styles.editorBody}
+        onInput={(e) => onChange(e.currentTarget.innerHTML)}
+      />
+    </div>
+  )
 }
 
 function findParentId(tree, categoryId) {
@@ -79,21 +109,23 @@ export default function AdminProducts() {
   const deleteProduct  = useDeleteProduct()
   const uploadImage    = useUploadImage()
 
-  const [modal, setModal]             = useState(null)
-  const [form, setForm]               = useState(EMPTY_FORM)
+  const [modal, setModal]               = useState(null)
+  const [form, setForm]                 = useState(EMPTY_FORM)
+  const [sizeInput, setSizeInput]       = useState('')
   const [deleteTarget, setDeleteTarget] = useState(null)
-  const [search, setSearch]           = useState('')
-  const [error, setError]             = useState('')
-  const [uploading, setUploading]     = useState(false)
-  const fileInputRef                  = useRef(null)
+  const [search, setSearch]             = useState('')
+  const [error, setError]               = useState('')
+  const [uploading, setUploading]       = useState(false)
+  const fileInputRef                    = useRef(null)
 
   /* ── helpers ── */
-  const parentCategories = categories  // top-level (with children array)
+  const parentCategories = categories
   const selectedParent   = parentCategories.find((c) => String(c._id) === form.parentCategoryId)
   const subcategories    = selectedParent?.children ?? []
 
   function openCreate() {
     setForm(EMPTY_FORM)
+    setSizeInput('')
     setError('')
     setModal('create')
   }
@@ -105,22 +137,29 @@ export default function AdminProducts() {
       name:             product.name         ?? '',
       brand:            product.brand        ?? '',
       price:            product.price        ?? '',
-      compareAt:        product.compareAt     ?? '',
+      compareAt:        product.compareAt    ?? '',
       description:      product.description  ?? '',
+      usageTips:        product.usageTips    ?? '',
+      sizes:            product.sizes        ?? [],
       parentCategoryId: parentId,
       categoryId:       catId,
       images:           product.images       ?? [],
       inStock:          product.inStock      ?? true,
       isNewArrival:     product.isNewArrival ?? false,
-      productType:      product.productType  ?? '',
+      isGiftIdea:       product.isGiftIdea   ?? false,
+      cartDisabled:     product.cartDisabled ?? false,
       gender:           product.gender       ?? '',
       ageRange:         product.ageRange     ?? '',
+      onOrderNote:      product.onOrderNote  ?? '',
+      deliveryNote:     product.deliveryNote ?? '',
+      returnNote:       product.returnNote   ?? '',
     })
+    setSizeInput('')
     setError('')
     setModal(product)
   }
 
-  function closeModal() { setModal(null); setError('') }
+  function closeModal() { setModal(null); setError(''); setSizeInput('') }
 
   function handleField(e) {
     const { name, value, type, checked } = e.target
@@ -140,6 +179,22 @@ export default function AdminProducts() {
 
   function handleSubChange(e) {
     setForm((f) => ({ ...f, categoryId: e.target.value }))
+  }
+
+  /* ── sizes chip input ── */
+  function handleSizeKeyDown(e) {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault()
+      const val = sizeInput.trim().toUpperCase()
+      if (val && !form.sizes.includes(val)) {
+        setForm((f) => ({ ...f, sizes: [...f.sizes, val] }))
+      }
+      setSizeInput('')
+    }
+  }
+
+  function removeSize(size) {
+    setForm((f) => ({ ...f, sizes: f.sizes.filter((s) => s !== size) }))
   }
 
   /* ── image upload ── */
@@ -178,15 +233,21 @@ export default function AdminProducts() {
       name:         form.name,
       brand:        form.brand,
       description:  form.description,
+      usageTips:    form.usageTips,
+      sizes:        form.sizes,
       categoryId:   form.categoryId,
       price:        parseFloat(form.price),
       compareAt:    form.compareAt ? parseFloat(form.compareAt) : undefined,
       images:       form.images,
       inStock:      form.inStock,
       isNewArrival: form.isNewArrival,
-      productType:  form.productType  || null,
-      gender:       form.gender       || null,
-      ageRange:     form.ageRange     || null,
+      isGiftIdea:   form.isGiftIdea,
+      cartDisabled: form.cartDisabled,
+      gender:       form.gender    || null,
+      ageRange:     form.ageRange  || null,
+      onOrderNote:  form.onOrderNote,
+      deliveryNote: form.deliveryNote,
+      returnNote:   form.returnNote,
     }
     try {
       if (modal === 'create') {
@@ -289,9 +350,7 @@ export default function AdminProducts() {
                 </td>
                 <td className={styles.productName}>{p.name}</td>
                 <td className={styles.brand}>{p.brand}</td>
-                <td className={styles.category}>
-                  {p.categoryId?.name ?? '—'}
-                </td>
+                <td className={styles.category}>{p.categoryId?.name ?? '—'}</td>
                 <td>
                   {formatPrice(parseFloat(p.price ?? 0))}
                   {p.compareAt && (
@@ -361,8 +420,8 @@ export default function AdminProducts() {
                   <input name="name" value={form.name} onChange={handleField} required className={styles.input} placeholder="Nom du produit" />
                 </label>
                 <label className={styles.field}>
-                  <span className={styles.fieldLabel}>Marque *</span>
-                  <input name="brand" value={form.brand} onChange={handleField} required className={styles.input} placeholder="Marque" />
+                  <span className={styles.fieldLabel}>Marque</span>
+                  <input name="brand" value={form.brand} onChange={handleField} className={styles.input} placeholder="Marque (optionnel)" />
                 </label>
               </div>
 
@@ -402,19 +461,10 @@ export default function AdminProducts() {
                 )}
               </div>
 
-              {/* Type / Sexe / Âge — matches filter sidebar */}
+              {/* Sexe / Âge */}
               <div className={styles.filterSection}>
                 <span className={styles.filterSectionLabel}>Attributs de filtrage</span>
-                <div className={styles.row3}>
-                  <label className={styles.field}>
-                    <span className={styles.fieldLabel}>Type de produit</span>
-                    <select name="productType" value={form.productType} onChange={handleField} className={styles.select}>
-                      <option value="">— Non spécifié —</option>
-                      {PRODUCT_TYPES.map((o) => (
-                        <option key={o.value} value={o.value}>{o.label}</option>
-                      ))}
-                    </select>
-                  </label>
+                <div className={styles.row}>
                   <label className={styles.field}>
                     <span className={styles.fieldLabel}>Sexe</span>
                     <select name="gender" value={form.gender} onChange={handleField} className={styles.select}>
@@ -434,6 +484,32 @@ export default function AdminProducts() {
                     </select>
                   </label>
                 </div>
+              </div>
+
+              {/* Sizes */}
+              <div className={styles.field}>
+                <span className={styles.fieldLabel}>
+                  Tailles
+                  <span className={styles.fieldHint}>Appuyer sur Entrée pour ajouter</span>
+                </span>
+                {form.sizes.length > 0 && (
+                  <div className={styles.sizesChips}>
+                    {form.sizes.map((s) => (
+                      <span key={s} className={styles.sizeChip}>
+                        {s}
+                        <button type="button" onClick={() => removeSize(s)} className={styles.sizeRemove} aria-label={`Supprimer ${s}`}>×</button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <input
+                  type="text"
+                  value={sizeInput}
+                  onChange={(e) => setSizeInput(e.target.value)}
+                  onKeyDown={handleSizeKeyDown}
+                  className={styles.input}
+                  placeholder="Ex : S, M, L, XL, 3-6 mois…"
+                />
               </div>
 
               {/* Images */}
@@ -492,11 +568,38 @@ export default function AdminProducts() {
                 )}
               </div>
 
-              {/* Description */}
+              {/* Description — rich text editor */}
+              <div className={styles.field}>
+                <span className={styles.fieldLabel}>Description</span>
+                <RichEditor
+                  key={modal === 'create' ? 'create' : (modal._id ?? modal.id)}
+                  defaultValue={form.description}
+                  onChange={(html) => setForm((f) => ({ ...f, description: html }))}
+                />
+              </div>
+
+              {/* Conseils d'utilisation */}
               <label className={styles.field}>
-                <span className={styles.fieldLabel}>Description *</span>
-                <textarea name="description" value={form.description} onChange={handleField} required rows={4} className={styles.textarea} placeholder="Description du produit" />
+                <span className={styles.fieldLabel}>Conseils d'utilisation</span>
+                <textarea name="usageTips" value={form.usageTips} onChange={handleField} rows={3} className={styles.textarea} placeholder="Conseils, entretien, composition… (optionnel)" />
               </label>
+
+              {/* Informations commande / livraison / retour */}
+              <div className={styles.filterSection}>
+                <span className={styles.filterSectionLabel}>Informations produit</span>
+                <label className={styles.field}>
+                  <span className={styles.fieldLabel}>Note si produit sur commande</span>
+                  <textarea name="onOrderNote" value={form.onOrderNote} onChange={handleField} rows={2} className={styles.textarea} placeholder="Ex : Ce produit est fabriqué sur commande sous 7 à 14 jours ouvrables." />
+                </label>
+                <label className={styles.field}>
+                  <span className={styles.fieldLabel}>Conditions de livraison</span>
+                  <textarea name="deliveryNote" value={form.deliveryNote} onChange={handleField} rows={2} className={styles.textarea} placeholder="Laisser vide pour utiliser les conditions générales du site." />
+                </label>
+                <label className={styles.field}>
+                  <span className={styles.fieldLabel}>Conditions d'échange & retour</span>
+                  <textarea name="returnNote" value={form.returnNote} onChange={handleField} rows={2} className={styles.textarea} placeholder="Laisser vide pour utiliser les conditions générales du site." />
+                </label>
+              </div>
 
               {/* Toggles */}
               <div className={styles.checks}>
@@ -507,6 +610,14 @@ export default function AdminProducts() {
                 <label className={styles.checkLabel}>
                   <input type="checkbox" name="isNewArrival" checked={form.isNewArrival} onChange={handleField} className={styles.checkbox} />
                   Marquer comme nouveau
+                </label>
+                <label className={styles.checkLabel}>
+                  <input type="checkbox" name="isGiftIdea" checked={form.isGiftIdea} onChange={handleField} className={styles.checkbox} />
+                  Idées Cadeaux
+                </label>
+                <label className={styles.checkLabel}>
+                  <input type="checkbox" name="cartDisabled" checked={form.cartDisabled} onChange={handleField} className={styles.checkbox} />
+                  WhatsApp uniquement
                 </label>
               </div>
 

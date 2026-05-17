@@ -14,7 +14,8 @@ export async function getCategories(req, res) {
 }
 
 export async function getCategory(req, res) {
-  const category = await Category.findOne({ slug: req.params.slug })
+  const category = await Category.findOne({ slug: req.params.slug }).lean()
   if (!category) return res.status(404).json({ success: false, error: 'Catégorie introuvable.' })
-  res.json({ success: true, data: category })
+  const children = await Category.find({ parentId: category._id }).sort({ name: 1 }).lean()
+  res.json({ success: true, data: { ...category, children } })
 }

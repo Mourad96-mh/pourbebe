@@ -17,3 +17,13 @@ export async function protect(req, res, next) {
 
   next()
 }
+
+export async function optionalProtect(req, res, next) {
+  const token = req.headers.authorization?.split(' ')[1]
+  if (!token) return next()
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    req.user = await User.findById(decoded.id).select('-password')
+  } catch { /* proceed as guest */ }
+  next()
+}

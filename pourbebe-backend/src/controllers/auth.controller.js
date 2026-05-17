@@ -1,6 +1,8 @@
+import crypto from 'crypto'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import User from '../models/User.js'
+import { sendPasswordReset } from '../lib/email.js'
 
 const registerSchema = z.object({
   name:     z.string().min(2),
@@ -43,4 +45,38 @@ export async function login(req, res) {
 
 export async function getMe(req, res) {
   res.json({ success: true, data: req.user })
+}
+
+export async function forgotPassword(req, res) {
+  const { email } = req.body
+  const user = await User.findOne({ email: String(email ?? '').toLowerCase().trim() })
+  if (!user) return res.json({ success: true }) // don't reveal whether email exists
+
+  const rawToken = crypto.randomBytes(32).toString('hex')
+  const hashed   = crypto.createHash('sha256').update(rawToken).digest('hex')
+
+  user.resetToken       = hashed
+  user.resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000)
+  await user.save()
+
+  await sendPasswordReset(user.email, rawToken)
+  res.json({ success: true })
+}
+
+export async function resetPassword(req, res) {
+  const { token, newPassword } = req.body
+  if (!token || !newPassword || String(newPassword).length < 8) {
+    return res.status(400).json({ success: false, error: 'Données invalides.' })
+  }
+
+  const hashed = crypto.createHash('sha256').update(String(token)).digest('hex')
+  const user   = await User.findOne({ resetToken: hashed, resetTokenExpiry: { $gt: new Date() } })
+  if (!user) return res.status(400).json({ success: false, error: 'Lien invalide ou expiré.' })
+
+  user.password         = newPassword
+  user.resetToken       = null
+  user.resetTokenExpiry = null
+  await user.save()
+
+  res.json({ success: true })
 }

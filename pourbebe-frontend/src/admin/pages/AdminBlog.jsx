@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   useAdminPosts,
   useCreatePost,
   useUpdatePost,
   useDeletePost,
+  useUploadImage,
 } from '../hooks/useAdmin'
 import styles from './AdminBlog.module.css'
 
@@ -29,11 +30,86 @@ function formatDate(iso) {
   return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
+/* ── Rich-text editor for blog body ── */
+function BlogEditor({ defaultValue, onChange, onUpload }) {
+  const ref = useRef(null)
+  const fileRef = useRef(null)
+
+  useEffect(() => {
+    if (ref.current) ref.current.innerHTML = defaultValue || ''
+  }, []) // intentionally runs once on mount
+
+  function execCmd(cmd, val = null) {
+    ref.current?.focus()
+    document.execCommand(cmd, false, val)
+  }
+
+  function insertHeading(tag) {
+    ref.current?.focus()
+    document.execCommand('formatBlock', false, tag)
+  }
+
+  async function handleImageFile(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const url = await onUpload(file)
+    ref.current?.focus()
+    document.execCommand('insertHTML', false, `<img src="${url}" alt="" style="max-width:100%;border-radius:4px;margin:12px 0;display:block">`)
+    if (fileRef.current) fileRef.current.value = ''
+  }
+
+  return (
+    <div className={styles.editorWrap}>
+      <div className={styles.editorToolbar}>
+        <button type="button" onMouseDown={(e) => { e.preventDefault(); execCmd('bold') }} title="Gras" className={styles.editorBtn}>
+          <strong>G</strong>
+        </button>
+        <button type="button" onMouseDown={(e) => { e.preventDefault(); execCmd('italic') }} title="Italique" className={styles.editorBtn}>
+          <em>I</em>
+        </button>
+        <span className={styles.editorSep} />
+        <button type="button" onMouseDown={(e) => { e.preventDefault(); insertHeading('h2') }} title="Titre H2" className={styles.editorBtn}>
+          H2
+        </button>
+        <button type="button" onMouseDown={(e) => { e.preventDefault(); insertHeading('h3') }} title="Sous-titre H3" className={styles.editorBtn}>
+          H3
+        </button>
+        <span className={styles.editorSep} />
+        <button type="button" onMouseDown={(e) => { e.preventDefault(); execCmd('insertUnorderedList') }} title="Liste à puces" className={styles.editorBtn}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <line x1="9" y1="6" x2="20" y2="6" /><line x1="9" y1="12" x2="20" y2="12" /><line x1="9" y1="18" x2="20" y2="18" />
+            <circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none" />
+            <circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none" />
+            <circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none" />
+          </svg>
+        </button>
+        <span className={styles.editorSep} />
+        <label className={styles.editorBtn} title="Insérer une image">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
+          </svg>
+          <input ref={fileRef} type="file" accept=".jpg,.jpeg,.png,.webp" className={styles.hiddenInput} onChange={handleImageFile} />
+        </label>
+      </div>
+      <div
+        ref={ref}
+        contentEditable
+        suppressContentEditableWarning
+        className={styles.editorBody}
+        onInput={(e) => onChange(e.currentTarget.innerHTML)}
+      />
+    </div>
+  )
+}
+
 export default function AdminBlog() {
   const { data: posts = [], isLoading } = useAdminPosts()
-  const createPost = useCreatePost()
-  const updatePost = useUpdatePost()
-  const deletePost = useDeletePost()
+  const createPost  = useCreatePost()
+  const updatePost  = useUpdatePost()
+  const deletePost  = useDeletePost()
+  const uploadImage = useUploadImage()
 
   const [editing, setEditing] = useState(null)
   const [form, setForm]       = useState(EMPTY_FORM)
@@ -95,6 +171,10 @@ export default function AdminBlog() {
     if (editing === id) closeForm()
   }
 
+  async function handleImageUpload(file) {
+    return uploadImage.mutateAsync(file)
+  }
+
   const isPending = createPost.isPending || updatePost.isPending
 
   return (
@@ -143,7 +223,7 @@ export default function AdminBlog() {
         {editing && (
           <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.formHeader}>
-              <h2 className={styles.formTitle}>{editing === 'new' ? 'Nouvel article' : 'Modifier l\'article'}</h2>
+              <h2 className={styles.formTitle}>{editing === 'new' ? 'Nouvel article' : "Modifier l'article"}</h2>
               <button type="button" className={styles.closeBtn} onClick={closeForm}>✕</button>
             </div>
 
@@ -223,13 +303,12 @@ export default function AdminBlog() {
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label}>Corps de l'article (HTML)</label>
-              <textarea
-                className={styles.bodyTextarea}
-                rows={20}
-                value={form.body}
-                onChange={e => setForm(f => ({ ...f, body: e.target.value }))}
-                placeholder="<h2>Titre section</h2><p>Contenu…</p>"
+              <label className={styles.label}>Corps de l'article</label>
+              <BlogEditor
+                key={editing}
+                defaultValue={form.body}
+                onChange={(html) => setForm(f => ({ ...f, body: html }))}
+                onUpload={handleImageUpload}
               />
             </div>
 

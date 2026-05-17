@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useProduct, useProducts, useCategories } from '../hooks/useProducts'
+import { useCuration } from '../hooks/useCuration'
 import { useMyBirthList } from '../hooks/useMyBirthList'
 import { useAuth } from '../hooks/useAuth'
 import ProductGallery from '../components/product/ProductGallery'
 import ProductCard from '../components/product/ProductCard'
 import Spinner from '../components/ui/Spinner'
-import { formatPrice, getDiscountPercent, truncate } from '../lib/utils'
+import { formatPrice, getDiscountPercent, truncate, stripHtml, renderDescription } from '../lib/utils'
 import useCart from '../hooks/useCart'
 import useWishlist from '../hooks/useWishlist'
 import SEO from '../components/ui/SEO'
@@ -67,12 +68,16 @@ export default function ProductPage() {
   const { user }             = useAuth()
   const { list, listLoading, addProduct, isInList } = useMyBirthList()
   const [qty, setQty]                   = useState(1)
+  const [selectedSize, setSelectedSize] = useState('')
   const [relatedPage, setRelatedPage]   = useState(1)
 
   useEffect(() => { setRelatedPage(1) }, [slug])
 
   const { data: relatedData } = useProducts(product ? { category: product.categorySlug } : {})
   const { data: allData }     = useProducts({})
+
+  const { data: curatedRelated   = [] } = useCuration('related', product?.slug)
+  const { data: curatedSuggested = [] } = useCuration('suggested')
 
   if (isLoading) return <Spinner />
   if (!product)  return <p className={styles.notFound}>Produit introuvable.</p>
@@ -90,12 +95,15 @@ export default function ProductPage() {
 
   const sameCategory    = relatedData?.products?.filter(p => p.id !== product.id) ?? []
   const otherProducts   = allData?.products?.filter(p => p.id !== product.id && p.categorySlug !== product.categorySlug) ?? []
-  const allRelated      = [...sameCategory, ...otherProducts].slice(0, DOT_PAGES * PER_PAGE)
-  const related         = allRelated.slice((relatedPage - 1) * PER_PAGE, relatedPage * PER_PAGE)
 
-  const suggested = allData?.products
-    ?.filter(p => p.id !== product.id && p.categorySlug !== product.categorySlug && (p.compareAt || p.isNewArrival))
-    .slice(0, 5) ?? []
+  const allRelated = curatedRelated.length > 0
+    ? curatedRelated.filter(p => String(p._id ?? p.id) !== String(product._id ?? product.id)).slice(0, DOT_PAGES * PER_PAGE)
+    : [...sameCategory, ...otherProducts].slice(0, DOT_PAGES * PER_PAGE)
+  const related = allRelated.slice((relatedPage - 1) * PER_PAGE, relatedPage * PER_PAGE)
+
+  const suggested = curatedSuggested.length > 0
+    ? curatedSuggested.filter(p => String(p._id ?? p.id) !== String(product._id ?? product.id)).slice(0, 5)
+    : allData?.products?.filter(p => p.id !== product.id && p.categorySlug !== product.categorySlug && (p.compareAt || p.isNewArrival)).slice(0, 5) ?? []
 
   const whatsappUrl = `https://wa.me/212667322850?text=${encodeURIComponent(`Bonjour, je souhaite commander : ${product.name}`)}`
 
@@ -155,8 +163,8 @@ export default function ProductPage() {
   return (
     <div className={styles.page}>
       <SEO
-        title={`${product.name} — ${product.brand}`}
-        description={`${truncate(product.description, 155)}`}
+        title={`${product.name}${product.brand ? ` — ${product.brand}` : ''}`}
+        description={truncate(stripHtml(product.description), 155)}
         canonical={`/produit/${product.slug}`}
         image={product.images?.[0]}
         type="product"
@@ -214,7 +222,7 @@ export default function ProductPage() {
             <span className={styles.price}>{formatPrice(product.price)}</span>
           </div>
 
-          <p className={styles.shortDesc}>{truncate(product.description, 180)}</p>
+          <p className={styles.shortDesc}>{stripHtml(product.description)}</p>
 
           {/* Stock status */}
           <div className={styles.stockRow}>
@@ -242,34 +250,57 @@ export default function ProductPage() {
             )}
           </div>
 
-          {/* Quantity row + share */}
-          <div className={styles.qtyRow}>
-            <div className={styles.qty}>
-              <button className={styles.qtyBtn} onClick={() => setQty(q => Math.max(1, q - 1))}>−</button>
-              <span className={styles.qtyVal}>{qty}</span>
-              <button className={styles.qtyBtn} onClick={() => setQty(q => q + 1)}>+</button>
+          {/* Sizes selector */}
+          {product.sizes && product.sizes.length > 0 && (
+            <div className={styles.sizesRow}>
+              <span className={styles.sizesLabel}>Taille :</span>
+              <div className={styles.sizeButtons}>
+                {product.sizes.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    className={`${styles.sizeBtn} ${selectedSize === s ? styles.sizeBtnActive : ''}`}
+                    onClick={() => setSelectedSize(s)}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
             </div>
-            <button className={styles.shareBtn} onClick={handleShare} aria-label="Partager">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
-                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-              </svg>
-            </button>
-          </div>
+          )}
+
+          {/* Quantity row + share */}
+          {!product.cartDisabled && (
+            <div className={styles.qtyRow}>
+              <div className={styles.qty}>
+                <button className={styles.qtyBtn} onClick={() => setQty(q => Math.max(1, q - 1))}>−</button>
+                <span className={styles.qtyVal}>{qty}</span>
+                <button className={styles.qtyBtn} onClick={() => setQty(q => q + 1)}>+</button>
+              </div>
+              <button className={styles.shareBtn} onClick={handleShare} aria-label="Partager">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>
+              </button>
+            </div>
+          )}
 
           {/* CTA buttons */}
           <div className={styles.btnRow}>
-            <button
-              className={styles.addToCartBtn}
-              onClick={handleAddToCart}
-              disabled={stockStatus === 'out_of_stock'}
-            >
-              {stockStatus === 'out_of_stock' ? 'Épuisé' : 'Ajouter au panier'}
-            </button>
+            {!product.cartDisabled && (
+              <button
+                className={styles.addToCartBtn}
+                onClick={handleAddToCart}
+                disabled={stockStatus === 'out_of_stock'}
+              >
+                {stockStatus === 'out_of_stock' ? 'Épuisé' : 'Ajouter au panier'}
+              </button>
+            )}
             <a
               href={whatsappUrl}
-              className={styles.whatsappBtn}
+              className={`${styles.whatsappBtn} ${product.cartDisabled ? styles.whatsappBtnFull : ''}`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -280,11 +311,12 @@ export default function ProductPage() {
             </a>
           </div>
 
-          {/* On-order info box */}
-          <div className={styles.onOrderBox}>
-            <p>Nos Lits sont sur Commande</p>
-            <p>Délai de réalisation de ce modèle = 1 mois</p>
-          </div>
+          {/* On-order info box — only when the product has a specific note */}
+          {product.onOrderNote && (
+            <div className={styles.onOrderBox}>
+              <p>{product.onOrderNote}</p>
+            </div>
+          )}
 
           {/* Accordions + birth list */}
           <div className={styles.accordions}>
@@ -336,7 +368,7 @@ export default function ProductPage() {
               }
               label="Conditions Livraison ou Retrait"
             >
-              <p>Livraison gratuite dès 400 DH · Partout au Maroc sous 3–5 jours ouvrables. Retrait disponible en boutique à Casablanca.</p>
+              <p>{product.deliveryNote || 'Livraison gratuite dès 400 DH · Partout au Maroc sous 3–5 jours ouvrables. Retrait disponible en boutique à Casablanca.'}</p>
             </Accordion>
             <Accordion
               icon={
@@ -347,7 +379,7 @@ export default function ProductPage() {
               }
               label="Échange et Retour Gratuit (5 jours)"
             >
-              <p>Retour gratuit sous 5 jours suivant la réception. L'article doit être non utilisé, dans son emballage d'origine.</p>
+              <p>{product.returnNote || "Retour gratuit sous 5 jours suivant la réception. L'article doit être non utilisé, dans son emballage d'origine."}</p>
             </Accordion>
           </div>
 
@@ -360,11 +392,17 @@ export default function ProductPage() {
           <div className={styles.descTabBar}>
             <span className={styles.descTab}>Description</span>
           </div>
-          <p className={styles.descBody}>{product.description}</p>
+          <div
+            className={styles.descBody}
+            dangerouslySetInnerHTML={{ __html: renderDescription(product.description) }}
+          />
           {product.usageTips && (
             <div className={styles.usageTips}>
               <strong className={styles.usageTipsTitle}>Conseils d'utilisation :</strong>
-              <p className={styles.usageTipsBody}>{product.usageTips}</p>
+              <div
+                className={styles.usageTipsBody}
+                dangerouslySetInnerHTML={{ __html: renderDescription(product.usageTips) }}
+              />
             </div>
           )}
         </div>
@@ -378,7 +416,7 @@ export default function ProductPage() {
             <div className={styles.productGrid}>
               {related.map(p => (
                 <ProductCard
-                  key={p.id}
+                  key={p.id ?? p._id}
                   product={p}
                   badge={p.compareAt ? 'sale' : p.isNewArrival ? 'new' : undefined}
                 />
@@ -397,7 +435,7 @@ export default function ProductPage() {
             <div className={styles.productGrid}>
               {suggested.map(p => (
                 <ProductCard
-                  key={p.id}
+                  key={p.id ?? p._id}
                   product={p}
                   badge={p.compareAt ? 'sale' : p.isNewArrival ? 'new' : undefined}
                 />

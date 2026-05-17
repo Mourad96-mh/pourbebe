@@ -1,19 +1,15 @@
- Remaining Quick Wins (manual — under 1 hour)
-
-  1. Real social URLs — Footer.jsx links to facebook.com and instagram.com generically. Replace with your actual pages (facebook.com/pourbebes.ma etc.)
-  2. Add product URLs to sitemap — The sitemap covers categories but not product pages. Add a backend route GET /api/sitemap that returns all product slugs, then generate
-   a dynamic sitemap (or add them manually to sitemap.xml)
-  3. Submit sitemap to Google Search Console — Go to search.google.com/search-console, add pourbebes.ma, submit https://pourbebes.ma/sitemap.xml
-  4. Hero image dimensions — HeroSection.jsx has no width/height on the <img> causing layout shift. Add width={1440} height={700}
-
-  ---
-  🗓 Longer Term
-
-  - Blog section — "Conseils pour parents" articles targeting keywords like "quel lit bébé choisir Maroc", "taille gigoteuse bébé", etc. Each article links back to
-  product pages.
-  - Google My Business — Create/claim a GMB listing for the Casablanca showroom — critical for local "bébé Casablanca" searches.
-  - Arabic language version — Even a partial Arabic translation (product names, categories) would capture a large uncontested keyword pool.
-  - Review/rating schema — Once you have customer orders, collect reviews and add AggregateR
-  
-  ating to the Product schema for star ratings in Google results.
-  - FAQ schema on the homepage or a dedicated FAQ page — answers "livraison Maroc", "retour produit", "paiement à la livraison" questions that AI overviews cite.
+17🔺On doit ajouter les tailles pour la catégorie vêtements
+18🔺LISTE DE NAISSANCE :
+- Le client doit pouvoir enlever 1 produit de sa liste de naissance tant qu'il est pas encore "réservé / offert" avec message vérification (Etes-vous sûrs de vouloir retirer ce produit de votre Liste de Naissance ?)
+- Le produit réservé > pourquoi le message affiché = 0 articles offerts sur 4 ?
+- J'ai enlevé 1 produit "réservé" de mon panier mais il s'affiche encore réservé
+- Lorsque je clique sur l'onglet Liste de naissance > bug page blanche > besoin d'actualiser la page
+19🔺Il n'y a pas de Livraison gratuite (30 dh Casablanca & 50 dh Hors Casablanca)
+20🔺Confirmation COmmande :
+- La liste des villes est incomplète
+- Enlever option paiement par carte
+- Au clic sur confirmer la commande, aucune valisation !! Et la commande ne s'affiche pas dans Admin Backoffice
+21🔺BLOG
+- Les titres ne se mettent pas à jour au niveau du Footer 
+- Comment mettre en forme le texte ? (Gras, Italique, retour à la ligne ... )? Ajouter Photos dans le corps du texte ?
+23🔺Utiliser une autre TYPO pour les titres principaux (Connexion - Mon Compte - Ma liste de Naissance - Mon Panier - Commander)

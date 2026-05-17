@@ -13,9 +13,13 @@ const CheckoutPage  = lazy(() => import('./pages/CheckoutPage'))
 const AccountPage   = lazy(() => import('./pages/AccountPage'))
 const LoginPage     = lazy(() => import('./pages/LoginPage'))
 const RegisterPage  = lazy(() => import('./pages/RegisterPage'))
-const BirthListPage = lazy(() => import('./pages/BirthListPage'))
-const BlogPage      = lazy(() => import('./pages/BlogPage'))
-const BlogPostPage  = lazy(() => import('./pages/BlogPostPage'))
+const BirthListPage      = lazy(() => import('./pages/BirthListPage'))
+const BlogPage           = lazy(() => import('./pages/BlogPage'))
+const BlogPostPage       = lazy(() => import('./pages/BlogPostPage'))
+const SearchPage         = lazy(() => import('./pages/SearchPage'))
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'))
+const ResetPasswordPage  = lazy(() => import('./pages/ResetPasswordPage'))
+const WishlistPage       = lazy(() => import('./pages/WishlistPage'))
 
 // ── Admin pages ──
 const AdminDashboard  = lazy(() => import('./admin/pages/AdminDashboard'))
@@ -25,6 +29,8 @@ const AdminCustomers  = lazy(() => import('./admin/pages/AdminCustomers'))
 const AdminCategories = lazy(() => import('./admin/pages/AdminCategories'))
 const AdminBlog        = lazy(() => import('./admin/pages/AdminBlog'))
 const AdminBirthLists  = lazy(() => import('./admin/pages/AdminBirthLists'))
+const AdminBanners     = lazy(() => import('./admin/pages/AdminBanners'))
+const AdminCuration    = lazy(() => import('./admin/pages/AdminCuration'))
 
 export default function App() {
   return (
@@ -42,8 +48,12 @@ export default function App() {
           <Route path="/inscription"              element={<RegisterPage />} />
           <Route path="/liste-naissance"          element={<BirthListPage />} />
           <Route path="/liste-naissance/:shareId" element={<BirthListPage />} />
-          <Route path="/blog"                     element={<BlogPage />} />
-          <Route path="/blog/:slug"               element={<BlogPostPage />} />
+          <Route path="/blog"                                          element={<BlogPage />} />
+          <Route path="/blog/:slug"                                    element={<BlogPostPage />} />
+          <Route path="/recherche"                                     element={<SearchPage />} />
+          <Route path="/mot-de-passe-oublie"                          element={<ForgotPasswordPage />} />
+          <Route path="/reinitialiser-mot-de-passe/:token"            element={<ResetPasswordPage />} />
+          <Route path="/favoris"                                       element={<WishlistPage />} />
         </Route>
 
         {/* ── Admin routes — own layout, no public Navbar/Footer ── */}
@@ -55,6 +65,8 @@ export default function App() {
           <Route path="categories"      element={<AdminCategories />} />
           <Route path="blog"            element={<AdminBlog />} />
           <Route path="listes-naissance" element={<AdminBirthLists />} />
+          <Route path="bannieres"        element={<AdminBanners />} />
+          <Route path="selections"       element={<AdminCuration />} />
         </Route>
       </Routes>
     </Suspense>

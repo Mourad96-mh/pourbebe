@@ -8,7 +8,7 @@
 }
 
 .title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Cormorant Garamond', serif;
   font-size: var(--text-lg);
   font-weight: 400;
   color: var(--text-dark);
@@ -53,6 +53,18 @@
 .free {
   color: var(--color-success);
   font-weight: 600;
+}
+
+.pending {
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+.shippingNote {
+  font-size: var(--text-xs);
+  color: var(--text-light);
+  margin-top: var(--space-3);
+  line-height: 1.5;
 }
 
 .total {

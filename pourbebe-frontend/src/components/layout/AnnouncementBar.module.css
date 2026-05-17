@@ -60,10 +60,20 @@
   margin-left: 2px;
 }
 
+.shipping {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--text-base);
+  color: var(--sky-light);
+  letter-spacing: 0.04em;
+}
+
 .connexion {
   display: flex;
   align-items: center;
   gap: 5px;
+  font-family: 'Nunito', sans-serif;
   font-size: var(--text-base);
   color: var(--white);
   letter-spacing: 0.04em;
@@ -71,6 +81,7 @@
   border: 1px solid var(--pink-dark);
   border-radius: 2px;
   padding: 4px var(--space-3);
+  cursor: pointer;
   transition: color 0.15s ease;
 }
 
@@ -80,7 +91,8 @@
 
 @media (max-width: 768px) {
   .social,
-  .connexion {
+  .connexion,
+  .shipping {
     display: none;
   }
 

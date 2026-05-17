@@ -12,6 +12,8 @@ import Category from '../models/Category.js'
 import Product from '../models/Product.js'
 import Post from '../models/Post.js'
 import BirthList from '../models/BirthList.js'
+import Banner from '../models/Banner.js'
+import Curation from '../models/Curation.js'
 
 const router = Router()
 
@@ -102,6 +104,71 @@ router.patch('/posts/:id', async (req, res) => {
 router.delete('/posts/:id', async (req, res) => {
   await Post.findByIdAndDelete(req.params.id)
   res.json({ success: true, data: null })
+})
+
+/* ── Banners ── */
+const BANNER_FIELDS = ['type', 'categorySlug', 'image', 'tag', 'title', 'subtitle', 'ctaText', 'ctaLink', 'showCta', 'isActive', 'order']
+
+router.get('/banners', async (req, res) => {
+  const { type } = req.query
+  const filter = {}
+  if (type) filter.type = type
+  const banners = await Banner.find(filter).sort({ type: 1, order: 1, createdAt: 1 }).lean()
+  res.json({ success: true, data: banners })
+})
+
+router.post('/banners', async (req, res) => {
+  const data = Object.fromEntries(Object.entries(req.body).filter(([k]) => BANNER_FIELDS.includes(k)))
+  if (!data.type) return res.status(400).json({ success: false, error: 'Le type est requis.' })
+  const banner = await Banner.create(data)
+  res.status(201).json({ success: true, data: banner })
+})
+
+router.patch('/banners/:id', async (req, res) => {
+  const data = Object.fromEntries(Object.entries(req.body).filter(([k]) => BANNER_FIELDS.includes(k)))
+  const banner = await Banner.findByIdAndUpdate(req.params.id, data, { new: true })
+  if (!banner) return res.status(404).json({ success: false, error: 'Bannière introuvable.' })
+  res.json({ success: true, data: banner })
+})
+
+router.delete('/banners/:id', async (req, res) => {
+  await Banner.findByIdAndDelete(req.params.id)
+  res.json({ success: true, data: null })
+})
+
+/* ── Curations ── */
+router.get('/curations', async (req, res) => {
+  const { slot, contextId } = req.query
+  const filter = {}
+  if (slot) filter.slot = slot
+  if (contextId !== undefined) filter.contextId = contextId
+
+  const curations = await Curation.find(filter)
+    .populate('productIds', 'name brand price compareAt images slug isNewArrival inStock')
+
+  const result = curations.map((c) => ({
+    ...c.toObject({ virtuals: true }),
+    productIds: c.productIds.map((p) => ({ ...p.toObject({ virtuals: true }), id: p.id })),
+  }))
+
+  res.json({ success: true, data: result })
+})
+
+router.put('/curations', async (req, res) => {
+  const { slot, contextId = '', productIds = [] } = req.body
+  if (!slot) return res.status(400).json({ success: false, error: 'Le slot est requis.' })
+
+  const curation = await Curation.findOneAndUpdate(
+    { slot, contextId },
+    { productIds },
+    { upsert: true, new: true }
+  ).populate('productIds', 'name brand price compareAt images slug isNewArrival inStock')
+
+  const data = {
+    ...curation.toObject({ virtuals: true }),
+    productIds: curation.productIds.map((p) => ({ ...p.toObject({ virtuals: true }), id: p.id })),
+  }
+  res.json({ success: true, data })
 })
 
 /* ── Birth lists ── */

@@ -5,7 +5,7 @@
 }
 
 .sectionTitle {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Cormorant Garamond', serif;
   font-size: var(--text-lg);
   font-weight: 400;
   color: var(--text-dark);
@@ -89,6 +89,27 @@
 
 .radio {
   accent-color: var(--sky-dark);
+  flex-shrink: 0;
+}
+
+.paymentLabel {
+  display: block;
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.paymentDesc {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+.shippingHint {
+  font-size: var(--text-xs);
+  color: var(--sky-deep);
+  margin: 0;
 }
 
 @media (max-width: 480px) {

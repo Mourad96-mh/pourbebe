@@ -48,7 +48,7 @@
 }
 
 .title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Cormorant Garamond', serif;
   font-size: var(--text-2xl);
   font-weight: 300;
   color: var(--text-dark);
@@ -114,7 +114,7 @@
 
 .progressHighlight {
   font-size: var(--text-xl);
-  font-family: 'Playfair Display', serif;
+  font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
   color: var(--sky-deep);
   margin-right: var(--space-1);
@@ -226,6 +226,98 @@
 .input:focus {
   border-color: var(--sky-dark);
 }
+
+/* ── Retry button (error state) ── */
+.retryBtn {
+  font-family: 'Nunito', sans-serif;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 13px 32px;
+  background: var(--sky-dark);
+  color: var(--white);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.retryBtn:hover { background: var(--sky-deep); }
+
+/* ── Remove confirm dialog ── */
+.confirmOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  padding: var(--space-4);
+}
+
+.confirmBox {
+  background: var(--white);
+  border-radius: 4px;
+  padding: var(--space-8) var(--space-6);
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.confirmTitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: var(--text-xl);
+  font-weight: 300;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.confirmText {
+  font-size: var(--text-base);
+  color: var(--text-mid);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.confirmActions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+  padding-top: var(--space-2);
+}
+
+.confirmCancel {
+  font-family: 'Nunito', sans-serif;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-mid);
+  background: none;
+  border: 1px solid var(--sky-light);
+  border-radius: 2px;
+  padding: 9px var(--space-4);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.confirmCancel:hover { border-color: var(--sky-dark); }
+
+.confirmRemove {
+  font-family: 'Nunito', sans-serif;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--white);
+  background: var(--color-error);
+  border: none;
+  border-radius: 2px;
+  padding: 9px var(--space-5);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.confirmRemove:hover { opacity: 0.85; }
+.confirmRemove:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {

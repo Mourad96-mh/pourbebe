@@ -40,6 +40,8 @@ export default function ProductCard({ product, badge }) {
             width={400}
             height={400}
             loading="lazy"
+            draggable={false}
+            onContextMenu={(e) => e.preventDefault()}
           />
         ) : (
           <div className={styles.imagePlaceholder} />

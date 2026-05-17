@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import SEO from '../components/ui/SEO'
 import { useParams, Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -19,7 +20,9 @@ export default function BirthListPage() {
 
   const isGuestView = Boolean(shareId)
 
-  const { data: list, isLoading } = useQuery({
+  const [removeTarget, setRemoveTarget] = useState(null)
+
+  const { data: list, isLoading, isError } = useQuery({
     queryKey: ['birthlist', shareId ?? 'mine'],
     queryFn: async () => {
       const res = shareId
@@ -53,12 +56,38 @@ export default function BirthListPage() {
       api.patch(`/birthlist/${shareId}/items/${itemId}/reserve`),
     onSuccess: (_, { item, listName }) => {
       qc.invalidateQueries({ queryKey: ['birthlist', shareId] })
-      addItem(item.product, 1, null, { giftListItemId: item.id, listName })
+      addItem(item.product, 1, null, {
+        giftListItemId: item.id,
+        listName,
+        shareId,
+      })
       openCart()
     },
   })
 
+  const remove = useMutation({
+    mutationFn: (itemId) =>
+      api.delete(`/birthlist/${list.id}/items/${itemId}`),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['birthlist', 'mine'] })
+      setRemoveTarget(null)
+    },
+  })
+
   if (isLoading) return <Spinner />
+
+  /* ── Error state ── */
+  if (isError) {
+    return (
+      <div className={styles.gate}>
+        <h1 className={styles.title}>Erreur de chargement</h1>
+        <p className={styles.desc}>Impossible de charger la liste de naissance. Veuillez actualiser la page.</p>
+        <button className={styles.retryBtn} onClick={() => window.location.reload()}>
+          Actualiser
+        </button>
+      </div>
+    )
+  }
 
   /* ── Gate: not logged in and not a guest link ── */
   if (!isGuestView && !user) {
@@ -126,6 +155,15 @@ export default function BirthListPage() {
     reserve.mutate({ itemId: item.id, item, listName: list.name })
   }
 
+  function handleRemoveRequest(item) {
+    setRemoveTarget(item)
+  }
+
+  function confirmRemove() {
+    if (!removeTarget) return
+    remove.mutate(removeTarget.id)
+  }
+
   return (
     <div className={styles.page}>
       <SEO
@@ -182,7 +220,10 @@ export default function BirthListPage() {
               ) : (
                 <>
                   <span className={styles.progressHighlight}>{offered}</span>
-                  <span className={styles.progressLabel}> sur {total} articles offerts</span>
+                  <span className={styles.progressLabel}> offert{offered > 1 ? 's' : ''} sur {total}</span>
+                  {reserved > 0 && (
+                    <span className={styles.progressMuted}> · {reserved} réservé{reserved > 1 ? 's' : ''} (en attente)</span>
+                  )}
                 </>
               )}
             </div>
@@ -201,6 +242,7 @@ export default function BirthListPage() {
                 item={item}
                 isGuestView={isGuestView}
                 onOffer={handleOffer}
+                onRemove={handleRemoveRequest}
                 isPending={reserve.isPending && reserve.variables?.itemId === item.id}
               />
             ))}
@@ -238,6 +280,31 @@ export default function BirthListPage() {
         )}
 
       </div>
+
+      {/* ── Remove confirmation dialog ── */}
+      {removeTarget && (
+        <div className={styles.confirmOverlay} onClick={() => setRemoveTarget(null)}>
+          <div className={styles.confirmBox} onClick={(e) => e.stopPropagation()}>
+            <p className={styles.confirmTitle}>Retirer ce produit ?</p>
+            <p className={styles.confirmText}>
+              Êtes-vous sûr(e) de vouloir retirer <strong>{removeTarget.product?.name}</strong> de votre liste de naissance ?
+            </p>
+            <div className={styles.confirmActions}>
+              <button className={styles.confirmCancel} onClick={() => setRemoveTarget(null)}>
+                Annuler
+              </button>
+              <button
+                className={styles.confirmRemove}
+                onClick={confirmRemove}
+                disabled={remove.isPending}
+              >
+                {remove.isPending ? 'Suppression…' : 'Retirer'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

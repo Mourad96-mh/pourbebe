@@ -7,28 +7,6 @@
   align-self: flex-start;
   position: sticky;
   top: 110px;
-  max-height: calc(100vh - 130px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: var(--sky-light) transparent;
-}
-
-.sidebar::-webkit-scrollbar {
-  width: 4px;
-}
-
-.sidebar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-  background: var(--sky-light);
-  border-radius: 2px;
-}
-
-.sidebar::-webkit-scrollbar-thumb:hover {
-  background: var(--sky-dark);
 }
 
 /* ── Header ── */
