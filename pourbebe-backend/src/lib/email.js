@@ -1,8 +1,12 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() {
+  if (!process.env.RESEND_API_KEY) throw new Error('RESEND_API_KEY is not set')
+  return new Resend(process.env.RESEND_API_KEY)
+}
 
 export async function sendPasswordReset(to, rawToken) {
+  const resend = getResend()
   const link = `${process.env.CLIENT_URL}/reinitialiser-mot-de-passe/${rawToken}`
   await resend.emails.send({
     from:    'Pour Bébé <noreply@pourbebes.ma>',
@@ -18,6 +22,7 @@ export async function sendPasswordReset(to, rawToken) {
 }
 
 export async function sendOrderConfirmation(to, order) {
+  const resend = getResend()
   await resend.emails.send({
     from:    'Pour Bébé <commandes@pourbebes.ma>',
     to,
