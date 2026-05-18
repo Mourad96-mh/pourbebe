@@ -57,6 +57,9 @@ export async function updateOrderStatus(req, res) {
 }
 
 export async function getAllOrders(req, res) {
-  const orders = await Order.find().sort({ createdAt: -1 }).populate('userId', 'name email')
+  const orders = await Order.find()
+    .sort({ createdAt: -1 })
+    .populate('userId', 'name email')
+    .populate('items.productId', 'name images slug')
   res.json({ success: true, data: orders })
 }

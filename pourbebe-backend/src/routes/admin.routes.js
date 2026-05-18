@@ -8,6 +8,7 @@ import { adminOnly } from '../middleware/admin.middleware.js'
 import { upload } from '../middleware/upload.middleware.js'
 import { uploadImage } from '../lib/cloudinary.js'
 import User from '../models/User.js'
+import Order from '../models/Order.js'
 import Category from '../models/Category.js'
 import Product from '../models/Product.js'
 import Post from '../models/Post.js'
@@ -33,8 +34,24 @@ router.get('/orders',              getAllOrders)
 router.patch('/orders/:id/status', updateOrderStatus)
 
 router.get('/customers', async (req, res) => {
-  const users = await User.find().select('-password').sort({ createdAt: -1 }).lean()
-  res.json({ success: true, data: users })
+  const stats = await Order.aggregate([
+    { $match: { userId: { $ne: null } } },
+    { $group: {
+      _id: '$userId',
+      orderCount: { $sum: 1 },
+      totalSpent: { $sum: '$total' },
+      lastOrderAt: { $max: '$createdAt' },
+    }},
+  ])
+  const userIds = stats.map((s) => s._id)
+  const users = await User.find({ _id: { $in: userIds } }).select('-password').lean()
+  const enriched = users
+    .map((u) => {
+      const s = stats.find((x) => String(x._id) === String(u._id))
+      return { ...u, orderCount: s?.orderCount ?? 0, totalSpent: s?.totalSpent ?? 0, lastOrderAt: s?.lastOrderAt }
+    })
+    .sort((a, b) => new Date(b.lastOrderAt) - new Date(a.lastOrderAt))
+  res.json({ success: true, data: enriched })
 })
 
 /* ── Category CRUD ── */

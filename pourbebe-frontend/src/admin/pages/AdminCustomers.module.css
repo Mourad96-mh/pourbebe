@@ -142,7 +142,20 @@
 
 .email      { color: var(--text-mid); }
 .date       { color: var(--text-light); white-space: nowrap; }
-.orderCount { color: var(--text-light); text-align: center; }
+.orderCount { color: var(--text-dark); font-weight: 600; text-align: center; }
+.totalSpent { color: var(--text-dark); font-weight: 600; }
+
+.rowHighlighted { background: var(--sky-pale); }
+
+.ordersLink {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--sky-deep);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.ordersLink:hover { color: var(--sky-dark); text-decoration: underline; }
 
 /* ── Role badges ── */
 .roleAdmin {

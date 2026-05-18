@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useAdminCustomers } from '../hooks/useAdmin'
+import { formatPrice } from '../../lib/utils'
 import styles from './AdminCustomers.module.css'
 
 function initials(name, email) {
@@ -15,6 +17,9 @@ function initials(name, email) {
 export default function AdminCustomers() {
   const { data: customers = [], isLoading } = useAdminCustomers()
   const [search, setSearch] = useState('')
+  const [searchParams] = useSearchParams()
+
+  const highlightId = searchParams.get('client')
 
   const filtered = customers.filter(
     (c) =>
@@ -28,7 +33,9 @@ export default function AdminCustomers() {
       <header className={styles.header}>
         <div>
           <h1 className={styles.title}>Clients</h1>
-          <p className={styles.subtitle}>{customers.length} compte{customers.length !== 1 ? 's' : ''} inscrits</p>
+          <p className={styles.subtitle}>
+            {customers.length} client{customers.length !== 1 ? 's' : ''} ayant passé commande
+          </p>
         </div>
       </header>
 
@@ -57,42 +64,49 @@ export default function AdminCustomers() {
             <tr>
               <th>Client</th>
               <th>Email</th>
-              <th>Rôle</th>
-              <th>Inscrit le</th>
               <th>Commandes</th>
+              <th>Total dépensé</th>
+              <th>Inscrit le</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {isLoading && (
-              <tr><td colSpan={5} className={styles.empty}>Chargement…</td></tr>
+              <tr><td colSpan={6} className={styles.empty}>Chargement…</td></tr>
             )}
             {!isLoading && filtered.length === 0 && (
-              <tr><td colSpan={5} className={styles.empty}>Aucun client trouvé</td></tr>
+              <tr><td colSpan={6} className={styles.empty}>Aucun client trouvé</td></tr>
             )}
-            {filtered.map((c) => (
-              <tr key={c.id}>
-                <td>
-                  <div className={styles.customerCell}>
-                    <div className={`${styles.avatar} ${c.role === 'ADMIN' ? styles.avatarAdmin : ''}`}>
-                      {initials(c.name, c.email)}
+            {filtered.map((c) => {
+              const cid = c._id ?? c.id
+              const isHighlighted = highlightId === String(cid)
+              return (
+                <tr key={cid} className={isHighlighted ? styles.rowHighlighted : ''}>
+                  <td>
+                    <div className={styles.customerCell}>
+                      <div className={`${styles.avatar} ${c.role === 'ADMIN' ? styles.avatarAdmin : ''}`}>
+                        {initials(c.name, c.email)}
+                      </div>
+                      <span className={styles.customerName}>{c.name ?? '—'}</span>
                     </div>
-                    <span className={styles.customerName}>{c.name ?? '—'}</span>
-                  </div>
-                </td>
-                <td className={styles.email}>{c.email}</td>
-                <td>
-                  <span className={c.role === 'ADMIN' ? styles.roleAdmin : styles.roleCustomer}>
-                    {c.role === 'ADMIN' ? 'Admin' : 'Client'}
-                  </span>
-                </td>
-                <td className={styles.date}>
-                  {new Date(c.createdAt).toLocaleDateString('fr-FR')}
-                </td>
-                <td className={styles.orderCount}>
-                  {c._count?.orders ?? c.orders?.length ?? '—'}
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className={styles.email}>{c.email}</td>
+                  <td className={styles.orderCount}>{c.orderCount ?? 0}</td>
+                  <td className={styles.totalSpent}>{formatPrice(c.totalSpent ?? 0)}</td>
+                  <td className={styles.date}>
+                    {new Date(c.createdAt).toLocaleDateString('fr-FR')}
+                  </td>
+                  <td>
+                    <Link
+                      to={`/admin/commandes?client=${cid}`}
+                      className={styles.ordersLink}
+                    >
+                      Voir commandes →
+                    </Link>
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
