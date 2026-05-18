@@ -1,5 +1,4 @@
 import { Fragment, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
 import { useAdminOrders, useUpdateOrderStatus } from '../hooks/useAdmin'
 import { formatPrice } from '../../lib/utils'
 import styles from './AdminOrders.module.css'
@@ -20,14 +19,8 @@ export default function AdminOrders() {
   const updateStatus = useUpdateOrderStatus()
   const [filter, setFilter] = useState('ALL')
   const [expandedId, setExpandedId] = useState(null)
-  const [searchParams, setSearchParams] = useSearchParams()
 
-  const clientFilter = searchParams.get('client')
-
-  let filtered = filter === 'ALL' ? orders : orders.filter((o) => o.status === filter)
-  if (clientFilter) {
-    filtered = filtered.filter((o) => String(o.userId?._id ?? o.userId) === clientFilter)
-  }
+  const filtered = filter === 'ALL' ? orders : orders.filter((o) => o.status === filter)
 
   function handleStatus(id, status) {
     updateStatus.mutateAsync({ id, status })
@@ -43,15 +36,6 @@ export default function AdminOrders() {
         <h1 className={styles.title}>Commandes</h1>
         <span className={styles.count}>{orders.length} au total</span>
       </header>
-
-      {clientFilter && (
-        <div className={styles.clientFilterBar}>
-          <span>Commandes filtrées par client</span>
-          <button className={styles.clearFilter} onClick={() => setSearchParams({})}>
-            ✕ Voir toutes les commandes
-          </button>
-        </div>
-      )}
 
       <div className={styles.filters}>
         <button
@@ -165,14 +149,6 @@ export default function AdminOrders() {
                                 <span>{order.address.email}</span>
                               )}
                             </div>
-                            {order.userId && (
-                              <Link
-                                to={`/admin/clients?client=${order.userId._id ?? order.userId}`}
-                                className={styles.clientLink}
-                              >
-                                Voir profil client →
-                              </Link>
-                            )}
                           </div>
 
                           <div className={styles.detailSection}>
