@@ -108,8 +108,7 @@ export default function CheckoutForm({ onSubmit, onCityChange }) {
 
       <div className={styles.paymentOptions}>
         {[
-          { value: 'cod',      label: 'Paiement à la livraison', desc: 'Payez en espèces à la réception de votre commande.' },
-          { value: 'transfer', label: 'Virement bancaire', desc: 'Coordonnées bancaires communiquées par WhatsApp après confirmation.' },
+          { value: 'cod', label: 'Paiement à la livraison', desc: 'Payez en espèces à la réception de votre commande.' },
         ].map((opt) => (
           <label key={opt.value} className={styles.paymentOption}>
             <input

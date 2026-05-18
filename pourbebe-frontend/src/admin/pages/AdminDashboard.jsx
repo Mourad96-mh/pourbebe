@@ -128,8 +128,8 @@ export default function AdminDashboard() {
                 </tr>
               )}
               {recentOrders.map((order) => (
-                <tr key={order.id}>
-                  <td className={styles.orderId}>#{order.id.slice(-8).toUpperCase()}</td>
+                <tr key={order._id ?? order.id}>
+                  <td className={styles.orderId}>#{(order._id ?? order.id ?? '').slice(-8).toUpperCase()}</td>
                   <td className={styles.client}>
                     {order.user?.name ?? order.user?.email ?? '—'}
                   </td>

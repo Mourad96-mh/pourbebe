@@ -1,15 +1,63 @@
-17🔺On doit ajouter les tailles pour la catégorie vêtements
-18🔺LISTE DE NAISSANCE :
-- Le client doit pouvoir enlever 1 produit de sa liste de naissance tant qu'il est pas encore "réservé / offert" avec message vérification (Etes-vous sûrs de vouloir retirer ce produit de votre Liste de Naissance ?)
-- Le produit réservé > pourquoi le message affiché = 0 articles offerts sur 4 ?
-- J'ai enlevé 1 produit "réservé" de mon panier mais il s'affiche encore réservé
-- Lorsque je clique sur l'onglet Liste de naissance > bug page blanche > besoin d'actualiser la page
-19🔺Il n'y a pas de Livraison gratuite (30 dh Casablanca & 50 dh Hors Casablanca)
-20🔺Confirmation COmmande :
-- La liste des villes est incomplète
-- Enlever option paiement par carte
-- Au clic sur confirmer la commande, aucune valisation !! Et la commande ne s'affiche pas dans Admin Backoffice
-21🔺BLOG
-- Les titres ne se mettent pas à jour au niveau du Footer 
-- Comment mettre en forme le texte ? (Gras, Italique, retour à la ligne ... )? Ajouter Photos dans le corps du texte ?
-23🔺Utiliser une autre TYPO pour les titres principaux (Connexion - Mon Compte - Ma liste de Naissance - Mon Panier - Commander)
+Warning: Each child in a list should have a unique "key" prop.
+
+Check the render method of `AdminDashboard`. See https://reactjs.org/link/warning-keys for more information.
+    at tr
+    at AdminDashboard (http://localhost:5173/src/admin/pages/AdminDashboard.jsx?t=1779131227753:133:35)
+    at RenderedRoute (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=9d8698c7:4131:5)
+    at Outlet (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=9d8698c7:4537:26)
+    at main
+    at div
+    at AdminRoute (http://localhost:5173/src/admin/components/AdminRoute.jsx:26:29)
+    at RenderedRoute (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=9d8698c7:4131:5)
+    at Routes (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=9d8698c7:4601:5)
+    at Suspense
+    at App
+    at AuthProvider (http://localhost:5173/src/context/AuthContext.jsx:22:32)
+    at QueryClientProvider (http://localhost:5173/node_modules/.vite/deps/chunk-YBUJ4UEK.js?v=9d8698c7:3194:3)
+    at Router (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=9d8698c7:4544:15)
+    at BrowserRouter (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=9d8698c7:5290:5)
+    at _a (http://localhost:5173/node_modules/.vite/deps/react-helmet-async.js?v=9d8698c7:627:5)
+printWarning @ react_jsx-dev-runtime.js?v=9d8698c7:64
+2AdminOrders.jsx:74 Uncaught TypeError: Cannot read properties of undefined (reading 'slice')
+    at AdminOrders.jsx:74:59
+    at Array.map (<anonymous>)
+    at AdminOrders (AdminOrders.jsx:72:23)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=9d8698c7:11548:26)
+    at updateFunctionComponent (chunk-RPCDYKBN.js?v=9d8698c7:14582:28)
+    at mountLazyComponent (chunk-RPCDYKBN.js?v=9d8698c7:14833:23)
+    at beginWork (chunk-RPCDYKBN.js?v=9d8698c7:15918:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=9d8698c7:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=9d8698c7:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=9d8698c7:3733:39)
+chunk-RPCDYKBN.js?v=9d8698c7:14032 The above error occurred in the <AdminOrders> component:
+
+    at AdminOrders (http://localhost:5173/src/admin/pages/AdminOrders.jsx:33:44)
+    at RenderedRoute (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=9d8698c7:4131:5)
+    at Outlet (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=9d8698c7:4537:26)
+    at main
+    at div
+    at AdminRoute (http://localhost:5173/src/admin/components/AdminRoute.jsx:26:29)
+    at RenderedRoute (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=9d8698c7:4131:5)
+    at Routes (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=9d8698c7:4601:5)
+    at Suspense
+    at App
+    at AuthProvider (http://localhost:5173/src/context/AuthContext.jsx:22:32)
+    at QueryClientProvider (http://localhost:5173/node_modules/.vite/deps/chunk-YBUJ4UEK.js?v=9d8698c7:3194:3)
+    at Router (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=9d8698c7:4544:15)
+    at BrowserRouter (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=9d8698c7:5290:5)
+    at _a (http://localhost:5173/node_modules/.vite/deps/react-helmet-async.js?v=9d8698c7:627:5)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+logCapturedError @ chunk-RPCDYKBN.js?v=9d8698c7:14032
+chunk-RPCDYKBN.js?v=9d8698c7:19413 Uncaught TypeError: Cannot read properties of undefined (reading 'slice')
+    at AdminOrders.jsx:74:59
+    at Array.map (<anonymous>)
+    at AdminOrders (AdminOrders.jsx:72:23)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=9d8698c7:11548:26)
+    at updateFunctionComponent (chunk-RPCDYKBN.js?v=9d8698c7:14582:28)
+    at mountLazyComponent (chunk-RPCDYKBN.js?v=9d8698c7:14833:23)
+    at beginWork (chunk-RPCDYKBN.js?v=9d8698c7:15918:22)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=9d8698c7:19753:22)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=9d8698c7:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=9d8698c7:19137:13)
