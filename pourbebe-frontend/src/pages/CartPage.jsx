@@ -38,7 +38,7 @@ export default function CartPage() {
               <span>{formatPrice(total)}</span>
             </div>
             <p className={styles.shippingNote}>
-              {total >= 400 ? 'Livraison gratuite incluse' : `Livraison offerte dès 400 DH (il manque ${formatPrice(400 - total)})`}
+              Livraison : 30 DH (Casablanca) · 50 DH (Hors Casablanca)
             </p>
             <Link to="/commande">
               <Button variant="primary" size="lg" fullWidth>Commander</Button>

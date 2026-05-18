@@ -6,7 +6,7 @@ const DEFAULT_IMAGE = `${SITE_URL}/hero-img.jpeg`
 
 export default function SEO({ title, description, canonical, image, type = 'website', noindex = false, schema }) {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Vêtements et Accessoires Bébé au Maroc`
-  const metaDesc  = description ?? 'Boutique en ligne de vêtements et accessoires bébé au Maroc. Livraison gratuite dès 400 DH.'
+  const metaDesc  = description ?? 'Boutique en ligne de vêtements et accessoires bébé au Maroc. Livraison partout au Maroc.'
   const canonicalUrl = canonical ? `${SITE_URL}${canonical}` : null
   const ogImage   = image ?? DEFAULT_IMAGE
 

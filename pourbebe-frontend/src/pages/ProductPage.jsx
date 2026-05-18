@@ -368,7 +368,7 @@ export default function ProductPage() {
               }
               label="Conditions Livraison ou Retrait"
             >
-              <p>{product.deliveryNote || 'Livraison gratuite dès 400 DH · Partout au Maroc sous 3–5 jours ouvrables. Retrait disponible en boutique à Casablanca.'}</p>
+              <p>{product.deliveryNote || 'Livraison 30 DH (Casablanca) · 50 DH (Hors Casablanca) · Partout au Maroc sous 3–5 jours ouvrables. Retrait disponible en boutique à Casablanca.'}</p>
             </Accordion>
             <Accordion
               icon={
@@ -377,9 +377,9 @@ export default function ProductPage() {
                   <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
                 </svg>
               }
-              label="Échange et Retour Gratuit (5 jours)"
+              label="Échange et Retour (5 jours)"
             >
-              <p>{product.returnNote || "Retour gratuit sous 5 jours suivant la réception. L'article doit être non utilisé, dans son emballage d'origine."}</p>
+              <p>{product.returnNote || "Retour possible sous 5 jours suivant la réception. L'article doit être non utilisé, dans son emballage d'origine."}</p>
             </Accordion>
           </div>
 

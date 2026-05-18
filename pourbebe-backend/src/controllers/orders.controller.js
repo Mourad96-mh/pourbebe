@@ -1,5 +1,6 @@
 import Order from '../models/Order.js'
 import Product from '../models/Product.js'
+import { notifyNewOrder } from '../lib/whatsapp.js'
 
 export async function createOrder(req, res) {
   const { items, address, payment, total } = req.body
@@ -25,6 +26,8 @@ export async function createOrder(req, res) {
     payment,
     total,
   })
+
+  notifyNewOrder(order).catch(() => {})
 
   res.status(201).json({ success: true, data: order })
 }

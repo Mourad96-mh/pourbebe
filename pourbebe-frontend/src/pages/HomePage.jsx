@@ -14,7 +14,7 @@ const faqSchema = {
       name: 'Livrez-vous partout au Maroc ?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Oui, nous livrons partout au Maroc. La livraison est gratuite à partir de 400 DH d'achat. Le délai de livraison est de 3 à 5 jours ouvrables.",
+        text: "Oui, nous livrons partout au Maroc. Les frais de livraison sont de 30 DH pour Casablanca et 50 DH pour le reste du Maroc. Le délai de livraison est de 3 à 5 jours ouvrables.",
       },
     },
     {
@@ -57,7 +57,7 @@ export default function HomePage() {
     <>
       <SEO
         canonical="/"
-        description="Boutique en ligne de vêtements et accessoires bébé au Maroc. Lits bébé, poussettes, vêtements, cadeaux de naissance. Livraison gratuite dès 400 DH partout au Maroc."
+        description="Boutique en ligne de vêtements et accessoires bébé au Maroc. Lits bébé, poussettes, vêtements, cadeaux de naissance. Livraison partout au Maroc."
         schema={faqSchema}
       />
       <HeroSection />

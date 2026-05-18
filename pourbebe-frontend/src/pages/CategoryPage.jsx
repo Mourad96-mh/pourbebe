@@ -150,7 +150,7 @@ export default function CategoryPage() {
     <div className={styles.page}>
       <SEO
         title={`${categoryName} — Achat en ligne au Maroc`}
-        description={`Découvrez notre sélection ${categoryName} pour bébé. ${total} produits disponibles avec livraison gratuite dès 400 DH au Maroc.`}
+        description={`Découvrez notre sélection ${categoryName} pour bébé. ${total} produits disponibles avec livraison partout au Maroc.`}
         canonical={`/categorie/${slug}`}
         schema={breadcrumbSchema}
       />
