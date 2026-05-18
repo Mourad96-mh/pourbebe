@@ -6,22 +6,17 @@ import Button from '../ui/Button'
 import { formatPrice } from '../../lib/utils'
 import styles from './CartDrawer.module.css'
 
-const FREE_SHIPPING = 400
-
 export default function CartDrawer() {
-  const isOpen   = useCart((s) => s.isOpen)
-  const close    = useCart((s) => s.closeCart)
-  const items    = useCart((s) => s.items)
-  const total    = useCart(cartTotalSelector)
+  const isOpen = useCart((s) => s.isOpen)
+  const close  = useCart((s) => s.closeCart)
+  const items  = useCart((s) => s.items)
+  const total  = useCart(cartTotalSelector)
 
   useEffect(() => {
     if (isOpen) document.body.style.overflow = 'hidden'
     else document.body.style.overflow = ''
     return () => { document.body.style.overflow = '' }
   }, [isOpen])
-
-  const remaining = Math.max(0, FREE_SHIPPING - total)
-  const progress  = Math.min(100, (total / FREE_SHIPPING) * 100)
 
   return (
     <>
@@ -35,20 +30,6 @@ export default function CartDrawer() {
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
-        </div>
-
-        {/* Shipping progress */}
-        <div className={styles.shipping}>
-          {remaining > 0 ? (
-            <p className={styles.shippingMsg}>
-              Plus que <strong>{formatPrice(remaining)}</strong> pour la livraison gratuite
-            </p>
-          ) : (
-            <p className={styles.shippingFree}>Livraison gratuite débloquée !</p>
-          )}
-          <div className={styles.progressBar}>
-            <div className={styles.progressFill} style={{ width: `${progress}%` }} />
-          </div>
         </div>
 
         {/* Items */}
@@ -76,6 +57,32 @@ export default function CartDrawer() {
             <Link to="/panier" className={styles.viewCart} onClick={close}>
               Voir le panier complet
             </Link>
+
+            {/* Conditions */}
+            <div className={styles.policies}>
+              <Link to="/livraison" className={styles.policyItem} onClick={close}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <rect x="1" y="3" width="15" height="13" rx="1" />
+                  <path d="M16 8h4l3 5v3h-7V8z" />
+                  <circle cx="5.5" cy="18.5" r="2.5" />
+                  <circle cx="18.5" cy="18.5" r="2.5" />
+                </svg>
+                <span>Livraison au Maroc</span>
+              </Link>
+              <Link to="/retours" className={styles.policyItem} onClick={close}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <polyline points="1 4 1 10 7 10" />
+                  <path d="M3.51 15a9 9 0 1 0 .49-4.5" />
+                </svg>
+                <span>Échange sous 5 jours</span>
+              </Link>
+              <Link to="/cgv" className={styles.policyItem} onClick={close}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                <span>Paiement sécurisé</span>
+              </Link>
+            </div>
           </div>
         )}
       </div>

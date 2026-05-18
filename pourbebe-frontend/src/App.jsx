@@ -19,7 +19,12 @@ const BlogPostPage       = lazy(() => import('./pages/BlogPostPage'))
 const SearchPage         = lazy(() => import('./pages/SearchPage'))
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'))
 const ResetPasswordPage  = lazy(() => import('./pages/ResetPasswordPage'))
-const WishlistPage       = lazy(() => import('./pages/WishlistPage'))
+const WishlistPage          = lazy(() => import('./pages/WishlistPage'))
+const LivraisonPage         = lazy(() => import('./pages/LivraisonPage'))
+const RetoursPage           = lazy(() => import('./pages/RetoursPage'))
+const CGVPage               = lazy(() => import('./pages/CGVPage'))
+const MentionsLegalesPage   = lazy(() => import('./pages/MentionsLegalesPage'))
+const ConfidentialitePage   = lazy(() => import('./pages/ConfidentialitePage'))
 
 // ── Admin pages ──
 const AdminDashboard  = lazy(() => import('./admin/pages/AdminDashboard'))
@@ -54,6 +59,11 @@ export default function App() {
           <Route path="/mot-de-passe-oublie"                          element={<ForgotPasswordPage />} />
           <Route path="/reinitialiser-mot-de-passe/:token"            element={<ResetPasswordPage />} />
           <Route path="/favoris"                                       element={<WishlistPage />} />
+          <Route path="/livraison"                                     element={<LivraisonPage />} />
+          <Route path="/retours"                                       element={<RetoursPage />} />
+          <Route path="/cgv"                                           element={<CGVPage />} />
+          <Route path="/mentions-legales"                              element={<MentionsLegalesPage />} />
+          <Route path="/confidentialite"                               element={<ConfidentialitePage />} />
         </Route>
 
         {/* ── Admin routes — own layout, no public Navbar/Footer ── */}

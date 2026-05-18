@@ -2,7 +2,6 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import api from '../lib/api'
 
-const FREE_SHIPPING_THRESHOLD = 400
 
 const useCart = create(
   persist(
@@ -61,10 +60,5 @@ export const cartTotal = (s) =>
 export const cartCount = (s) =>
   s.items.reduce((sum, i) => sum + i.quantity, 0)
 
-export const cartIsFreeShipping = (s) =>
-  cartTotal(s) >= FREE_SHIPPING_THRESHOLD
-
-export const cartShippingRemaining = (s) =>
-  Math.max(0, FREE_SHIPPING_THRESHOLD - cartTotal(s))
 
 export default useCart
