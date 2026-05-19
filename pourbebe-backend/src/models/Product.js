@@ -32,5 +32,10 @@ const productSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 productSchema.index({ name: 'text', brand: 'text', description: 'text' })
+productSchema.index({ categoryId: 1, createdAt: -1 })
+productSchema.index({ inStock: 1, createdAt: -1 })
+productSchema.index({ isNewArrival: 1 })
+productSchema.index({ isGiftIdea: 1 })
+productSchema.index({ price: 1 })
 
 export default mongoose.model('Product', productSchema)
