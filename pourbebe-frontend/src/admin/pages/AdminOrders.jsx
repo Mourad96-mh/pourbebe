@@ -1,5 +1,5 @@
 import { Fragment, useState } from 'react'
-import { useAdminOrders, useUpdateOrderStatus } from '../hooks/useAdmin'
+import { useAdminOrders, useUpdateOrderStatus, useDeleteOrder } from '../hooks/useAdmin'
 import { formatPrice } from '../../lib/utils'
 import styles from './AdminOrders.module.css'
 
@@ -17,6 +17,7 @@ const STATUS_LABELS = {
 export default function AdminOrders() {
   const { data: orders = [], isLoading } = useAdminOrders()
   const updateStatus = useUpdateOrderStatus()
+  const deleteOrder  = useDeleteOrder()
   const [filter, setFilter] = useState('ALL')
   const [expandedId, setExpandedId] = useState(null)
 
@@ -24,6 +25,11 @@ export default function AdminOrders() {
 
   function handleStatus(id, status) {
     updateStatus.mutateAsync({ id, status })
+  }
+
+  function handleDelete(id) {
+    if (!window.confirm('Supprimer définitivement cette commande ?')) return
+    deleteOrder.mutateAsync(id)
   }
 
   function toggleExpand(id) {
@@ -66,14 +72,15 @@ export default function AdminOrders() {
               <th>Statut</th>
               <th>Date</th>
               <th>Modifier statut</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {isLoading && (
-              <tr><td colSpan={7} className={styles.empty}>Chargement…</td></tr>
+              <tr><td colSpan={8} className={styles.empty}>Chargement…</td></tr>
             )}
             {!isLoading && filtered.length === 0 && (
-              <tr><td colSpan={7} className={styles.empty}>Aucune commande</td></tr>
+              <tr><td colSpan={8} className={styles.empty}>Aucune commande</td></tr>
             )}
             {filtered.map((order) => {
               const orderId = order._id ?? order.id
@@ -123,11 +130,27 @@ export default function AdminOrders() {
                         ))}
                       </select>
                     </td>
+                    <td>
+                      <button
+                        className={styles.deleteBtn}
+                        onClick={() => handleDelete(orderId)}
+                        disabled={deleteOrder.isPending}
+                        aria-label="Supprimer la commande"
+                        title="Supprimer"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                          <path d="M10 11v6M14 11v6" />
+                          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                        </svg>
+                      </button>
+                    </td>
                   </tr>
 
                   {isExpanded && (
                     <tr className={styles.detailRow}>
-                      <td colSpan={7} className={styles.detailCell}>
+                      <td colSpan={8} className={styles.detailCell}>
                         <div className={styles.detailContent}>
 
                           <div className={styles.detailSection}>

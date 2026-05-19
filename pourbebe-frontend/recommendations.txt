@@ -1,5 +1,0 @@
-Commande	Client	Montant	Statut	Date	Modifier statut
-#2928195C	Admin	2 920 DH	En attente	18/05/2026	
-En attente
-#292818D7	Admin	379 DH	En attente	18/05/2026	
-En attente

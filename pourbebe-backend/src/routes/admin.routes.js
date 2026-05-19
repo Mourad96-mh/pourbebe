@@ -32,6 +32,11 @@ router.post('/upload', upload.single('image'), async (req, res) => {
 
 router.get('/orders',              getAllOrders)
 router.patch('/orders/:id/status', updateOrderStatus)
+router.delete('/orders/:id', async (req, res) => {
+  const order = await Order.findByIdAndDelete(req.params.id)
+  if (!order) return res.status(404).json({ success: false, error: 'Commande introuvable.' })
+  res.json({ success: true, data: null })
+})
 
 router.get('/customers', async (req, res) => {
   const stats = await Order.aggregate([

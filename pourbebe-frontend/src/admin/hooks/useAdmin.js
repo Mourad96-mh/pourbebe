@@ -74,6 +74,14 @@ export function useUpdateOrderStatus() {
   })
 }
 
+export function useDeleteOrder() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id) => api.delete(`/admin/orders/${id}`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'orders'] }),
+  })
+}
+
 export function useAdminCategoryTree() {
   return useQuery({
     queryKey: ['admin', 'categories'],

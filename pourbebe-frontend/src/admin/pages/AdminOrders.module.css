@@ -302,6 +302,28 @@
   white-space: nowrap;
 }
 
+/* ── Delete button ── */
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: none;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  padding: 0;
+}
+.deleteBtn:hover {
+  background: var(--red-pale, #fdeaea);
+  color: var(--red-deep, #c0392b);
+  border-color: var(--red-pale, #fdeaea);
+}
+.deleteBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .filters { gap: var(--space-1); padding: var(--space-3) var(--space-4); }

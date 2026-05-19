@@ -7,6 +7,33 @@ import api from '../lib/api'
 import useCart, { cartTotal as cartTotalSelector } from '../hooks/useCart'
 import styles from './CheckoutPage.module.css'
 
+const STORE_WHATSAPP = '212667322850'
+
+function buildWhatsAppUrl(formData, cartItems, subtotal, shipping) {
+  const itemLines = cartItems
+    .map((i) => `• ${i.product.name} ×${i.quantity} — ${Number(i.product.price) * i.quantity} DH`)
+    .join('\n')
+
+  const paymentLabel = formData.payment === 'cod' ? 'Paiement à la livraison' : formData.payment
+
+  const message = [
+    '🛒 Nouvelle commande — Pour Bébé',
+    '',
+    `👤 ${formData.firstName} ${formData.lastName}`,
+    `📞 ${formData.phone}`,
+    `📍 ${formData.address}, ${formData.city}`,
+    `💳 ${paymentLabel}`,
+    '',
+    '📦 Articles :',
+    itemLines,
+    '',
+    `Livraison : ${shipping} DH`,
+    `💰 Total : ${subtotal + shipping} DH`,
+  ].join('\n')
+
+  return `https://wa.me/${STORE_WHATSAPP}?text=${encodeURIComponent(message)}`
+}
+
 export default function CheckoutPage() {
   const clearCart  = useCart((s) => s.clearCart)
   const cartItems  = useCart((s) => s.items)
@@ -22,6 +49,7 @@ export default function CheckoutPage() {
   async function handleSubmit(formData) {
     setSubmitError('')
     const shipping = getShipping(formData.city)
+    const whatsappUrl = buildWhatsAppUrl(formData, cartItems, subtotal, shipping)
     try {
       await mutateAsync({
         address: {
@@ -41,6 +69,7 @@ export default function CheckoutPage() {
         total: subtotal + shipping,
       })
       clearCart()
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
       setSuccess(true)
     } catch (err) {
       setSubmitError(
@@ -61,7 +90,7 @@ export default function CheckoutPage() {
             </div>
             <h1 className={styles.successTitle}>Commande confirmée !</h1>
             <p className={styles.successText}>
-              Merci pour votre commande. Vous serez contacté(e) très prochainement pour la confirmation et le suivi de votre livraison.
+              Merci pour votre commande. Une fenêtre WhatsApp s'est ouverte avec le récapitulatif — envoyez le message pour confirmer.
             </p>
             <Link to="/" className={styles.successBtn}>Retour à l'accueil</Link>
           </div>
