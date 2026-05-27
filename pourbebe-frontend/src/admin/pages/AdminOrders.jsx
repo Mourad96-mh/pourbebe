@@ -1,4 +1,5 @@
 import { Fragment, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useAdminOrders, useUpdateOrderStatus, useDeleteOrder } from '../hooks/useAdmin'
 import { formatPrice } from '../../lib/utils'
 import styles from './AdminOrders.module.css'
@@ -15,13 +16,20 @@ const STATUS_LABELS = {
 }
 
 export default function AdminOrders() {
-  const { data: orders = [], isLoading } = useAdminOrders()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const phoneFilter = searchParams.get('phone') ?? null
+
+  const { data: orders = [], isLoading } = useAdminOrders(phoneFilter)
   const updateStatus = useUpdateOrderStatus()
   const deleteOrder  = useDeleteOrder()
   const [filter, setFilter] = useState('ALL')
   const [expandedId, setExpandedId] = useState(null)
 
   const filtered = filter === 'ALL' ? orders : orders.filter((o) => o.status === filter)
+
+  function clearPhoneFilter() {
+    setSearchParams({})
+  }
 
   function handleStatus(id, status) {
     updateStatus.mutateAsync({ id, status })
@@ -42,6 +50,18 @@ export default function AdminOrders() {
         <h1 className={styles.title}>Commandes</h1>
         <span className={styles.count}>{orders.length} au total</span>
       </header>
+
+      {phoneFilter && (
+        <div className={styles.clientFilterBar}>
+          <span>Filtre client — {phoneFilter} ({orders.length} commande{orders.length !== 1 ? 's' : ''})</span>
+          <Link to="/admin/clients" className={styles.clearFilter} style={{ textDecoration: 'none' }}>
+            ← Tous les clients
+          </Link>
+          <button className={styles.clearFilter} onClick={clearPhoneFilter}>
+            Voir toutes les commandes
+          </button>
+        </div>
+      )}
 
       <div className={styles.filters}>
         <button
@@ -172,6 +192,14 @@ export default function AdminOrders() {
                                 <span>{order.address.email}</span>
                               )}
                             </div>
+                            {order.address?.phone && (
+                              <Link
+                                to={`/admin/clients?phone=${encodeURIComponent(order.address.phone)}`}
+                                className={styles.clientLink}
+                              >
+                                Voir fiche client →
+                              </Link>
+                            )}
                           </div>
 
                           <div className={styles.detailSection}>

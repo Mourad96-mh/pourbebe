@@ -65,11 +65,13 @@
   color: var(--white);
 }
 
-/* ── Grid ── */
+/* ── Grid (3 centered cards) ── */
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-4);
+  max-width: 960px;
+  margin: 0 auto;
 }
 
 .empty {
@@ -80,12 +82,8 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 1024px) {
-  .grid { grid-template-columns: repeat(3, 1fr); }
-}
-
 @media (max-width: 768px) {
-  .grid { grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+  .grid { gap: var(--space-3); }
   .title { font-size: var(--text-xl); }
   .inner { padding: 0 var(--space-4); }
 }

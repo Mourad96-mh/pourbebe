@@ -30,6 +30,7 @@ const ConfidentialitePage   = lazy(() => import('./pages/ConfidentialitePage'))
 const AdminDashboard  = lazy(() => import('./admin/pages/AdminDashboard'))
 const AdminProducts   = lazy(() => import('./admin/pages/AdminProducts'))
 const AdminOrders     = lazy(() => import('./admin/pages/AdminOrders'))
+const AdminCustomers  = lazy(() => import('./admin/pages/AdminCustomers'))
 const AdminCategories = lazy(() => import('./admin/pages/AdminCategories'))
 const AdminBlog        = lazy(() => import('./admin/pages/AdminBlog'))
 const AdminBirthLists  = lazy(() => import('./admin/pages/AdminBirthLists'))
@@ -70,6 +71,7 @@ export default function App() {
           <Route index                  element={<AdminDashboard />} />
           <Route path="produits"        element={<AdminProducts />} />
           <Route path="commandes"       element={<AdminOrders />} />
+          <Route path="clients"         element={<AdminCustomers />} />
           <Route path="categories"      element={<AdminCategories />} />
           <Route path="blog"            element={<AdminBlog />} />
           <Route path="listes-naissance" element={<AdminBirthLists />} />

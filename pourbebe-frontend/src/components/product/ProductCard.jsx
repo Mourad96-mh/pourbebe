@@ -3,8 +3,6 @@ import Badge from '../ui/Badge'
 import { formatPrice, getDiscountPercent } from '../../lib/utils'
 import useWishlist from '../../hooks/useWishlist'
 import useCart from '../../hooks/useCart'
-import { useMyBirthList } from '../../hooks/useMyBirthList'
-import { useAuth } from '../../hooks/useAuth'
 import styles from './ProductCard.module.css'
 
 export default function ProductCard({ product, badge }) {
@@ -13,8 +11,6 @@ export default function ProductCard({ product, badge }) {
   const addItem      = useCart((s) => s.addItem)
   const openCart     = useCart((s) => s.openCart)
   const discount     = getDiscountPercent(product.price, product.compareAt)
-  const { user }     = useAuth()
-  const { list, addProduct, isInList } = useMyBirthList()
 
   const whatsappUrl = `https://wa.me/212667322850?text=${encodeURIComponent(`Bonjour, je souhaite commander : ${product.name}`)}`
 
@@ -81,25 +77,6 @@ export default function ProductCard({ product, badge }) {
           Découvrir
         </Link>
 
-        {user && list && (
-          <div className={styles.listRow}>
-            {isInList(product.id) ? (
-              <span className={styles.inListBadge}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Dans ma liste
-              </span>
-            ) : (
-              <button
-                className={styles.addToListBtn}
-                onClick={(e) => { e.preventDefault(); addProduct.mutate(product.id) }}
-                disabled={addProduct.isPending}
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                {addProduct.isPending ? 'Ajout…' : 'Ma liste de naissance'}
-              </button>
-            )}
-          </div>
-        )}
       </div>
     </article>
   )

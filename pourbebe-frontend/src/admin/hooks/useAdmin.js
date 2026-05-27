@@ -11,11 +11,13 @@ export function useAdminProducts() {
   })
 }
 
-export function useAdminOrders() {
+export function useAdminOrders(phone) {
   return useQuery({
-    queryKey: ['admin', 'orders'],
+    queryKey: ['admin', 'orders', phone ?? ''],
     queryFn: async () => {
-      const res = await api.get('/admin/orders')
+      const params = {}
+      if (phone) params.phone = phone
+      const res = await api.get('/admin/orders', { params })
       return res.data.data ?? res.data
     },
   })
@@ -29,6 +31,26 @@ export function useAdminCustomers() {
       return res.data.data ?? res.data
     },
   })
+}
+
+export function useUpdateClientNote() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ phone, note }) => api.patch('/admin/customers/note', { phone, note }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'customers'] }),
+  })
+}
+
+export async function exportClients() {
+  const res = await api.get('/admin/customers/export', { responseType: 'blob' })
+  const url = URL.createObjectURL(new Blob([res.data], { type: 'text/csv;charset=utf-8' }))
+  const a   = document.createElement('a')
+  a.href     = url
+  a.download = 'clients.csv'
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
 }
 
 export function useAdminCategories() {

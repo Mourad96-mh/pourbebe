@@ -15,6 +15,7 @@ import Post from '../models/Post.js'
 import BirthList from '../models/BirthList.js'
 import Banner from '../models/Banner.js'
 import Curation from '../models/Curation.js'
+import ClientNote from '../models/ClientNote.js'
 
 const router = Router()
 
@@ -38,25 +39,78 @@ router.delete('/orders/:id', async (req, res) => {
   res.json({ success: true, data: null })
 })
 
-router.get('/customers', async (req, res) => {
+async function buildClientsData() {
   const stats = await Order.aggregate([
-    { $match: { userId: { $ne: null } } },
-    { $group: {
-      _id: '$userId',
-      orderCount: { $sum: 1 },
-      totalSpent: { $sum: '$total' },
-      lastOrderAt: { $max: '$createdAt' },
-    }},
+    { $match: { 'address.phone': { $exists: true, $nin: [null, ''] } } },
+    { $sort: { createdAt: -1 } },
+    {
+      $group: {
+        _id:        '$address.phone',
+        orderCount: { $sum: 1 },
+        totalSpent: { $sum: '$total' },
+        lastOrderAt:{ $max: '$createdAt' },
+        firstName:  { $first: '$address.firstName' },
+        lastName:   { $first: '$address.lastName' },
+        email:      { $first: '$address.email' },
+        city:       { $first: '$address.city' },
+        address:    { $first: '$address.address' },
+      },
+    },
+    { $sort: { lastOrderAt: -1 } },
   ])
-  const userIds = stats.map((s) => s._id)
-  const users = await User.find({ _id: { $in: userIds } }).select('-password').lean()
-  const enriched = users
-    .map((u) => {
-      const s = stats.find((x) => String(x._id) === String(u._id))
-      return { ...u, orderCount: s?.orderCount ?? 0, totalSpent: s?.totalSpent ?? 0, lastOrderAt: s?.lastOrderAt }
-    })
-    .sort((a, b) => new Date(b.lastOrderAt) - new Date(a.lastOrderAt))
-  res.json({ success: true, data: enriched })
+
+  const phones  = stats.map((s) => s._id).filter(Boolean)
+  const notes   = await ClientNote.find({ phone: { $in: phones } }).lean()
+  const noteMap = Object.fromEntries(notes.map((n) => [n.phone, n.note]))
+
+  return stats.map((s) => ({
+    phone:      s._id,
+    name:       [s.firstName, s.lastName].filter(Boolean).join(' ') || '—',
+    email:      s.email   || null,
+    city:       s.city    || null,
+    address:    s.address || null,
+    orderCount: s.orderCount,
+    totalSpent: s.totalSpent,
+    lastOrderAt:s.lastOrderAt,
+    note:       noteMap[s._id] ?? '',
+  }))
+}
+
+router.get('/customers', async (req, res) => {
+  const clients = await buildClientsData()
+  res.json({ success: true, data: clients })
+})
+
+router.patch('/customers/note', async (req, res) => {
+  const { phone, note } = req.body
+  if (!phone?.trim()) return res.status(400).json({ success: false, error: 'Téléphone requis.' })
+  await ClientNote.findOneAndUpdate(
+    { phone: phone.trim() },
+    { note: note ?? '' },
+    { upsert: true }
+  )
+  res.json({ success: true, data: null })
+})
+
+router.get('/customers/export', async (req, res) => {
+  const clients = await buildClientsData()
+  const header  = ['Nom', 'Téléphone', 'Email', 'Ville', 'Adresse', 'Commandes', 'Total (DH)', 'Dernière commande', 'Note']
+  const rows    = clients.map((c) =>
+    [
+      c.name,
+      c.phone,
+      c.email   ?? '',
+      c.city    ?? '',
+      c.address ?? '',
+      c.orderCount,
+      c.totalSpent,
+      c.lastOrderAt ? new Date(c.lastOrderAt).toLocaleDateString('fr-FR') : '',
+      c.note,
+    ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')
+  )
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8')
+  res.setHeader('Content-Disposition', 'attachment; filename="clients.csv"')
+  res.send('﻿' + [header.join(','), ...rows].join('\r\n'))
 })
 
 /* ── Category CRUD ── */

@@ -43,11 +43,11 @@ const EMPTY_FORM = {
 function fieldsByType(type) {
   switch (type) {
     case 'hero':
-      return ['image', 'tag', 'title', 'subtitle', 'ctaText', 'ctaLink', 'isActive']
+      return ['image', 'tag', 'title', 'subtitle', 'ctaText', 'ctaLink', 'showCta', 'isActive']
     case 'home-mid':
       return ['image', 'tag', 'title', 'ctaLink', 'showCta', 'isActive']
     case 'birthlist':
-      return ['tag', 'title', 'subtitle', 'ctaText', 'ctaLink']
+      return ['image', 'tag', 'title', 'subtitle', 'ctaText', 'ctaLink', 'showCta', 'isActive']
     case 'category-hero':
       return ['categorySlug', 'image']
     case 'recommended-collection':
@@ -322,8 +322,8 @@ export default function AdminBanners() {
               {/* Title */}
               {fields.includes('title') && (
                 <label className={styles.field}>
-                  <span className={styles.fieldLabel}>Titre</span>
-                  <input name="title" value={form.title} onChange={handleField} className={styles.input} placeholder="Titre de la bannière" required />
+                  <span className={styles.fieldLabel}>Titre <span className={styles.hint}>(optionnel)</span></span>
+                  <input name="title" value={form.title} onChange={handleField} className={styles.input} placeholder="Titre de la bannière" />
                 </label>
               )}
 

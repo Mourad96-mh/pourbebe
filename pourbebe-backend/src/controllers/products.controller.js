@@ -52,8 +52,28 @@ export async function getProduct(req, res) {
   res.json({ success: true, data: product })
 }
 
+function generateSlug(name) {
+  return name
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
 export async function createProduct(req, res) {
-  const product = await Product.create(req.body)
+  const data = { ...req.body }
+  if (!data.slug && data.name) {
+    const base = generateSlug(data.name)
+    let slug = base
+    let counter = 1
+    while (await Product.exists({ slug })) {
+      slug = `${base}-${counter++}`
+    }
+    data.slug = slug
+  }
+  const product = await Product.create(data)
   res.status(201).json({ success: true, data: product })
 }
 

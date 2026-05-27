@@ -5,13 +5,14 @@ import styles from './HeroSection.module.css'
 
 const FALLBACK = [
   {
-    _id:      'fallback-1',
-    image:    '/hero-img.jpeg',
-    tag:      'Nouvelle collection 2025',
-    title:    'Tendresse et Douceur pour Bébé',
-    subtitle: 'Découvrez la qualité exceptionnelle de nos produits pour des moments de câlins inoubliables.',
-    ctaText:  'Découvrez maintenant',
-    ctaLink:  '/categorie/chambre',
+    _id:     'fallback-1',
+    image:   '/hero-img.jpeg',
+    tag:     'Nouvelle collection 2025',
+    title:   'Tendresse et Douceur pour Bébé',
+    subtitle:'Découvrez la qualité exceptionnelle de nos produits pour des moments de câlins inoubliables.',
+    ctaText: 'Découvrir',
+    ctaLink: '/categorie/chambre',
+    showCta: true,
   },
 ]
 
@@ -23,9 +24,7 @@ export default function HeroSection() {
   const next = useCallback(() => setActive((a) => (a + 1) % slides.length), [slides.length])
   const prev = useCallback(() => setActive((a) => (a - 1 + slides.length) % slides.length), [slides.length])
 
-  useEffect(() => {
-    setActive(0)
-  }, [slides.length])
+  useEffect(() => { setActive(0) }, [slides.length])
 
   useEffect(() => {
     if (slides.length <= 1) return
@@ -38,7 +37,7 @@ export default function HeroSection() {
   return (
     <section className={styles.hero}>
 
-      {/* ── Background images (all slides, only active is visible) ── */}
+      {/* ── Background images ── */}
       {slides.map((s, i) => (
         <img
           key={s._id ?? i}
@@ -52,15 +51,23 @@ export default function HeroSection() {
         />
       ))}
 
-      <div className={styles.overlay} aria-hidden="true" />
+      {/* ── Full-banner link (entire area clickable) ── */}
+      {slide.ctaLink && (
+        <Link
+          to={slide.ctaLink}
+          className={styles.heroLink}
+          aria-label={slide.title || 'Voir la collection'}
+          tabIndex={-1}
+        />
+      )}
 
       {/* ── Content ── */}
       <div className={styles.inner}>
         <div className={styles.content}>
           {slide.tag && <p className={styles.tag}>{slide.tag}</p>}
-          <h1 className={styles.headline}>{slide.title}</h1>
+          {slide.title && <h1 className={styles.headline}>{slide.title}</h1>}
           {slide.subtitle && <p className={styles.sub}>{slide.subtitle}</p>}
-          {slide.ctaText && slide.ctaLink && (
+          {slide.showCta !== false && slide.ctaText && slide.ctaLink && (
             <Link to={slide.ctaLink} className={styles.cta}>
               {slide.ctaText}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -70,22 +77,6 @@ export default function HeroSection() {
           )}
         </div>
       </div>
-
-      {/* ── Slide dots ── */}
-      {slides.length > 1 && (
-        <div className={styles.dots} role="tablist" aria-label="Navigation du carrousel">
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              role="tab"
-              aria-selected={i === active}
-              aria-label={`Diapositive ${i + 1}`}
-              className={`${styles.dot} ${i === active ? styles.dotActive : ''}`}
-              onClick={() => setActive(i)}
-            />
-          ))}
-        </div>
-      )}
 
       {/* ── Prev / Next arrows ── */}
       {slides.length > 1 && (

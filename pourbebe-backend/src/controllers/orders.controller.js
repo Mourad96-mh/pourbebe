@@ -57,7 +57,9 @@ export async function updateOrderStatus(req, res) {
 }
 
 export async function getAllOrders(req, res) {
-  const orders = await Order.find()
+  const filter = {}
+  if (req.query.phone) filter['address.phone'] = req.query.phone
+  const orders = await Order.find(filter)
     .sort({ createdAt: -1 })
     .populate('userId', 'name email')
     .populate('items.productId', 'name images slug')
