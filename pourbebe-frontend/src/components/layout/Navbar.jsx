@@ -17,7 +17,8 @@ const NAV_LINKS = [
 ]
 
 export default function Navbar() {
-  const { user, logout }  = useAuth()
+  const { user: authUser, logout }  = useAuth()
+  const user = authUser?.role === 'ADMIN' ? null : authUser
   const cartCount         = useCart(cartCountSelector)
   const openCart          = useCart((s) => s.openCart)
   const wishlistCount     = useWishlist((s) => s.items.length)
