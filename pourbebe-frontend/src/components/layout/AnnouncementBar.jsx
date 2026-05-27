@@ -3,8 +3,9 @@ import { useAuth } from '../../context/AuthContext'
 import styles from './AnnouncementBar.module.css'
 
 export default function AnnouncementBar() {
-  const { user, logout } = useAuth()
-  const navigate         = useNavigate()
+  const { user: authUser, logout } = useAuth()
+  const user    = authUser?.role === 'ADMIN' ? null : authUser
+  const navigate = useNavigate()
 
   function handleLogout() {
     logout()
