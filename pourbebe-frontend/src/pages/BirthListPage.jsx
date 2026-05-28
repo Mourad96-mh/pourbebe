@@ -13,7 +13,7 @@ import styles from './BirthListPage.module.css'
 
 export default function BirthListPage() {
   const { shareId }  = useParams()
-  const { user }     = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const qc           = useQueryClient()
   const addItem      = useCart((s) => s.addItem)
   const openCart     = useCart((s) => s.openCart)
@@ -74,7 +74,7 @@ export default function BirthListPage() {
     },
   })
 
-  if (isLoading) return <Spinner />
+  if (authLoading || isLoading) return <Spinner />
 
   /* ── Error state ── */
   if (isError) {
