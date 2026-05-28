@@ -3,6 +3,8 @@ import Badge from '../ui/Badge'
 import { formatPrice, getDiscountPercent } from '../../lib/utils'
 import useWishlist from '../../hooks/useWishlist'
 import useCart from '../../hooks/useCart'
+import { useAuth } from '../../hooks/useAuth'
+import { useMyBirthList } from '../../hooks/useMyBirthList'
 import styles from './ProductCard.module.css'
 
 export default function ProductCard({ product, badge }) {
@@ -11,6 +13,11 @@ export default function ProductCard({ product, badge }) {
   const addItem      = useCart((s) => s.addItem)
   const openCart     = useCart((s) => s.openCart)
   const discount     = getDiscountPercent(product.price, product.compareAt)
+
+  const { user }                         = useAuth()
+  const { list, addProduct, isInList }   = useMyBirthList()
+  const showListBtn                      = !!user && !!list
+  const alreadyInList                    = showListBtn && isInList(product.id)
 
   const whatsappUrl = `https://wa.me/212667322850?text=${encodeURIComponent(`Bonjour, je souhaite commander : ${product.name}`)}`
 
@@ -23,6 +30,11 @@ export default function ProductCard({ product, badge }) {
   function handleWishlist(e) {
     e.preventDefault()
     toggle(product)
+  }
+
+  function handleAddToList(e) {
+    e.preventDefault()
+    addProduct.mutate(product.id)
   }
 
   return (
@@ -76,6 +88,31 @@ export default function ProductCard({ product, badge }) {
         <Link to={`/produit/${product.slug}`} className={styles.discoverBtn}>
           Découvrir
         </Link>
+
+        {showListBtn && (
+          <div className={styles.listRow}>
+            {alreadyInList ? (
+              <span className={styles.inListBadge}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Dans ma liste
+              </span>
+            ) : (
+              <button
+                className={styles.addToListBtn}
+                onClick={handleAddToList}
+                disabled={addProduct.isPending}
+                aria-label="Ajouter à ma liste de naissance"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Liste de naissance
+              </button>
+            )}
+          </div>
+        )}
 
       </div>
     </article>
