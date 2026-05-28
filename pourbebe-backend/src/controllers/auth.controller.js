@@ -59,7 +59,12 @@ export async function forgotPassword(req, res) {
   user.resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000)
   await user.save()
 
-  await sendPasswordReset(user.email, rawToken)
+  try {
+    await sendPasswordReset(user.email, rawToken)
+  } catch (err) {
+    console.error('sendPasswordReset failed:', err?.message ?? err)
+  }
+
   res.json({ success: true })
 }
 
