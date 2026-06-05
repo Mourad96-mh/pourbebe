@@ -85,9 +85,19 @@
 
 /* ── Birth list ── */
 .listRow {
+  display: flex;
+  justify-content: center;
   padding-top: var(--space-2);
   border-top: 1px solid var(--sky-light);
   margin-top: var(--space-1);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover .listRow {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .addToListBtn {
@@ -216,6 +226,7 @@
 @media (hover: none) {
   .wishlistBtn { opacity: 1; }
   .discoverBtn { opacity: 1; transform: translateY(0); }
+  .listRow { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 480px) {

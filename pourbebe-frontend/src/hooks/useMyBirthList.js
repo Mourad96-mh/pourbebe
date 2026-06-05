@@ -15,7 +15,7 @@ export function useMyBirthList() {
       return {
         ...raw,
         id:    raw._id,
-        items: (raw.items ?? []).map((i) => ({ ...i, id: i._id })),
+        items: (raw.items ?? []).map((i) => ({ ...i, id: i._id, product: i.productId })),
       }
     },
     enabled:        !!user,

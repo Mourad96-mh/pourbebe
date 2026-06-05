@@ -1,6 +1,33 @@
 import Order from '../models/Order.js'
 import Product from '../models/Product.js'
+import BirthList from '../models/BirthList.js'
 import { notifyNewOrder } from '../lib/whatsapp.js'
+
+/* Mark any purchased birth-list items as "offert" (purchased). Grouped by list
+   so multiple gifts from the same list are saved in a single write. Never throws
+   — a gift-marking failure must not break the order itself. */
+async function markGiftItemsPurchased(items) {
+  const gifts = items.filter((i) => i.giftListShareId && i.giftListItemId)
+  if (!gifts.length) return
+
+  const byList = {}
+  for (const g of gifts) (byList[g.giftListShareId] ??= []).push(g.giftListItemId)
+
+  await Promise.all(
+    Object.entries(byList).map(async ([shareId, itemIds]) => {
+      const list = await BirthList.findOne({ shareId })
+      if (!list) return
+      for (const itemId of itemIds) {
+        const item = list.items.id(itemId)
+        if (item) {
+          item.purchased = true
+          item.reserved  = true
+        }
+      }
+      await list.save()
+    })
+  )
+}
 
 export async function createOrder(req, res) {
   const { items, address, payment, total } = req.body
@@ -26,6 +53,10 @@ export async function createOrder(req, res) {
     payment,
     total,
   })
+
+  await markGiftItemsPurchased(items).catch((err) =>
+    console.error('[orders] markGiftItemsPurchased failed:', err.message)
+  )
 
   notifyNewOrder(order).catch(() => {})
 

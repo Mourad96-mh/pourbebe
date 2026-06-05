@@ -60,15 +60,6 @@
   margin-left: 2px;
 }
 
-.shipping {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: var(--text-base);
-  color: var(--sky-light);
-  letter-spacing: 0.04em;
-}
-
 .connexion {
   display: flex;
   align-items: center;
@@ -91,8 +82,7 @@
 
 @media (max-width: 768px) {
   .social,
-  .connexion,
-  .shipping {
+  .connexion {
     display: none;
   }
 

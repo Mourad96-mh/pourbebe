@@ -64,6 +64,8 @@ export default function CheckoutPage() {
           productId: i.product.id ?? i.product._id,
           quantity:  i.quantity,
           variantId: i.variant?.id ?? null,
+          giftListShareId: i.meta?.shareId ?? null,
+          giftListItemId:  i.meta?.giftListItemId ?? null,
         })),
         shipping,
         total: subtotal + shipping,
