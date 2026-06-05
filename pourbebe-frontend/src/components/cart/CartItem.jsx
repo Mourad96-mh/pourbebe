@@ -23,7 +23,7 @@ export default function CartItem({ item }) {
           <div>
             <p className={styles.brand}>{product.brand}</p>
             <Link to={`/produit/${product.slug}`} className={styles.name}>{product.name}</Link>
-            {variant && <p className={styles.variant}>{variant.name}</p>}
+            {variant && <p className={styles.variant}>Taille : {variant.name}</p>}
           </div>
           <button className={styles.remove} onClick={() => removeItem(key)} aria-label="Supprimer">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

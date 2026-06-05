@@ -11,7 +11,7 @@ const STORE_WHATSAPP = '212667322850'
 
 function buildWhatsAppUrl(formData, cartItems, subtotal, shipping) {
   const itemLines = cartItems
-    .map((i) => `• ${i.product.name} ×${i.quantity} — ${Number(i.product.price) * i.quantity} DH`)
+    .map((i) => `• ${i.product.name}${i.variant ? ` (Taille ${i.variant.name})` : ''} ×${i.quantity} — ${Number(i.product.price) * i.quantity} DH`)
     .join('\n')
 
   const paymentLabel = formData.payment === 'cod' ? 'Paiement à la livraison' : formData.payment

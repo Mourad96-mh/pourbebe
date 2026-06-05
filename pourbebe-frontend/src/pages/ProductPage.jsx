@@ -17,19 +17,21 @@ const PER_PAGE = 5
 
 const DOT_PAGES = 3
 
-function RelatedFooter({ page, categorySlug, onChange }) {
+function RelatedFooter({ page, pageCount, categorySlug, onChange }) {
   return (
     <div className={styles.relatedFooter}>
-      <div className={styles.dots}>
-        {Array.from({ length: DOT_PAGES }, (_, i) => i + 1).map(n => (
-          <button
-            key={n}
-            className={`${styles.dot} ${n === page ? styles.dotActive : ''}`}
-            onClick={() => onChange(n)}
-            aria-label={`Page ${n}`}
-          />
-        ))}
-      </div>
+      {pageCount > 1 && (
+        <div className={styles.dots}>
+          {Array.from({ length: pageCount }, (_, i) => i + 1).map(n => (
+            <button
+              key={n}
+              className={`${styles.dot} ${n === page ? styles.dotActive : ''}`}
+              onClick={() => onChange(n)}
+              aria-label={`Page ${n}`}
+            />
+          ))}
+        </div>
+      )}
       <Link to={`/categorie/${categorySlug}`} className={styles.seeAllBtn}>
         Voir tous les produits
       </Link>
@@ -69,6 +71,7 @@ export default function ProductPage() {
   const { list, listLoading, addProduct, isInList } = useMyBirthList()
   const [qty, setQty]                   = useState(1)
   const [selectedSize, setSelectedSize] = useState('')
+  const [sizeError, setSizeError]       = useState(false)
   const [relatedPage, setRelatedPage]   = useState(1)
 
   useEffect(() => { setRelatedPage(1) }, [slug])
@@ -93,12 +96,21 @@ export default function ProductPage() {
     if (child) { category = child; parentCategory = parent; break }
   }
 
-  const sameCategory    = relatedData?.products?.filter(p => p.id !== product.id) ?? []
-  const otherProducts   = allData?.products?.filter(p => p.id !== product.id && p.categorySlug !== product.categorySlug) ?? []
+  // Fallback when nothing is curated in the back office: the 5 most recent,
+  // in-stock products of the same category and same gender (unisexe matches all).
+  const sameTypeRecent = (relatedData?.products ?? [])
+    .filter(p =>
+      p.id !== product.id &&
+      (p.inStock ?? true) &&
+      (!product.gender || p.gender === product.gender || p.gender === 'unisexe')
+    )
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, PER_PAGE)
 
   const allRelated = curatedRelated.length > 0
     ? curatedRelated.filter(p => String(p._id ?? p.id) !== String(product._id ?? product.id)).slice(0, DOT_PAGES * PER_PAGE)
-    : [...sameCategory, ...otherProducts].slice(0, DOT_PAGES * PER_PAGE)
+    : sameTypeRecent
+  const relatedPageCount = Math.max(1, Math.ceil(allRelated.length / PER_PAGE))
   const related = allRelated.slice((relatedPage - 1) * PER_PAGE, relatedPage * PER_PAGE)
 
   const suggested = curatedSuggested.length > 0
@@ -148,7 +160,12 @@ export default function ProductPage() {
   }
 
   function handleAddToCart() {
-    for (let i = 0; i < qty; i++) addItem(product)
+    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+      setSizeError(true)
+      return
+    }
+    const variant = selectedSize ? { id: selectedSize, name: selectedSize } : null
+    addItem(product, qty, variant)
     openCart()
   }
 
@@ -260,12 +277,15 @@ export default function ProductPage() {
                     key={s}
                     type="button"
                     className={`${styles.sizeBtn} ${selectedSize === s ? styles.sizeBtnActive : ''}`}
-                    onClick={() => setSelectedSize(s)}
+                    onClick={() => { setSelectedSize(s); setSizeError(false) }}
                   >
                     {s}
                   </button>
                 ))}
               </div>
+              {sizeError && (
+                <p className={styles.sizeError}>Veuillez choisir une taille.</p>
+              )}
             </div>
           )}
 
@@ -422,7 +442,7 @@ export default function ProductPage() {
                 />
               ))}
             </div>
-            <RelatedFooter page={relatedPage} categorySlug={product.categorySlug} onChange={setRelatedPage} />
+            <RelatedFooter page={relatedPage} pageCount={relatedPageCount} categorySlug={product.categorySlug} onChange={setRelatedPage} />
           </div>
         </section>
       )}

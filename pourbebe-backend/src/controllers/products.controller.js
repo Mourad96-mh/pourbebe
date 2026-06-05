@@ -6,12 +6,11 @@ export async function getProducts(req, res) {
   const filter = {}
 
   if (category) {
-    const cat = await Category.findOne({ slug: category })
-    if (cat) {
-      const children = await Category.find({ parentId: cat._id })
-      filter.categoryId = children.length
-        ? { $in: [cat._id, ...children.map((c) => c._id)] }
-        : cat._id
+    const slugs = String(category).split(',').map((s) => s.trim()).filter(Boolean)
+    const cats  = await Category.find({ slug: { $in: slugs } })
+    if (cats.length) {
+      const children = await Category.find({ parentId: { $in: cats.map((c) => c._id) } })
+      filter.categoryId = { $in: [...cats.map((c) => c._id), ...children.map((c) => c._id)] }
     }
   }
   if (brand)      filter.brand = new RegExp(brand, 'i')

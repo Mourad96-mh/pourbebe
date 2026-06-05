@@ -111,6 +111,7 @@ export default function AdminProducts() {
 
   const [modal, setModal]               = useState(null)
   const [form, setForm]                 = useState(EMPTY_FORM)
+  const [customAgeMode, setCustomAgeMode] = useState(false)
   const [sizeInput, setSizeInput]       = useState('')
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [search, setSearch]             = useState('')
@@ -125,6 +126,7 @@ export default function AdminProducts() {
 
   function openCreate() {
     setForm(EMPTY_FORM)
+    setCustomAgeMode(false)
     setSizeInput('')
     setError('')
     setModal('create')
@@ -154,16 +156,28 @@ export default function AdminProducts() {
       deliveryNote:     product.deliveryNote ?? '',
       returnNote:       product.returnNote   ?? '',
     })
+    setCustomAgeMode(!!product.ageRange && !AGE_OPTIONS.some((o) => o.value === product.ageRange))
     setSizeInput('')
     setError('')
     setModal(product)
   }
 
-  function closeModal() { setModal(null); setError(''); setSizeInput('') }
+  function closeModal() { setModal(null); setError(''); setSizeInput(''); setCustomAgeMode(false) }
 
   function handleField(e) {
     const { name, value, type, checked } = e.target
     setForm((f) => ({ ...f, [name]: type === 'checkbox' ? checked : value }))
+  }
+
+  function handleAgeSelect(e) {
+    const value = e.target.value
+    if (value === '__custom__') {
+      setCustomAgeMode(true)
+      setForm((f) => ({ ...f, ageRange: '' }))
+    } else {
+      setCustomAgeMode(false)
+      setForm((f) => ({ ...f, ageRange: value }))
+    }
   }
 
   function handleParentChange(e) {
@@ -476,12 +490,27 @@ export default function AdminProducts() {
                   </label>
                   <label className={styles.field}>
                     <span className={styles.fieldLabel}>Tranche d'âge</span>
-                    <select name="ageRange" value={form.ageRange} onChange={handleField} className={styles.select}>
+                    <select
+                      value={customAgeMode ? '__custom__' : form.ageRange}
+                      onChange={handleAgeSelect}
+                      className={styles.select}
+                    >
                       <option value="">— Non spécifié —</option>
                       {AGE_OPTIONS.map((o) => (
                         <option key={o.value} value={o.value}>{o.label}</option>
                       ))}
+                      <option value="__custom__">Autre (personnalisé)…</option>
                     </select>
+                    {customAgeMode && (
+                      <input
+                        type="text"
+                        name="ageRange"
+                        value={form.ageRange}
+                        onChange={handleField}
+                        className={styles.input}
+                        placeholder="Ex : 4 – 6 ans, Naissance, 3 ans et +…"
+                      />
+                    )}
                   </label>
                 </div>
               </div>

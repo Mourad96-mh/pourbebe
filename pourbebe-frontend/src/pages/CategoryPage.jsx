@@ -61,7 +61,7 @@ export default function CategoryPage() {
   const { data: collectionBanners }   = useBanners('recommended-collection')
 
   // Build API params depending on page type
-  const { subCategory, ages, gender, min, max } = filters
+  const { subCategories, ages, gender, min, max } = filters
   const apiParams = {
     sort,
     ...(min  ? { min }  : {}),
@@ -70,7 +70,7 @@ export default function CategoryPage() {
     ...(ages?.length ? { age: ages[0] } : {}),
     ...(isPromo     ? { onSale: true }      : {}),
     ...(isGiftIdeas ? { isGiftIdea: true }  : {}),
-    ...(!isSpecial  ? { category: subCategory || slug } : {}),
+    ...(!isSpecial  ? { category: subCategories?.length ? subCategories.join(',') : slug } : {}),
     ...(isNew && !isSpecial ? { isNew: true } : {}),
   }
 

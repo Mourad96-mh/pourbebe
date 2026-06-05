@@ -40,7 +40,7 @@ export default function ProductFilters({
   const maxPrice = filters.max ?? MAX_PRICE
 
   const hasPriceFilter  = filters.min || filters.max
-  const hasSubCategory  = !!filters.subCategory
+  const hasSubCategory  = (filters.subCategories ?? []).length > 0
   const hasGender       = !!filters.gender
   const hasAges         = (filters.ages ?? []).length > 0
   const hasFilters      = hasPriceFilter || hasSubCategory || hasGender || hasAges
@@ -72,16 +72,24 @@ export default function ProductFilters({
   }
 
   const visibleSubcategories = subcategories.filter(
-    (s) => (subCategoryCounts[s.slug] ?? 0) > 0 || filters.subCategory === s.slug
+    (s) => (subCategoryCounts[s.slug] ?? 0) > 0 || (filters.subCategories ?? []).includes(s.slug)
   )
 
   const visibleGenders = GENDER_OPTIONS.filter(
     (o) => (genderCounts[o.value] ?? 0) > 0 || filters.gender === o.value
   )
 
-  const visibleAges = AGE_OPTIONS.filter(
-    (o) => (ageCounts[o.value] ?? 0) > 0 || (filters.ages ?? []).includes(o.value)
-  )
+  const predefinedAgeValues = AGE_OPTIONS.map((o) => o.value)
+  const customAgeOptions = Object.keys(ageCounts)
+    .filter((v) => v && !predefinedAgeValues.includes(v))
+    .map((v) => ({ value: v, label: v }))
+
+  const visibleAges = [
+    ...AGE_OPTIONS.filter(
+      (o) => (ageCounts[o.value] ?? 0) > 0 || (filters.ages ?? []).includes(o.value)
+    ),
+    ...customAgeOptions,
+  ]
 
   return (
     <aside className={styles.sidebar}>
@@ -115,12 +123,12 @@ export default function ProductFilters({
                 <button onClick={removePriceFilter} aria-label="Retirer filtre prix">×</button>
               </span>
             )}
-            {hasSubCategory && (
-              <span className={styles.chip}>
-                {subcategories.find(s => s.slug === filters.subCategory)?.name ?? filters.subCategory}
-                <button onClick={() => update('subCategory', '')} aria-label="Retirer filtre sous-catégorie">×</button>
+            {(filters.subCategories || []).map(slug => (
+              <span key={slug} className={styles.chip}>
+                {subcategories.find(s => s.slug === slug)?.name ?? slug}
+                <button onClick={() => toggleArrayFilter('subCategories', slug)} aria-label="Retirer filtre type de produit">×</button>
               </span>
-            )}
+            ))}
             {hasGender && (
               <span className={styles.chip}>
                 {GENDER_OPTIONS.find(o => o.value === filters.gender)?.label ?? filters.gender}
@@ -180,19 +188,18 @@ export default function ProductFilters({
         </div>
       </div>
 
-      {/* ── SOUS-CATÉGORIE (dynamic from backoffice) ── */}
+      {/* ── TYPE DE PRODUIT (dynamic from backoffice) ── */}
       {visibleSubcategories.length > 0 && (
         <div className={styles.section}>
-          <SectionLabel label="SOUS-CATÉGORIE" />
+          <SectionLabel label="TYPE DE PRODUIT" />
           <div className={styles.sectionBody}>
             {visibleSubcategories.map(sub => (
               <label key={sub.slug} className={styles.checkLabel}>
                 <input
-                  type="radio"
-                  name="subCategory"
+                  type="checkbox"
                   className={styles.checkbox}
-                  checked={filters.subCategory === sub.slug}
-                  onChange={() => update('subCategory', filters.subCategory === sub.slug ? '' : sub.slug)}
+                  checked={(filters.subCategories || []).includes(sub.slug)}
+                  onChange={() => toggleArrayFilter('subCategories', sub.slug)}
                 />
                 <span className={styles.checkText}>{sub.name}</span>
                 <span className={styles.checkCount}>({subCategoryCounts[sub.slug] ?? 0})</span>
