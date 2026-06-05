@@ -18,7 +18,8 @@ const STATUS_LABELS = {
 }
 
 export default function AccountPage() {
-  const { user, logout } = useAuth()
+  const { user: authUser, logout } = useAuth()
+  const user = authUser?.role === 'ADMIN' ? null : authUser
   const navigate         = useNavigate()
   const wishlistItems    = useWishlist((s) => s.items)
 

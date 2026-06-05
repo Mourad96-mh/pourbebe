@@ -13,7 +13,8 @@ import styles from './BirthListPage.module.css'
 
 export default function BirthListPage() {
   const { shareId }  = useParams()
-  const { user, loading: authLoading } = useAuth()
+  const { user: authUser, loading: authLoading } = useAuth()
+  const user = authUser?.role === 'ADMIN' ? null : authUser
   const qc           = useQueryClient()
   const addItem      = useCart((s) => s.addItem)
   const openCart     = useCart((s) => s.openCart)
