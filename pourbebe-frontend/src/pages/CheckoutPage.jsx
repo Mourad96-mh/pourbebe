@@ -73,10 +73,15 @@ export default function CheckoutPage() {
       })
       clearCart()
       setWhatsappUrl(whatsappUrl)
-      // Best-effort auto-open. On mobile this is usually blocked because the
-      // user gesture is lost after the await, so the success screen always
-      // shows a tappable WhatsApp button as the reliable fallback.
-      window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
+      // Try opening WhatsApp in a new tab (works on desktop). Mobile browsers
+      // block this popup because the user gesture is lost after the await, so
+      // we redirect the current tab instead — same-tab navigation is never
+      // blocked, opening WhatsApp immediately without an extra tap.
+      const waWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
+      if (!waWindow || waWindow.closed || typeof waWindow.closed === 'undefined') {
+        window.location.href = whatsappUrl
+        return
+      }
       setSuccess(true)
     } catch (err) {
       setSubmitError(
