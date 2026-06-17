@@ -19,7 +19,7 @@ export default function ProductCard({ product, badge }) {
   const showListBtn                      = !!user && !!list
   const alreadyInList                    = showListBtn && isInList(product.id)
 
-  const whatsappUrl = `https://wa.me/212667322850?text=${encodeURIComponent(`Bonjour, je souhaite commander : ${product.name}`)}`
+  const whatsappUrl = `https://wa.me/212696716187?text=${encodeURIComponent(`Bonjour, je souhaite commander : ${product.name}`)}`
 
   function handleAddToCart(e) {
     e.preventDefault()

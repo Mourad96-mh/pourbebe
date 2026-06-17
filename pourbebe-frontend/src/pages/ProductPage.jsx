@@ -117,7 +117,7 @@ export default function ProductPage() {
     ? curatedSuggested.filter(p => String(p._id ?? p.id) !== String(product._id ?? product.id)).slice(0, 5)
     : allData?.products?.filter(p => p.id !== product.id && p.categorySlug !== product.categorySlug && (p.compareAt || p.isNewArrival)).slice(0, 5) ?? []
 
-  const whatsappUrl = `https://wa.me/212667322850?text=${encodeURIComponent(`Bonjour, je souhaite commander : ${product.name}`)}`
+  const whatsappUrl = `https://wa.me/212696716187?text=${encodeURIComponent(`Bonjour, je souhaite commander : ${product.name}`)}`
 
   const productSchema = {
     '@context': 'https://schema.org',
